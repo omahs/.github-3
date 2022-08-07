@@ -1,5 +1,5 @@
 {
-    "name": "jewel",
+    "name": "jewel.cash",
     "private": true,
     "scripts": {
         "postinstall": "lerna bootstrap",
