@@ -1,0 +1,14 @@
+{
+    "name": "core",
+    "private": true,
+    "scripts": {
+        "lint": "eslint --ext .js .",
+        "lint:fix": "eslint --fix --ext .js ."
+    },
+    "dependencies": {
+        "dotenv": "^16.0.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.21.0"
+    }
+}
