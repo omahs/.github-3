@@ -1,7 +1,7 @@
 import "../styles/app.css";
 import React, { Component } from "react";
 
-export class App extends Component {
+export default class App extends Component {
 
     render() {
         return (

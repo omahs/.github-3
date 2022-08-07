@@ -4,8 +4,8 @@ import { getPerformance } from "firebase/performance";
 import React, { StrictMode } from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "./components/home";
-import { App } from "./components/app";
+import Home from "./components/home";
+import App from "./components/app";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCY9lI-qta88G-HfNmTtSSevSlzo2Mnb7Y",

@@ -5,6 +5,7 @@
         "postinstall": "lerna bootstrap",
         "build": "lerna run build",
         "start": "lerna run start --parallel",
+        "test": "lerna run test",
         "lint": "lerna run lint",
         "lint:fix": "lerna run lint:fix"
     },
