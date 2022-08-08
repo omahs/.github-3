@@ -4,7 +4,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "jest",
+        "test": "jest -u",
         "lint": "eslint --ext .ts --ext .tsx .",
         "lint:fix": "eslint --fix --ext .ts --ext .tsx ."
     },
