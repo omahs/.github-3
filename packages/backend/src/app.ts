@@ -3,9 +3,11 @@ import express, { Application } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
-import indexRouter from "./routes/index";
-import docsRouter from "./routes/docs";
+import indexRouter from "./routes/index.js";
+import docsRouter from "./routes/docs.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app: Application = express();
 
 app.use(morgan("tiny"));
@@ -31,4 +33,4 @@ app.use((req, res, next) => {
 //     res.render("error");
 // });
 
-app.listen(2999);
+app.listen(process.env.PORT);

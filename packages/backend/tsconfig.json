@@ -1,11 +1,10 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "outDir": "./build",
-        "strict": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
-    }
-}
+       "rootDir": "./src",
+       "outDir": "./build",
+       "experimentalDecorators": true,
+       "emitDecoratorMetadata": true
+    },
+    "include": [ "src" ]
+ }
