@@ -3,7 +3,7 @@ import React, { Component, RefObject } from "react";
 import { auth } from "../firebase";
 import { AuthProvider, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { isValidEmail, isValidPassword } from "core";
-import { faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -18,7 +18,7 @@ interface ILoginIntegration {
 
 const loginIntegrations: Array<ILoginIntegration> = [
     { provider: new GoogleAuthProvider(), icon: faGoogle }
-]
+];
 
 export default class Login extends Component<any, IState> {
     emailFieldRef: RefObject<HTMLInputElement>;
@@ -97,7 +97,7 @@ export default class Login extends Component<any, IState> {
                     {this.state.isCreateAccount === true ? "Sign up" : "Sign in"}
                 </button>
                 <span className="login-separator">Or use a third-party login</span>
-                { loginIntegrations.map((x, i) => <FontAwesomeIcon className="login-icon" icon={x.icon} onClick={() => this.loginProviderPressed(i)}/>) }
+                { loginIntegrations.map((x, i) => <FontAwesomeIcon className="login-icon" key={i} icon={x.icon} onClick={() => this.loginProviderPressed(i)}/>) }
                 <div className="login-footer">
                     <a className="login-link" href="" target="_blank">Terms of Service</a>
                     <a className="login-link" href="" target="_blank">Privacy Policy</a>
