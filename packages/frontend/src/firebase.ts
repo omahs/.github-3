@@ -1,19 +1,28 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onIdTokenChanged } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
+import { initializeAppCheck, onTokenChanged, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { EnvKeyTransform, extractFromEnv } from "core";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCY9lI-qta88G-HfNmTtSSevSlzo2Mnb7Y",
-    authDomain: "jewel-6b5c6.firebaseapp.com",
-    projectId: "jewel-6b5c6",
-    storageBucket: "jewel-6b5c6.appspot.com",
-    messagingSenderId: "646269657574",
-    appId: "1:646269657574:web:89f12ab9eea42dd7d6b627",
-    measurementId: "G-4JZ5WSGG54"
-};
+const firebaseKey = extractFromEnv("REACT_APP_FIREBASE", EnvKeyTransform.CamelCase);
+const app = initializeApp(firebaseKey);
 
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
-getPerformance(app);
+
+
+export const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(firebaseKey.captchaKey),
+    isTokenAutoRefreshEnabled: true
+});
+export const analytics = getAnalytics(app);
+export const performance = getPerformance(app);
 export const auth = getAuth(app);
+
+onTokenChanged(appCheck, (result) => {
+    console.log(result.token)
+});
+
+onIdTokenChanged(auth, async (user) => {
+    const token = await user?.getIdTokenResult()
+    console.log(token);
+})
