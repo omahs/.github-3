@@ -1,64 +1,31 @@
+import express, { Application, Request, Response, NextFunction } from "express";
+import swaggerUi from "swagger-ui-express";
+import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import dotenv from "dotenv";
-import { ApolloServer, gql } from "apollo-server";
-import { ApolloServerPluginLandingPageProductionDefault } from "apollo-server-core";
-import { getApp, getUser } from "./firebase.js";
-import IContext from "./context.js";
-import Logger from "./logger.js";
+
+import { RegisterRoutes } from "./modules/routes.gen.js";
 
 dotenv.config();
+const app: Application = express();
 
-const typeDefs = gql`
-    type Book {
-        title: String
-        author: String
-    }
-    type Query {
-        books: [Book]
-    }
-`;
+app.use(morgan("tiny"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static("./public"));
 
-const books = [
-    {
-        title: "The Awakening",
-        author: "Kate Chopin",
-    },
-    {
-        title: "City of Glass",
-        author: "Paul Auster",
-    },
-];
+RegisterRoutes(app);
 
-const resolvers = {
-    Query: {
-        books: () => books,
-    },
-};
+const specs = { swaggerOptions: { url: "/swagger.json" } };
+app.get("/", swaggerUi.serve, swaggerUi.setup(undefined, specs));
 
-const context = async (ctx: any): Promise<IContext> => {
-    return {
-        appId: await getApp(ctx.req),
-        userId: await getUser(ctx.req),
-        ip: ctx.req.hostname
-    };
-};
-
-const landingPage = ApolloServerPluginLandingPageProductionDefault({ 
-    footer: false
+app.use((_0: Request, _1: Response, next: NextFunction) => {
+    next({ status: 404, message: "Not Found"});
 });
 
-const logger = new Logger();
-
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    csrfPrevention: true,
-    cache: "bounded",
-    context,
-    introspection: true,
-    plugins: [ landingPage, logger ],
+app.use((err: any, _0: Request, res: Response) => {
+    res.status(err.status || 500).send(err.message);
 });
 
-
-await server.listen({
-    port: process.env.PORT,      
-});
+app.listen(process.env.PORT);
