@@ -4,7 +4,7 @@ import Home from "./components/home";
 import App from "./components/app";
 import Header from "./components/header";
 import Footer from "./components/footer";
-import { auth } from "./firebase";
+import { auth } from "./modules/firebase";
 import "./styles/index.css";
 import { onAuthStateChanged } from "firebase/auth";
 
