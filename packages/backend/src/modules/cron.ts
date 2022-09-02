@@ -1,4 +1,4 @@
-import { schedule, ScheduledTask } from "node-cron";
+import { schedule } from "node-cron";
 import { Application } from "express";
 import { getAllAccounts } from "./coinbase.js";
 import { CoinbaseAccount } from "../entities/account.js";
@@ -33,7 +33,7 @@ const getCoinbaseAccounts = async () => {
     const accounts = await getAllAccounts();
     const cbAccounts = accounts.map(x => {
         return {
-            id: x.id,
+            coinbaseId: x.id,
             currency: x.currency.code,
             color: x.currency.color,
             icon: `https://assets.coincap.io/assets/icons/${x.currency.code.toLowerCase()}@2x.png`
