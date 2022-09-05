@@ -5,7 +5,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { v4 as uuid } from "uuid";
 import { ApiKey } from "../entities/apikey.js";
-import { createVerify } from "crypto";
+import { createVerify, timingSafeEqual } from "crypto";
+import { queryToObject } from "core";
 
 dotenv.config();
 
@@ -45,14 +46,16 @@ const getAppId: Handler = {
     key: async (req: Request) => {
         const signatureToken = req.header("Signature");
         if (!signatureToken) { throw new Error("NoSignatureHeader"); }
-        const signatureClaim = <jwt.JwtPayload>jwt.verify(signatureToken, secretKey);
+        const signatureClaim = jwt.verify(signatureToken, secretKey) as jwt.JwtPayload;
         if (await ApiKey.findOne({ kid: signatureClaim.kid }).exec() == null) { throw new Error("ApiKeyRevoked"); }
         return signatureClaim.kid;
     },
     admin: async (req: Request) => {
         const signatureToken = req.header("Signature");
         if (!signatureToken) { throw new Error("NoSignatureHeader"); }
-        if (signatureToken !== process.env.ADMIN_SIGNATURE) { throw new Error("InvalidSignatureToken"); }
+        const signatureBuffer = Buffer.from(signatureToken, "utf8");
+        const checkBuffer = Buffer.from(process.env.ADMIN_SIGNATURE ?? "", "utf8");
+        if (!timingSafeEqual(signatureBuffer, checkBuffer)) { throw new Error("InvalidSignatureToken"); }
         return "Admin";
     },
     coinbase: async (req: Request) => {
@@ -66,6 +69,23 @@ const getAppId: Handler = {
         if (!verify) { throw new Error("SignatureDoesNotVerify"); }
         return "Coinbase";
     },
+    stripe: async (req: Request) => {
+        const signatureHeader = req.header("Stripe-Signature") ?? "";
+        const signatureClaim = queryToObject(signatureHeader);
+        const timestamp = parseInt(signatureClaim.t);
+        const signature = signatureClaim.v1;
+        const rawBody = req.body ?? "";
+        const preimage = `${timestamp}.${rawBody}`;
+        const secret = process.env.STRIPE_SECRET ?? "";
+
+        const verify = createVerify("SHA256")
+            .update(preimage)
+            .verify(secret, signature, "hex");
+
+        if (!verify) { throw new Error("SignatureDoesNotVerify"); }
+
+        return "Stripe";
+    }
 };
 
 const getUserId: Handler = {
@@ -78,19 +98,36 @@ const getUserId: Handler = {
     key: async (req: Request) => {
         const authorizationToken = req.header("Authorization");
         if (!authorizationToken) { throw new Error("NoAuthorizationHeader"); }
-        const authorizationClaim = <jwt.JwtPayload>jwt.verify(authorizationToken, secretKey);
+        const authorizationClaim = jwt.verify(authorizationToken, secretKey) as jwt.JwtPayload;
         return authorizationClaim.uid;
     },
     admin: async (req: Request) => {
         const authorizationToken = req.header("Authorization");
         if (!authorizationToken) { throw new Error("NoAuthorizationHeader"); }
-        if (authorizationToken !== process.env.ADMIN_KEY) { throw new Error("InvalidAuthorizationToken"); }
+        const authorizationBuffer = Buffer.from(authorizationToken, "utf8");
+        const checkBuffer = Buffer.from(process.env.ADMIN_KEY ?? "", "utf8");
+        if (!timingSafeEqual(authorizationBuffer, checkBuffer)) { throw new Error("InvalidAuthorizationToken"); }
         return "Admin";
     },
     coinbase: async (req: Request) => {
         if (req.ip !== "54.175.255.192/27") {  throw new Error("WrongSourceIp"); }
+        //TOOD: replay attack?
         return "Coinbase";
     },
+    stripe: async (req: Request) => {
+        const signatureHeader = req.header("Stripe-Signature") ?? "";
+        const signatureClaim = queryToObject(signatureHeader);
+        const timestamp = parseInt(signatureClaim.t);
+        if (!timestampIsNow(timestamp)) { throw new Error("RequestToOldOrNew"); }
+        return "Stripe";
+    }
+};
+
+const timestampIsNow = (timestamp: number, tolerance = 300) => {
+    const now = new Date().toUnix();
+    if (timestamp < now - tolerance) { return false; }
+    if (timestamp > now + tolerance) { return false; }
+    return true;
 };
 
 const secretKey = process.env.JWT_KEY ?? "";
