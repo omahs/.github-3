@@ -1,28 +1,14 @@
 import { BigNumber } from "bignumber.js";
 import { Get, Route, Security, Request } from "tsoa";
 import { Payment } from "../../entities/payment.js";
-import { nextMonday } from "core";
-
-interface IOverviewResponse {
-    cumlative: string;
-    pending: string;
-    nextPaymentDate: number;
-}
-
-interface IListResponse {
-    from: string;
-    message: string;
-    amount: string;
-    exchangeRate: string;
-    proceeds: string;
-    fee: string;
-}
+import { nextMonday } from "core"; 
+import type { IDashboardOverviewResponse, IDashboardTransactionsResponse } from "core";
 
 @Route("/v1/dashboard")
 @Security("token")
 export class DashboardController {
     @Get("/overview")
-    public async getOverview(@Request() req: any): Promise<IOverviewResponse> {
+    public async getOverview(@Request() req: any): Promise<IDashboardOverviewResponse> {
         const payments = await Payment.find({ recipientId: req.user.userId });
         let cumlative = new BigNumber(0);
         let pending = new BigNumber(0);
@@ -43,18 +29,21 @@ export class DashboardController {
         };
     }
 
-    @Get("/list")
-    public async getList(@Request() req: any): Promise<Array<IListResponse>> {
+    @Get("/trasactions")
+    public async getTransactions(@Request() req: any): Promise<IDashboardTransactionsResponse> {
         const payments = await Payment.find({ recipientId: req.user.userId });
-        return payments.map(x => {
+        const transactions = payments.map(x => {
             return {
                 from: x.name,
                 message: x.message,
                 amount: `${x.amount} ${x.currency}`,
                 exchangeRate: `${x.exchangeRate.toFixed(2)} USD/${x.currency}`,
                 proceeds: `${x.proceeds.toFixed(2)} USD`,
-                fee: `${x.fee.toFixed(2)} USD`,
+                fee: `${x.fee.toFixed(2)} USD`
             };
         });
+        return {
+            transactions
+        };
     }
 }

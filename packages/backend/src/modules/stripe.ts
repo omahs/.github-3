@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import { Client, IRequest } from "core";
-import { StripeAccountSchema } from "../model/stripeaccount.js";
-import { StripeAccountLinkSchema } from "../model/stripeaccountlink.js";
+import { StripeAccountSchema, StripeAccountLinkSchema } from "../model/stripe.js";
 
 dotenv.config();
 
@@ -25,7 +24,7 @@ export const createStripeLink = async (id: string, refreshUrl: string, returnUrl
         account: id,
         refresh_url: refreshUrl,
         return_url: returnUrl,
-        type: "account_onboarding",
+        type: "account_onboarding"
     });
     const request = addHeadersToRequest({
         endpoint: "/v1/account_links",
