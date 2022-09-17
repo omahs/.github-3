@@ -1,4 +1,4 @@
-import { JTDSchemaType } from "core"; 
+import { JTDSchemaType } from "ajv/dist/jtd.js";
 
 export interface ICoinbaseAccount {
     id: string; 
@@ -6,7 +6,7 @@ export interface ICoinbaseAccount {
         code: string; 
         color: string; 
     };
-}
+} 
 
 export const CoinbaseAccountSchema: JTDSchemaType<ICoinbaseAccount> = {
     properties: {

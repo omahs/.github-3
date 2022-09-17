@@ -1,8 +1,4 @@
-import dotenv from "dotenv";
-import { Client } from "core";
-import { StripeAccountSchema, StripeAccountLinkSchema } from "../model/stripe.js";
-
-dotenv.config();
+import { Client, StripeAccountSchema, StripeAccountLinkSchema } from "core";
 
 const staticHeaders = {
     "Content-Type": "application/x-www-form-urlencoded",
