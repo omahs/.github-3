@@ -1,7 +1,6 @@
 import { Request } from "express";
 import { HttpError } from "../modules/error.js";
 import { createVerify } from "crypto";
-import { queryToObject } from "core";
 import { createRemoteJWKSet, JWTVerifyOptions, jwtVerify, decodeJwt } from "jose";
 
 export const expressAuthentication = async (req: Request, securityName: string, scopes: string[]) => {
@@ -57,31 +56,5 @@ const getUserId: Handler = {
 
         if (!verify) { throw new Error("SignatureDoesNotVerify"); }
         return "Coinbase";
-    },
-    stripe: async (req: Request) => {
-        const signatureHeader = req.header("Stripe-Signature") ?? "";
-        const signatureClaim = queryToObject(signatureHeader);
-        const timestamp = parseInt(signatureClaim.t);
-        if (!timestampIsNow(timestamp)) { throw new Error("RequestTooOldOrNew"); }
-
-        const signature = signatureClaim.v1;
-        const rawBody = req.body ?? "";
-        const preimage = `${timestamp}.${rawBody}`;
-        const secret = process.env.STRIPE_SECRET ?? "";
-
-        const verify = createVerify("SHA256")
-            .update(preimage)
-            .verify(secret, signature, "hex");
-
-        if (!verify) { throw new Error("SignatureDoesNotVerify"); }
-
-        return "Stripe";
     }
-};
-
-const timestampIsNow = (timestamp: number, tolerance = 300) => {
-    const now = new Date().toUnix();
-    if (timestamp < now - tolerance) { return false; }
-    if (timestamp > now + tolerance) { return false; }
-    return true;
 };
