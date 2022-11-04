@@ -6,7 +6,7 @@ import { withAuth0, WithAuth0Props } from "@auth0/auth0-react";
 interface IState {
     cumlative?: number;
     pending?: number;
-    nextDate?: number;
+    nextPaymentDate?: number;
 }
 
 class Overview extends Component<WithAuth0Props, IState> {
@@ -29,7 +29,7 @@ class Overview extends Component<WithAuth0Props, IState> {
                 Dashboard
                 <p>Cumlative: {this.state.cumlative?.toFixed(2)} USD</p>
                 <p>Pending: {this.state.pending?.toFixed(2)} USD</p>
-                <p>NextPayment: {this.state.nextDate?.relativeTo()}</p>
+                <p>NextPayment: {this.state.nextPaymentDate?.relativeTo()}</p>
             </div>
         );
     }
