@@ -1,4 +1,4 @@
-import { Client, IRequest, CryptoTokensResponseSchema, ICryptoTokensRequest, DashboardOverviewResponseSchema, IAccountTrolleyWidgetRequest, AccountTrolleyWidgetResponseSchema, CryptoChallengeResponseSchema, ICryptoAddressRequest, CryptoAddressResponseScheme } from "core";
+import { Client, IRequest, CryptoTokensResponseSchema, ICryptoTokensRequest, DashboardOverviewResponseSchema, IAccountTrolleyWidgetRequest, AccountTrolleyWidgetResponseSchema, CryptoChallengeResponseSchema, ICryptoAddressRequest, CryptoAddressResponseScheme, DashboardTransactionsResponseSchema } from "core";
 import { solveChallenge } from "./pow";
 
 const baseUrl = process.env.REACT_APP_SERVER_URL ?? "";
@@ -62,4 +62,12 @@ export const createCryptoAddress = async (link: string, currency: string, name: 
         body: JSON.stringify(body)
     };
     return await client.request(addressRequest, CryptoAddressResponseScheme);
+};
+
+export const getDashboardTransactions = async (auth: string) => {
+    const request: IRequest = {
+        endpoint: "/v1/dashboard/trasactions",
+        headers: { "Authorization": `Bearer ${auth}` }
+    };
+    return await client.request(request, DashboardTransactionsResponseSchema);
 };
