@@ -1,36 +1,38 @@
 import "../styles/app.css";
+import type { ReactElement } from "react";
 import React, { Component } from "react";
 import Dash from "./dash";
 import Front from "./front";
 import Header from "./header";
 import Footer from "./footer";
-import { withAuth0, WithAuth0Props } from "@auth0/auth0-react";
+import type { WithAuth0Props } from "@auth0/auth0-react";
+import { withAuth0 } from "@auth0/auth0-react";
 
 class App extends Component<WithAuth0Props> {
-    private link: string | null;
-
-    constructor(props: any) {
+    public constructor(props: WithAuth0Props) {
         super(props);
-        const hash = window.location.hash.slice(2);
-        this.link = hash.length === 0 ? null : hash;
     }
 
-    private content() {
+    private content(): ReactElement {
         if (this.props.auth0.isLoading) {
-            return (<div className="spinner"></div>);
+            return <div className="spinner" />;
         }
 
         if (this.props.auth0.isAuthenticated) {
-            return (<Dash />);
+            return <Dash />;
         }
 
-        return (<Front />);
+        return <Front />;
     }
 
-    render() {
+    public shouldComponentUpdate(): boolean {
+        return true;
+    }
+
+    public render(): ReactElement {
         return (
             <div className="app">
-                <Header showLoginButton={this.link == null} />
+                <Header />
                 {this.content()}
                 <Footer />
             </div>
