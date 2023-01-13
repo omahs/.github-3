@@ -2,7 +2,7 @@ import type { IPingResponse } from "jewl-core";
 import { Route, Security, Hidden, Get } from "tsoa";
 
 @Route("/v1/admin")
-@Security("admin")
+@Security("token", ["admin"])
 @Hidden()
 export class AdminController {
     @Get("/")

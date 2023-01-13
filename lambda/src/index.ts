@@ -1,26 +1,17 @@
-import { DateTime, mongoConnect, mongoDisconnect, Transaction, TransactionState } from "jewl-core";
-import { OrdersTask } from "./order";
-import { PaymentsTask } from "./payment";
-import type { Task } from "./task";
-import { TransferTask } from "./transfer";
+import { mongoConnect, mongoDisconnect } from "jewl-core";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
-const tasks = new Map<TransactionState, Task>([
-    [TransactionState.paymentPending, new PaymentsTask()],
-    [TransactionState.paymentConfirmed, new OrdersTask()],
-    [TransactionState.purchaseCompleted, new TransferTask()]
-]);
+// For each currency:
+// Close current coinbase order (if there is one)
+// Close orders for which a refund has been requested and add amount to the refund object. Need to know the eurEquavalent of this
+// Payout oldest order until remaining balance is no longer sufficient
+// Run through all db orders get the sum of still pending
+// Diff between requiredOrder and remainingBalance is the new orderSize
+// Get a nice limit price
+// Place new order
+// Issue refunds
 
-const processingDate = new DateTime();
-const states = Array.from(tasks.keys());
-const cursor = Transaction.find({ notBefore: { $lt: processingDate },
-    state: { $in: states } }).cursor();
-
-for (let transaction = await cursor.next(); transaction != null; transaction = await cursor.next()) {
-    const task = tasks.get(transaction.state);
-    if (task == null) { continue; }
-
-}
 
 await mongoDisconnect();
+

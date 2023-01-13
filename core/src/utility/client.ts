@@ -8,7 +8,7 @@ export interface IRequest {
     headers?: Record<string, string>;
 }
 
-export class Client {
+export abstract class Client {
     private readonly baseUrl: string;
 
     private headers: Record<string, string>;

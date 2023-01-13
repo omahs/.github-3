@@ -1,11 +1,11 @@
-import "../styles/front.css";
+import "../styles/admin.css";
 import type { ReactElement } from "react";
 import React, { Component } from "react";
 
-export default class Front extends Component {
+export default class Admin extends Component {
 
     public componentDidMount(): void {
-        console.log("front");
+        console.log("admin");
     }
 
     public shouldComponentUpdate(): boolean {
@@ -15,7 +15,7 @@ export default class Front extends Component {
     public render(): ReactElement {
         return (
             <div className="front">
-                Home
+                Admin
             </div>
         );
     }

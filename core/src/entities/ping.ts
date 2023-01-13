@@ -6,8 +6,7 @@ export interface IPingResponse {
 }
 
 export const PingResponseSchema = new Schema<IPingResponse>({
-    message: { type: String,
-        required: true }
+    message: { type: String, required: true }
 });
 
 export const PingResponse = createModel<IPingResponse>(PingResponseSchema);

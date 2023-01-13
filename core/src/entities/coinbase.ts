@@ -18,9 +18,7 @@ export interface ICoinbaseProducts {
 }
 
 export const CoinbaseProductsSchema = new Schema<ICoinbaseProducts>({
-    list: { type: [CoinbaseProductSchema],
-        default: undefined,
-        required: true }
+    list: { type: [CoinbaseProductSchema], default: undefined, required: true }
 });
 
 export const CoinbaseProducts = createModel<ICoinbaseProducts>(CoinbaseProductsSchema);
