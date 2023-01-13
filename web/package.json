@@ -7,7 +7,7 @@
         "start": "node -r dotenv/config ../node_modules/.bin/serve -l $PORT -s build -n"
     },
     "dependencies": {
-        "@auth0/auth0-react": "^1.12.0",
+        "@auth0/auth0-react": "^1.12.1",
         "@fortawesome/fontawesome-svg-core": "^6.1.2",
         "@fortawesome/free-brands-svg-icons": "^6.1.2",
         "@fortawesome/free-solid-svg-icons": "^6.1.2",
