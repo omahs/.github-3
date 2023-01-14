@@ -5,6 +5,7 @@ on:
     types: [opened]
 
 jobs:
+
   automerge:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
