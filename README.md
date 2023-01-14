@@ -1,5 +1,5 @@
 # jewl.app
-[![Frontend](https://img.shields.io/website?down_color=red&down_message=down&label=frontend&logo=react&logoColor=white&up_color=green&up_message=up&url=https%3A%2F%jewl.app)](https://jewl.app/)
+[![Frontend](https://img.shields.io/website?down_color=red&down_message=down&label=frontend&logo=react&logoColor=white&up_color=green&up_message=up&url=https%3A%2F%2Fjewl.app)](https://jewl.app/)
 [![Backend](https://img.shields.io/website?down_color=red&down_message=down&label=backend&logo=express&logoColor=white&up_color=green&up_message=up&url=https%3A%2F%2Fjewl.app%2Fapi)](https://jewl.app/api/)
 
 ## The app
