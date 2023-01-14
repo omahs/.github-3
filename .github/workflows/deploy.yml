@@ -1,0 +1,24 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [created]
+
+jobs:
+
+  digitalocean:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event_name == 'release' && 'prod' || 'dev' }}
+      url: ${{ github.event_name == 'release' && 'https://jewl.app/' || 'https://dev.jewl.app/' }}
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - name: Create deployment
+      run: doctl apps create-deployment $APP_ID --wait
+      env:
+        APP_ID: ${{ github.event_name == 'release' && 'd7ae2b6d-cf79-41d2-a60a-919aa2152138' || 'd7ae2b6d-cf79-41d2-a60a-919aa2152138' }}
