@@ -8,7 +8,7 @@ const runJobs = async (jobs: Record<string, () => Promise<void>>): Promise<void>
         console.info(
             chalk.bgBlue.bold(" CRON "),
             chalk.dim(formattedStartTime),
-            `Started cron job ${key}`
+            chalk.cyan(`Started cron job ${key}`)
         );
         let success = false;
         try {
