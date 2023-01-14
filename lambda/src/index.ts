@@ -1,6 +1,27 @@
 import { mongoConnect, mongoDisconnect } from "jewl-core";
+import chalk from "chalk";
+import { scheduleJobs } from "./modules/schedule.js";
+import { sampleCronJob } from "./jobs/simple.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
+
+console.info(
+    chalk.bgMagenta.bold(" INFO "),
+    "Starting up lambda worker"
+);
+
+scheduleJobs("0 * * * *", {
+    sampleCronJob
+});
+
+process.on("SIGINT", () => {
+    void mongoDisconnect();
+    console.info(
+        chalk.bgMagenta.bold(" INFO "),
+        "Shutting down gracefully"
+    );
+});
+
 
 // For each currency:
 // Close current coinbase order (if there is one)
@@ -11,7 +32,4 @@ await mongoConnect(process.env.MONGO_URL ?? "");
 // Get a nice limit price
 // Place new order
 // Issue refunds
-
-
-await mongoDisconnect();
 

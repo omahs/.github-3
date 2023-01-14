@@ -16,8 +16,9 @@ export const RegisterErrorCatcher = (app: Application): void => {
     });
 
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+        console.error(chalk.bgRed.bold(" ERROR "), err.name);
         if (process.env.DEBUG === "true") {
-            console.error(chalk.bgRed.bold(" ERROR "), err);
+            console.error(err);
         }
         const status = err instanceof HttpError ? err.status : 500;
         res.status(status).send(err.message);

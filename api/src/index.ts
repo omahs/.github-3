@@ -7,7 +7,7 @@ import { RegisterRequestParser } from "./modules/request.js";
 import { RegisterErrorCatcher } from "./modules/error.js";
 import { RegisterDocs } from "./modules/docs.js";
 import { RegisterSecurityMiddleware } from "./modules/security.js";
-import { mongoConnect } from "jewl-core";
+import { mongoConnect, mongoDisconnect } from "jewl-core";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -27,3 +27,11 @@ console.info(
     chalk.bgMagenta.bold(" INFO "),
     `Accepting connections at http://localhost:${process.env.PORT}`
 );
+
+process.on("SIGINT", () => {
+    void mongoDisconnect();
+    console.info(
+        chalk.bgMagenta.bold(" INFO "),
+        "Shutting down gracefully"
+    );
+});

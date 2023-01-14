@@ -8,9 +8,9 @@ This repository consists of several components:
 * `Core` - contains all the shared logic and models.
 * `Web` - contains the [React](https://reactjs.org) frontend code.
 * `API` - contains the [Express](https://expressjs.com) backend code.
-* `Lambda` - contains the code for [Functions](https://docs.digitalocean.com/products/functions/). 
+* `Lambda` - contains the [Cron](https://github.com/node-cron/node-cron) backend code.
 
-All components are tied together using [Nx](https://nx.dev). jewl.app uses a [MongoDB](https://www.mongodb.com) NoSQL database.
+All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mongo](https://www.mongodb.com) NoSQL database.
 
 ## Third Party tools
 

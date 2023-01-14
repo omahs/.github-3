@@ -18,12 +18,14 @@ export const RegisterLogger = (app: Application): void => {
         );
 
         onFinished(partial, (_: Error | null, res: ServerResponse) => {
-            const responseTime = Date.now() - requestTime.getTime();
+            const responseTime = new Date();
+            const duration = responseTime.getTime() - requestTime.getTime();
+            const formattedResponseTime = `${responseTime.toLocaleDateString()} ${responseTime.toLocaleTimeString()}`;
             console.info(
                 chalk.bgBlue.bold(" HTTP "),
-                chalk.dim(formattedTime),
+                chalk.dim(formattedResponseTime),
                 chalk.yellow(ipAddress),
-                chalk[res.statusCode < 400 ? "green" : "red"](`Returned ${res.statusCode} in ${responseTime} ms`)
+                chalk[res.statusCode < 400 ? "green" : "red"](`Returned ${res.statusCode} in ${duration} ms`)
             );
         });
 
