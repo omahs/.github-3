@@ -42,6 +42,6 @@ Below is a (non-exhaustive) list of available commands:
 * `npm run test` - runs the [Jest](https://jestjs.io) unit tests (global).
 * `npm run lint` - runs [ESLint](https://eslint.org) to check for bugs and code conventions (global).
 
-If you look closely, the local commands just call individual commands specified in the component's `package.json` file. These commands should not be run by themselves as it will not resolve the right dependencies and will not execute the prerequisites. Instead you can specify which app to run with `-- web`, `-- api` or `-- lambda`.
+If you look closely, the local commands just call individual commands specified in the component's `package.json` file. These commands should not be run by themselves as it will not resolve the right dependencies and will not execute the prerequisites. Instead you can specify which app to run with `-- jewl-web`, `-- jewl-api` or `-- jewl-lambda`.
 
 *Copyright © 2023 jewl.app*
