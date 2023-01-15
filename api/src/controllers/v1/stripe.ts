@@ -10,10 +10,15 @@ export class StripeController {
     public receivedStripeWebhook(@Body() body: object): void {
         console.log(body);
 
-
+        // TODO: \/
         // Listen checkout.session.completed webhook for created a payment method
         // Get the client reference id and setup intent id
         // Use that to get the payment method id
         // Store that in db
+
+
+        // Listen for successful or failed payments
+
+        // Listen for successful or failed refunds
     }
 }

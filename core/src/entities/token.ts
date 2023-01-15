@@ -11,6 +11,8 @@ export const TokenResponseSchema = new Schema<ITokenResponse>({
     coinbaseId: { type: String, required: true }
 });
 
+export const TokenResponse = createModel<ITokenResponse>(TokenResponseSchema);
+
 export interface ITokensResponse {
     tokens: Array<ITokenResponse>;
     suggestedSplit: Record<string, PreciseNumber>;

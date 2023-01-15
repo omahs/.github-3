@@ -1,5 +1,6 @@
 import type { IPaymentResponse, IPaymentSetupRequest, IPaymentSetupResponse } from "../entities/payment.js";
 import { PaymentResponse, PaymentSetupResponse } from "../entities/payment.js";
+import { NoResponse } from "../entities/void.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
 
@@ -16,8 +17,7 @@ export class ApiClient extends Client {
             endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` }
         };
-        const response = await this.request(request, PaymentResponse);
-        return response;
+        return this.request(request, PaymentResponse);
     }
 
     public async setupPaymentMethod(token: string, callback: URL): Promise<IPaymentSetupResponse> {
@@ -31,17 +31,16 @@ export class ApiClient extends Client {
             body: JSON.stringify(body)
         };
 
-        const response = await this.request(request, PaymentSetupResponse);
-        return response;
+        return this.request(request, PaymentSetupResponse);
     }
 
-    public async deletePaymentMethod(token: string): Promise<void> {
+    public async deletePaymentMethod(token: string): Promise<object> {
         const request: IRequest = {
             endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` },
             method: "DELETE"
         };
-        await this.request(request, PaymentResponse);
+        return this.request(request, NoResponse);
     }
 }
 

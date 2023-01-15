@@ -78,6 +78,7 @@
         "no-undefined": "off",
         "no-mixed-operators": "off",
         "no-confusing-arrow": "off",
+        "no-underscore-dangle": "off",
         "class-methods-use-this": "off",
         "newline-per-chained-call": "off",
         "react/destructuring-assignment": "off",
@@ -101,7 +102,8 @@
         "@typescript-eslint/no-unnecessary-condition": "off",
         "@typescript-eslint/brace-style": "off",
         "@typescript-eslint/sort-type-constituents": "off",
-        "@typescript-eslint/restrict-template-expressions": "off"
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/lines-between-class-members": "off"
     },
     "settings": {
         "react": {

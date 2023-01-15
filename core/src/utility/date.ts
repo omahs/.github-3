@@ -35,6 +35,22 @@ export class DateTime {
         return `${prefix}${Math.abs(days)}${denotion}${suffix}`;
     }
 
+    public addingSeconds(seconds: number): DateTime {
+        return new DateTime(this.timestamp + seconds);
+    }
+
+    public addingMinutes(minutes: number): DateTime {
+        return this.addingSeconds(minutes * 60);
+    }
+
+    public addingHours(hours: number): DateTime {
+        return this.addingMinutes(hours * 60);
+    }
+
+    public addingDays(days: number): DateTime {
+        return this.addingHours(days * 24);
+    }
+
     public valueOf(): number {
         return this.timestamp;
     }

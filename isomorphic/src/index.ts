@@ -2,12 +2,12 @@
 
 interface Isomorphic {
     fetch: (url: string, req: object) => Promise<object>;
-    sha256Hmac: (message: string, secret: string) => string;
+    hmac: (message: Buffer, secret: Buffer, cipher?: string) => Buffer;
 }
 
 const isomorphic: Isomorphic = {
     fetch: async () => Promise.resolve(new Response()),
-    sha256Hmac: (message, _) => message
+    hmac: message => message
 };
 
 export default isomorphic;

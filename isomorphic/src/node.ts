@@ -3,6 +3,6 @@ import fetch from "node-fetch";
 import { createHmac } from "crypto";
 
 isomorphic.fetch = fetch;
-isomorphic.sha256Hmac = (message, secret): string => createHmac("sha245", secret).update(message).digest("hex");
+isomorphic.hmac = (message, secret, cipher = "sha256"): Buffer => createHmac(cipher, secret).update(message).digest();
 
 export default isomorphic;

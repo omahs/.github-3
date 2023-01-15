@@ -1,9 +1,10 @@
 import type { IPaymentSetupRequest, IPaymentSetupResponse, IPaymentResponse } from "jewl-core";
-import { PaymentMethod, PaymentSetupRequest } from "jewl-core";
+import { PaymentSetupRequest, Payment, PaymentState } from "jewl-core";
 import { Delete, Get, Route, Security, Post, Body, Request, SuccessResponse } from "tsoa";
 import type { WithAuthentication } from "../../modules/auth.js";
 import { HttpError } from "../../modules/error.js";
-import { stripeClient } from "../../modules/network.js";
+import { authClient, stripeClient } from "../../modules/network.js";
+import { getOrCreateUser } from "../../modules/user.js";
 
 @Route("/v1/payment")
 @Security("token")
@@ -11,27 +12,31 @@ export class PaymentController {
 
     @Get("/")
     public async getPaymentMethod(@Request() req: WithAuthentication): Promise<IPaymentResponse> {
-        const method = await PaymentMethod.findOne({ userId: req.user.userId });
-        const connected = method != null;
+        const user = await getOrCreateUser(req.user.userId);
+        const connected = user.stripeId != null;
         return { connected };
     }
 
     @Post("/")
     public async setupPaymentMethod(@Request() req: WithAuthentication, @Body() body: IPaymentSetupRequest): Promise<IPaymentSetupResponse> {
         const validatedBody = new PaymentSetupRequest(body);
-        const method = await PaymentMethod.findOne({ userId: req.user.userId });
-        if (method != null) { throw new HttpError(400, "a payment method already exists"); }
-        const redirect = await stripeClient.createSetupSession(validatedBody.callback, req.user.userId);
-        return { redirect };
+        const authUser = await authClient.getUser(req.user.userId);
+        if (!authUser.email_verified) { throw new HttpError(400, "email address not verified"); }
+        const user = await getOrCreateUser(req.user.userId);
+        if (user.stripeId != null) { throw new HttpError(400, "a payment method already exists"); }
+        const redirect = await stripeClient.createSetupSession(validatedBody.callback, req.user.userId, authUser.email);
+        return { redirect: redirect.url };
     }
 
     @Delete("/")
     @SuccessResponse(204)
     public async removePaymentMethod(@Request() req: WithAuthentication): Promise<void> {
-        const method = await PaymentMethod.findOne({ userId: req.user.userId });
-        if (method == null) { throw new HttpError(404, "no payment method found"); }
-        await stripeClient.detatchPaymentMethod(method.stripeId);
-        await method.delete();
+        const user = await getOrCreateUser(req.user.userId);
+        if (user.stripeId == null) { throw new HttpError(404, "no payment method found"); }
+        await stripeClient.detatchPaymentMethod(user.stripeId);
+        user.stripeId = undefined;
+        await user.save();
+        await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
     }
 
 }
