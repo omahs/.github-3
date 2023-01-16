@@ -54,17 +54,18 @@ export class StripeClient extends Client {
         };
         const response = await this.request(request, StripeDelete);
         if (!response.deleted) { throw Error("user not deleted"); }
-
     }
 
-    public async createCharge(stripeId: string, amount: PreciseNumber): Promise<IStripeCharge> {
+    public async createPayment(stripeId: string, amount: PreciseNumber): Promise<IStripeCharge> {
         const data = new URLSearchParams({
             customer: stripeId,
             amount: amount.multipliedBy(100).toFixed(0),
-            currency: "eur"
+            currency: "eur",
+            confirm: "true",
+            off_session: "true"
         });
         const request = {
-            endpoint: "v1/charges",
+            endpoint: "v1/payment_intents",
             method: "POST",
             body: data.toString()
         };

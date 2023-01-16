@@ -25,7 +25,7 @@ export class OrderController {
         if (user.stripeId == null) { throw new HttpError(400, "no payment method set up"); }
         if (Object.keys(user.allocation).length === 0) { throw new HttpError(400, "no allocation set up"); }
 
-        const charge = await stripeClient.createCharge(user.stripeId, validatedBody.amount);
+        const charge = await stripeClient.createPayment(user.stripeId, validatedBody.amount);
 
         const payment = new Payment({
             userId: req.user.userId,

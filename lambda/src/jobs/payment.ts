@@ -12,7 +12,7 @@ export const paymentJob = async (): Promise<void> => {
         payment.state = PaymentState.initiated;
         await payment.save();
 
-        const charge = await stripeClient.createCharge(user.stripeId, payment.amount);
+        const charge = await stripeClient.createPayment(user.stripeId, payment.amount);
 
         payment.stripeId = charge.id;
         await payment.save();
