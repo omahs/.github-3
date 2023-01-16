@@ -1,5 +1,5 @@
 import { Transfer, TransferState } from "jewl-core";
-import { coinbaseClient } from "../modules/network";
+import { coinbaseClient } from "../modules/network.js";
 
 export const transferJob = async (): Promise<void> => {
     const cursor = Transfer.find({ state: TransferState.initiated }).cursor();
