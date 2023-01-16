@@ -1,6 +1,6 @@
-import type { IUser } from "jewl-core";
-import { User } from "jewl-core";
 import type { Document } from "mongoose";
+import type { IUser } from "../entities/user.js";
+import { User } from "../entities/user.js";
 
 export const getOrCreateUser = async (userId: string): Promise<IUser & Document> => {
     let user = await User.findOne({ userId });

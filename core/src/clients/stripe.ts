@@ -1,5 +1,5 @@
-import type { IStripeRefund, IStripeSession } from "../entities/stripe.js";
-import { StripeRefund, StripeSession, StripePaymentMethod } from "../entities/stripe.js";
+import type { IStripeCharge, IStripeRefund, IStripeSession } from "../entities/stripe.js";
+import { StripeRefund, StripeSession, StripeDelete, StripeCharge } from "../entities/stripe.js";
 import { Client } from "../utility/client.js";
 import type { PreciseNumber } from "../utility/number.js";
 
@@ -47,11 +47,27 @@ export class StripeClient extends Client {
         return this.request(request, StripeRefund);
     }
 
-    public async detatchPaymentMethod(stripeId: string): Promise<void> {
+    public async deleteCustomer(stripeId: string): Promise<void> {
         const request = {
-            endpoint: `v1/payment_method/${stripeId}/detatch`,
-            method: "POST"
+            endpoint: `v1/customers/${stripeId}`,
+            method: "DELETE"
         };
-        await this.request(request, StripePaymentMethod);
+        const response = await this.request(request, StripeDelete);
+        if (!response.deleted) { throw Error("user not deleted"); }
+
+    }
+
+    public async createCharge(stripeId: string, amount: PreciseNumber): Promise<IStripeCharge> {
+        const data = new URLSearchParams({
+            customer: stripeId,
+            amount: amount.multipliedBy(100).toFixed(0),
+            currency: "eur"
+        });
+        const request = {
+            endpoint: "v1/charges",
+            method: "POST",
+            body: data.toString()
+        };
+        return this.request(request, StripeCharge);
     }
 }

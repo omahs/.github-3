@@ -17,6 +17,7 @@ export interface IOrder {
     created: DateTime;
     currency: string;
     amount: PreciseNumber;
+    destination: string;
 }
 
 export const OrderSchema = new Schema<IOrder>({
@@ -25,7 +26,8 @@ export const OrderSchema = new Schema<IOrder>({
     state: { type: Number, enum: OrderState, required: true },
     created: { ...DateTimeSchema, required: true },
     currency: { type: String, required: true },
-    amount: { ...PreciseNumberSchema, required: true }
+    amount: { ...PreciseNumberSchema, required: true },
+    destination: { type: String, required: true }
 });
 
 export const Order = createModel<IOrder>(OrderSchema, "orders");
@@ -64,3 +66,13 @@ InitiateOrderRequestSchema.pre("validate", function(next) {
 /* eslint-enable @typescript-eslint/no-invalid-this */
 
 export const InitiateOrderRequest = createModel<IInitiateOrderRequest>(InitiateOrderRequestSchema);
+
+export interface IOrderRenewResponse {
+    enabled: boolean;
+}
+
+export const OrderRenewResponseSchema = new Schema<IOrderRenewResponse>({
+    enabled: { type: Boolean, required: true }
+});
+
+export const OrderRenewResponse = createModel<IOrderRenewResponse>(OrderRenewResponseSchema);

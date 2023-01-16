@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
-import type { ICoinbaseAccount, ICoinbaseBook, ICoinbaseOrder, ICoinbaseProduct } from "../entities/coinbase.js";
-import { CoinbaseProducts, CoinbaseOrder, CoinbaseOrders, CoinbaseCancel, CoinbaseAccounts, CoinbaseBook } from "../entities/coinbase.js";
+import type { ICoinbaseAccount, ICoinbaseBook, ICoinbaseFee, ICoinbaseOrder, ICoinbaseProduct, ICoinbaseTransfer, ICoinbaseWithdrawl } from "../entities/coinbase.js";
+import { CoinbaseProducts, CoinbaseOrder, CoinbaseOrders, CoinbaseCancel, CoinbaseAccounts, CoinbaseBook, CoinbaseFee, CoinbaseTransfer, CoinbaseWithdrawl } from "../entities/coinbase.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
 import isomorphic from "jewl-isomorphic";
@@ -103,6 +103,40 @@ export class CoinbaseClient extends Client {
         };
 
         return this.request(request, CoinbaseOrder);
+    }
+
+    public async getTransferFee(currency: string): Promise<ICoinbaseFee> {
+        const request: IRequest = {
+            endpoint: `withdrawals/fee-estimate?currency=${currency}`
+        };
+
+        return this.request(request, CoinbaseFee);
+    }
+
+    public async transfer(currency: string, amount: PreciseNumber, address: string): Promise<ICoinbaseWithdrawl> {
+        const body = {
+            amount: amount.toString(),
+            currency,
+            crypto_address: address,
+            no_destination_tag: true
+            // TODO: -> two_factor_code: string,
+            // TODO: -> nonce: string
+        };
+
+        const request: IRequest = {
+            endpoint: "withdrawals/crypto",
+            method: "POST",
+            body: JSON.stringify(body)
+        };
+
+        return this.request(request, CoinbaseWithdrawl);
+    }
+
+    public async getTransfer(coinbaseId: string): Promise<ICoinbaseTransfer> {
+        const request: IRequest = {
+            endpoint: `transfers/${coinbaseId}`
+        };
+        return this.request(request, CoinbaseTransfer);
     }
 
     public override async request<T>(req: IRequest, schema: Model<T>): Promise<T> {

@@ -1,10 +1,9 @@
 import type { IPaymentSetupRequest, IPaymentSetupResponse, IPaymentResponse } from "jewl-core";
-import { PaymentSetupRequest, Payment, PaymentState } from "jewl-core";
+import { PaymentSetupRequest, Payment, PaymentState, getOrCreateUser } from "jewl-core";
 import { Delete, Get, Route, Security, Post, Body, Request, SuccessResponse } from "tsoa";
 import type { WithAuthentication } from "../../modules/auth.js";
 import { HttpError } from "../../modules/error.js";
 import { authClient, stripeClient } from "../../modules/network.js";
-import { getOrCreateUser } from "../../modules/user.js";
 
 @Route("/v1/payment")
 @Security("token")
@@ -33,7 +32,7 @@ export class PaymentController {
     public async removePaymentMethod(@Request() req: WithAuthentication): Promise<void> {
         const user = await getOrCreateUser(req.user.userId);
         if (user.stripeId == null) { throw new HttpError(404, "no payment method found"); }
-        await stripeClient.detatchPaymentMethod(user.stripeId);
+        await stripeClient.deleteCustomer(user.stripeId);
         user.stripeId = undefined;
         await user.save();
         await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });

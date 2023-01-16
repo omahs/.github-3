@@ -12,13 +12,16 @@ export class StripeController {
 
         // TODO: \/
         // Listen checkout.session.completed webhook for created a payment method
-        // Get the client reference id and setup intent id
-        // Use that to get the payment method id
+        // Get the client reference id == userId
+        // Use that to get the customerId == stripeId
         // Store that in db
 
-
         // Listen for successful or failed payments
+        // Take fee off 1%
+        // Take off stripe fee
+        // Create orders
 
         // Listen for successful or failed refunds
+        // Store in db the status
     }
 }

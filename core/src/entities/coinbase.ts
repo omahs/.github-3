@@ -1,4 +1,6 @@
 import { Schema } from "mongoose";
+import type { DateTime } from "../utility/date.js";
+import { DateTimeSchema } from "../utility/date.js";
 import { createModel } from "../utility/mongo.js";
 import type { PreciseNumber } from "../utility/number.js";
 import { PreciseNumberSchema } from "../utility/number.js";
@@ -116,3 +118,45 @@ export const CoinbaseBookSchema = new Schema<ICoinbaseBook>({
 });
 
 export const CoinbaseBook = createModel<ICoinbaseBook>(CoinbaseBookSchema);
+
+export interface ICoinbaseFee {
+    fee: PreciseNumber;
+}
+
+export const CoinbaseFeeSchema = new Schema<ICoinbaseFee>({
+    fee: { ...PreciseNumberSchema, required: true }
+});
+
+export const CoinbaseFee = createModel<ICoinbaseFee>(CoinbaseFeeSchema);
+
+export interface ICoinbaseWithdrawl {
+    id: string;
+    fee: PreciseNumber;
+}
+
+export const CoinbaseWithdrawlSchema = new Schema<ICoinbaseWithdrawl>({
+    id: { type: String, required: true },
+    fee: { ...PreciseNumberSchema, required: true }
+});
+
+export const CoinbaseWithdrawl = createModel<ICoinbaseWithdrawl>(CoinbaseWithdrawlSchema);
+
+export interface ICoinbaseTransfer {
+    id: string;
+    created_at: DateTime;
+    completed_at: DateTime;
+    canceled_at: DateTime;
+    processed_at: DateTime;
+    details: object;
+}
+
+export const CoinbaseTransferSchema = new Schema<ICoinbaseTransfer>({
+    id: { type: String, required: true },
+    created_at: { ...DateTimeSchema, required: true },
+    completed_at: { ...DateTimeSchema, required: true },
+    canceled_at: { ...DateTimeSchema, required: true },
+    processed_at: { ...DateTimeSchema, required: true },
+    details: { type: Object, required: true }
+});
+
+export const CoinbaseTransfer = createModel<ICoinbaseTransfer>(CoinbaseTransferSchema);

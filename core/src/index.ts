@@ -11,6 +11,7 @@ export * from "./entities/ping.js";
 export * from "./entities/refund.js";
 export * from "./entities/stripe.js";
 export * from "./entities/token.js";
+export * from "./entities/transfer.js";
 export * from "./entities/user.js";
 export * from "./entities/void.js";
 
@@ -21,3 +22,4 @@ export * from "./utility/mongo.js";
 export * from "./utility/number.js";
 export * from "./utility/string.js";
 export * from "./utility/url.js";
+export * from "./utility/user.js";

@@ -1,8 +1,9 @@
 import { mongoConnect, mongoDisconnect } from "jewl-core";
 import chalk from "chalk";
 import { scheduleJobs } from "./modules/schedule.js";
-import { orderCronJob } from "./jobs/order.js";
-import { paymentCronJob } from "./jobs/payment.js";
+import { orderAndRefundJob } from "./jobs/order.js";
+import { paymentJob } from "./jobs/payment.js";
+import { transferJob } from "./jobs/transfer.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -12,8 +13,9 @@ console.info(
 );
 
 scheduleJobs("0 * * * *", {
-    orderCronJob,
-    paymentCronJob
+    orderAndRefundJob,
+    paymentJob,
+    transferJob
 });
 
 process.on("SIGINT", () => {

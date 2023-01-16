@@ -2,15 +2,15 @@ import { Schema } from "mongoose";
 import { createModel } from "../utility/mongo.js";
 import { URLSchema } from "../utility/url.js";
 
-export interface IStripePaymentMethod {
+export interface IStripeCharge {
     id: string;
 }
 
-export const StripePaymentMethodSchema = new Schema<IStripePaymentMethod>({
+export const StripeChargeSchema = new Schema<IStripeCharge>({
     id: { type: String, required: true }
 });
 
-export const StripePaymentMethod = createModel<IStripePaymentMethod>(StripePaymentMethodSchema);
+export const StripeCharge = createModel<IStripeCharge>(StripeChargeSchema);
 
 export interface IStripeSession {
     url: URL;
@@ -31,3 +31,15 @@ export const StripeRefundSchema = new Schema<IStripeRefund>({
 });
 
 export const StripeRefund = createModel<IStripeRefund>(StripeRefundSchema);
+
+export interface IStripeDelete {
+    id: string;
+    deleted: boolean;
+}
+
+export const StripeDeleteSchema = new Schema<IStripeDelete>({
+    id: { type: String, required: true },
+    deleted: { type: Boolean, required: true }
+});
+
+export const StripeDelete = createModel<IStripeDelete>(StripeDeleteSchema);

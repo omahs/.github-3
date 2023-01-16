@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import type { DateTime } from "../utility/date.js";
+import { DateTime } from "../utility/date.js";
 import { DateTimeSchema } from "../utility/date.js";
 import { createModel } from "../utility/mongo.js";
 import type { PreciseNumber } from "../utility/number.js";
@@ -28,7 +28,7 @@ export const PaymentSchema = new Schema<IPayment>({
     userId: { type: String, required: true },
     stripeId: { type: String, required: true },
     state: { type: Number, enum: PaymentState, required: true },
-    notBefore: { ...DateTimeSchema, required: true },
+    notBefore: { ...DateTimeSchema, default: new DateTime() },
     amount: { ...PreciseNumberSchema, required: true },
     installments: { type: Number, required: true, min: 1, max: 12 },
     period: { type: Number, enum: OrderPeriod, required: true }
