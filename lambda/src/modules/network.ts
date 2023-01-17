@@ -1,10 +1,12 @@
 import { CoinbasePublicClient, CoinbaseClient, StripeClient } from "jewl-core";
 
+const coinbaseUrl = process.env.COINBASE_URL ?? "";
 const coinbaseKey = process.env.COINBASE_KEY ?? "";
 const coinbaseSecret = process.env.COINBASE_SECRET ?? "";
 const coinbasePass = process.env.COINBASE_PASS ?? "";
-export const coinbasePublicClient = new CoinbasePublicClient();
-export const coinbaseClient = new CoinbaseClient(coinbaseKey, coinbaseSecret, coinbasePass);
+export const coinbasePublicClient = new CoinbasePublicClient(coinbaseUrl);
+export const coinbaseClient = new CoinbaseClient(coinbaseUrl, coinbaseKey, coinbaseSecret, coinbasePass);
 
+const stripeUrl = process.env.STRIPE_URL ?? "";
 const stripeKey = process.env.STRIPE_SECRET ?? "";
-export const stripeClient = new StripeClient(stripeKey);
+export const stripeClient = new StripeClient(stripeUrl, stripeKey);

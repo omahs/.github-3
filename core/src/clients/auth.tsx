@@ -7,14 +7,14 @@ import { Client } from "../utility/client.js";
 export class AuthClient extends Client {
     private readonly clientId: string;
     private readonly clientSecret: string;
-    private readonly domain: string;
+    private readonly url: string;
 
-    public constructor(domain: string, id: string, secret: string) {
+    public constructor(url: string, id: string, secret: string) {
         const staticHeaders = {
             "Content-Type": "application/json"
         };
-        super(domain, staticHeaders);
-        this.domain = domain;
+        super(url, staticHeaders);
+        this.url = url;
         this.clientId = id;
         this.clientSecret = secret;
     }
@@ -30,7 +30,7 @@ export class AuthClient extends Client {
         const data = {
             client_id: this.clientId,
             client_secret: this.clientSecret,
-            audience: `${this.domain}/api/v2/`,
+            audience: `${this.url}/api/v2/`,
             grant_type: "client_credentials"
         };
         const request: IRequest = {

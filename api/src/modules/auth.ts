@@ -5,7 +5,7 @@ import type { JWTVerifyOptions } from "jose";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { DateTime, queryToObject } from "jewl-core";
 
-const auth0Domain = process.env.AUTH0_DOMAIN ?? "";
+const auth0Domain = process.env.AUTH0_URL ?? "";
 const auth0Audience = process.env.AUTH0_AUDIENCE ?? "";
 const jwksUrl = new URL(`${auth0Domain}.well-known/jwks.json`);
 const jwks = createRemoteJWKSet(jwksUrl);

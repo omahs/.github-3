@@ -4,13 +4,13 @@ import { Client } from "../utility/client.js";
 import type { PreciseNumber } from "../utility/number.js";
 
 export class StripeClient extends Client {
-    public constructor(key: string) {
+    public constructor(url: string, key: string) {
         const staticHeaders = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": `Bearer ${key}`,
             "Stripe-Version": "2022-08-01"
         };
-        super("https://api.stripe.com/", staticHeaders);
+        super(url, staticHeaders);
     }
 
     public async createSetupSession(callback: URL, userId: string, email: string): Promise<IStripeSession> {
@@ -18,6 +18,7 @@ export class StripeClient extends Client {
             "mode": "setup",
             "payment_method_types[0]": "card",
             "payment_method_types[1]": "sepa_debit",
+            "customer_creation": "always",
             "customer_email": email,
             "client_reference_id": userId,
             "success_url": callback.toString(),

@@ -4,14 +4,16 @@ import { CoinbaseProducts, CoinbaseOrder, CoinbaseOrders, CoinbaseCancel, Coinba
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
 import isomorphic from "jewl-isomorphic";
-import type { PreciseNumber } from "../utility/number.js";
+import { PreciseNumber } from "../utility/number.js";
+import { nanoid } from "nanoid";
+import { DateTime } from "../utility/date.js";
 
 export class CoinbasePublicClient extends Client {
-    public constructor() {
+    public constructor(url: string) {
         const staticHeaders: Record<string, string> = {
             "Content-Type": "application/json"
         };
-        super("https://api.exchange.coinbase.com/", staticHeaders);
+        super(url, staticHeaders);
     }
 
     public async getProducts(): Promise<Array<ICoinbaseProduct>> {
@@ -33,15 +35,17 @@ export class CoinbasePublicClient extends Client {
 
 export class CoinbaseClient extends Client {
     private readonly secret: string;
+    private readonly isSandbox: boolean;
 
-    public constructor(key: string, secret: string, pass: string) {
+    public constructor(url: string, key: string, secret: string, pass: string) {
         const staticHeaders: Record<string, string> = {
             "Content-Type": "application/json",
             "CB-ACCESS-KEY": key,
             "CB-ACCESS-PASSPHRASE": pass
         };
-        super("https://api.exchange.coinbase.com/", staticHeaders);
+        super(url, staticHeaders);
         this.secret = secret;
+        this.isSandbox = url.includes("sandbox");
     }
 
     public async cancelOrders(productId: string): Promise<void> {
@@ -110,6 +114,9 @@ export class CoinbaseClient extends Client {
             endpoint: `withdrawals/fee-estimate?currency=${currency}`
         };
 
+        if (this.isSandbox) {
+            return { fee: new PreciseNumber(0) };
+        }
         return this.request(request, CoinbaseFee);
     }
 
@@ -129,6 +136,10 @@ export class CoinbaseClient extends Client {
             body: JSON.stringify(body)
         };
 
+        if (this.isSandbox) {
+            return { id: nanoid(), fee: new PreciseNumber(0) };
+        }
+
         return this.request(request, CoinbaseWithdrawl);
     }
 
@@ -136,6 +147,18 @@ export class CoinbaseClient extends Client {
         const request: IRequest = {
             endpoint: `transfers/${coinbaseId}`
         };
+
+        if (this.isSandbox) {
+            return {
+                id: coinbaseId,
+                created_at: new DateTime(),
+                completed_at: new DateTime().addingMinutes(5),
+                processed_at: new DateTime().addingMinutes(5),
+                canceled_at: new DateTime(0),
+                details: {}
+            };
+        }
+
         return this.request(request, CoinbaseTransfer);
     }
 
