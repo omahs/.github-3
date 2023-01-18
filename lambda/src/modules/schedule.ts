@@ -16,7 +16,7 @@ const runJob = async (job: () => Promise<void>, key: string): Promise<void> => {
     } catch (err) {
         let name = "Unknown Error";
         if (err instanceof Error) { name = err.name; }
-        console.error(chalk.bgRed.bold(" ERROR "), name);
+        console.error(chalk.bgRed.bold(" ERRO "), name);
         if (process.env.DEBUG === "true") {
             console.error(err);
         }

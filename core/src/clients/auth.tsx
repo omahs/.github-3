@@ -30,7 +30,7 @@ export class AuthClient extends Client {
         const data = {
             client_id: this.clientId,
             client_secret: this.clientSecret,
-            audience: `${this.url}/api/v2/`,
+            audience: `${this.url}api/v2/`,
             grant_type: "client_credentials"
         };
         const request: IRequest = {

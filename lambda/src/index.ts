@@ -4,6 +4,7 @@ import { scheduleJobs } from "./modules/schedule.js";
 import { orderAndRefundJob } from "./jobs/order.js";
 import { paymentJob } from "./jobs/payment.js";
 import { transferJob } from "./jobs/transfer.js";
+import { mailJob } from "./jobs/mail.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -15,7 +16,8 @@ console.info(
 scheduleJobs("0 * * * *", {
     orderAndRefundJob,
     paymentJob,
-    transferJob
+    transferJob,
+    mailJob
 });
 
 process.on("SIGINT", () => {

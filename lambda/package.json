@@ -8,7 +8,9 @@
     },
     "dependencies": {
         "chalk": "^5.2.0",
+        "html-to-text": "^9.0.3",
         "jewl-core": "*",
-        "node-cron": "^3.0.2"
+        "node-cron": "^3.0.2",
+        "nodemailer": "^6.9.0"
     }
 }

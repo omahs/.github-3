@@ -5,6 +5,7 @@ export * from "./clients/stripe.js";
 
 export * from "./entities/auth.js";
 export * from "./entities/coinbase.js";
+export * from "./entities/mail.js";
 export * from "./entities/order.js";
 export * from "./entities/payment.js";
 export * from "./entities/ping.js";

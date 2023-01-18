@@ -16,7 +16,7 @@ export const RegisterErrorCatcher = (app: Application): void => {
     });
 
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-        console.error(chalk.bgRed.bold(" ERROR "), err.name);
+        console.error(chalk.bgRed.bold(" ERRO "), err.name);
         if (process.env.DEBUG === "true") {
             console.error(err);
         }
