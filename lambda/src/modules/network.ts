@@ -4,7 +4,7 @@ const coinbaseUrl = process.env.COINBASE_URL ?? "";
 const coinbaseKey = process.env.COINBASE_KEY ?? "";
 const coinbaseSecret = process.env.COINBASE_SECRET ?? "";
 const coinbasePass = process.env.COINBASE_PASS ?? "";
-export const coinbasePublicClient = new CoinbasePublicClient(coinbaseUrl);
+export const coinbasePublicClient = new CoinbasePublicClient();
 export const coinbaseClient = new CoinbaseClient(coinbaseUrl, coinbaseKey, coinbaseSecret, coinbasePass);
 
 const stripeUrl = process.env.STRIPE_URL ?? "";

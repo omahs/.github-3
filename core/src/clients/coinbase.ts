@@ -9,11 +9,11 @@ import { nanoid } from "nanoid";
 import { DateTime } from "../utility/date.js";
 
 export class CoinbasePublicClient extends Client {
-    public constructor(url: string) {
+    public constructor() {
         const staticHeaders: Record<string, string> = {
             "Content-Type": "application/json"
         };
-        super(url, staticHeaders);
+        super("https://api.exchange.coinbase.com/", staticHeaders);
     }
 
     public async getProducts(): Promise<Array<ICoinbaseProduct>> {

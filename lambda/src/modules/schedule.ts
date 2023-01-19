@@ -3,7 +3,7 @@ import { job, time } from "cron";
 import chalk from "chalk";
 import { Cron, DateTime } from "jewl-core";
 
-const runTask = async (cron: string, key: string, task: () => Promise<void>): Promise<void> => {
+const runTask = async (key: string, task: () => Promise<void>): Promise<void> => {
     const startTime = new Date();
     const formattedStartTime = `${startTime.toLocaleDateString()} ${startTime.toLocaleTimeString()}`;
     console.info(
@@ -39,7 +39,7 @@ const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>
         const promise = async (): Promise<void> => {
             const storedCron = await Cron.findOne({ cron, key }) ?? new Cron({ cron, key, nextRun: new DateTime(0) });
             if (storedCron.notBefore.lt(new DateTime()) || process.env.DEBUG === "true") {
-                await runTask(cron, key, tasks[key]);
+                await runTask(key, tasks[key]);
             }
             const schedule = time(cron);
             storedCron.notBefore = new DateTime(schedule.sendAt().toUnixInteger());
