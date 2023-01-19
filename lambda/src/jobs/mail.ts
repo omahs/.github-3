@@ -21,6 +21,7 @@ export const openTemplate = async (name: string): Promise<string> => {
 export const getSubject = (type: MailType): string => {
     switch (type) {
         case MailType.welcome: return `Welcome to ${smtpName}!`;
+        // TODO: <-
         default: throw Error("subject not implemented");
     }
 };
@@ -28,6 +29,7 @@ export const getSubject = (type: MailType): string => {
 export const templateName = (type: MailType): string => {
     switch (type) {
         case MailType.welcome: return "welcome";
+        // TODO: <-
         default: throw Error("template not implemented");
     }
 };

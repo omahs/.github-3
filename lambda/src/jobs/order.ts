@@ -1,4 +1,4 @@
-import { Order, Refund, RefundState, OrderState, PreciseNumber, Transfer, TransferState } from "jewl-core";
+import { Order, Refund, RefundState, OrderState, PreciseNumber, Transfer, TransferState, Mail, MailState, MailType } from "jewl-core";
 import type { ICoinbaseProduct, ICoinbaseAccount } from "jewl-core";
 import { coinbaseClient, coinbasePublicClient, stripeClient } from "../modules/network.js";
 
@@ -19,15 +19,25 @@ const issueRefunds = async (): Promise<void> => {
         refund.amount = amount;
         await refund.save();
 
-        if (amount.eq(0)) {
-            refund.state = RefundState.completed;
-        } else {
-            const stripeRefund = await stripeClient.postRefund(refund.paymentId, amount);
-            refund.state = RefundState.initiated;
-            refund.stripeId = stripeRefund.id;
+        if (amount.lte(0)) {
+            await refund.delete();
+            continue;
         }
 
+        const stripeRefund = await stripeClient.postRefund(refund.paymentId, amount);
+        refund.state = RefundState.initiated;
+        refund.stripeId = stripeRefund.id;
         await refund.save();
+
+        const mail = new Mail({
+            userId: refund.userId,
+            entitiyId: refund.id as string,
+            state: MailState.pending,
+            type: MailType.refundInitiated,
+            data: { amount }
+        });
+        await mail.save();
+
     }
 };
 

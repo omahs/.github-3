@@ -20,8 +20,10 @@ export class StripeController {
         // Take fee off 1%
         // Take off stripe fee
         // Create orders
+        // Send email
 
         // Listen for successful or failed refunds
         // Store in db the status
+        // Send email
     }
 }
