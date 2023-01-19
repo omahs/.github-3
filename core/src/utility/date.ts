@@ -2,12 +2,18 @@
 export class DateTime {
     private readonly timestamp: number;
 
-    public constructor(timestamp?: number | string) {
+    public constructor(timestamp?: number | string | Date) {
         if (timestamp == null) {
             const date = new Date();
             this.timestamp = Math.floor(date.getTime() / 1000);
+        } else if (typeof timestamp === "number") {
+            this.timestamp = timestamp;
+        } else if (typeof timestamp === "string") {
+            this.timestamp = parseInt(timestamp, 10);
+        } else if (timestamp instanceof Date) {
+            this.timestamp = timestamp.getTime() / 1000;
         } else {
-            this.timestamp = typeof timestamp === "string" ? parseInt(timestamp, 10) : timestamp;
+            throw new Error("invalid input to DateTime constructor");
         }
     }
 
@@ -49,6 +55,26 @@ export class DateTime {
 
     public addingDays(days: number): DateTime {
         return this.addingHours(days * 24);
+    }
+
+    public gt(other: DateTime): boolean {
+        return this.timestamp > other.timestamp;
+    }
+
+    public gte(other: DateTime): boolean {
+        return this.timestamp >= other.timestamp;
+    }
+
+    public lt(other: DateTime): boolean {
+        return this.timestamp < other.timestamp;
+    }
+
+    public lte(other: DateTime): boolean {
+        return this.timestamp <= other.timestamp;
+    }
+
+    public eq(other: DateTime): boolean {
+        return this.timestamp === other.timestamp;
     }
 
     public valueOf(): number {

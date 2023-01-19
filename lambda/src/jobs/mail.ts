@@ -34,7 +34,7 @@ export const templateName = (type: MailType): string => {
 
 export const getContent = async (type: MailType, data: Record<string, string>): Promise<string> => {
     let template = await openTemplate(templateName(type));
-    const matches = template.matchAll(/\${\w*}/ug);
+    const matches = template.matchAll(/\$\{\w*\}/ug);
     for (const match of matches) {
         template = template.replaceAll(match[0], data[match[1]]);
     }

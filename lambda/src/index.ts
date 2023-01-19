@@ -1,6 +1,6 @@
 import { mongoConnect, mongoDisconnect } from "jewl-core";
 import chalk from "chalk";
-import { scheduleJobs } from "./modules/schedule.js";
+import { scheduleTasks } from "./modules/schedule.js";
 import { orderAndRefundJob } from "./jobs/order.js";
 import { paymentJob } from "./jobs/payment.js";
 import { transferJob } from "./jobs/transfer.js";
@@ -13,18 +13,28 @@ console.info(
     "Starting up lambda worker"
 );
 
-scheduleJobs("0 * * * *", {
-    orderAndRefundJob,
-    paymentJob,
-    transferJob,
+// Every five minutes
+const minute = scheduleTasks("*/5 * * * *", {
     mailJob
 });
 
-process.on("SIGINT", () => {
+// Hourly
+const hour = scheduleTasks("0 * * * *", {
+    orderAndRefundJob,
+    paymentJob,
+    transferJob
+});
+
+const onExit = (): void => {
+    [minute, hour].forEach(x => x.stop());
     void mongoDisconnect();
     console.info(
         chalk.bgMagenta.bold(" INFO "),
         "Shutting down gracefully"
     );
-});
+};
+
+process.on("SIGINT", onExit);
+process.on("SIGQUIT", onExit);
+process.on("SIGTERM", onExit);
 

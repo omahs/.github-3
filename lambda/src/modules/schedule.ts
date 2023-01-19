@@ -1,7 +1,9 @@
-import { schedule } from "node-cron";
+import type { CronJob } from "cron";
+import { job, time } from "cron";
 import chalk from "chalk";
+import { Cron, DateTime } from "jewl-core";
 
-const runJob = async (job: () => Promise<void>, key: string): Promise<void> => {
+const runTask = async (cron: string, key: string, task: () => Promise<void>): Promise<void> => {
     const startTime = new Date();
     const formattedStartTime = `${startTime.toLocaleDateString()} ${startTime.toLocaleTimeString()}`;
     console.info(
@@ -11,7 +13,7 @@ const runJob = async (job: () => Promise<void>, key: string): Promise<void> => {
     );
     let success = false;
     try {
-        await job();
+        await task();
         success = true;
     } catch (err) {
         let name = "Unknown Error";
@@ -31,15 +33,23 @@ const runJob = async (job: () => Promise<void>, key: string): Promise<void> => {
     );
 };
 
-const runJobs = async (jobs: Record<string, () => Promise<void>>): Promise<void> => {
+const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>): Promise<void> => {
     const promises: Array<Promise<void>> = [];
-    for (const key in jobs) {
-        promises.push(runJob(jobs[key], key));
+    for (const key in tasks) {
+        const promise = async (): Promise<void> => {
+            const storedCron = await Cron.findOne({ cron, key }) ?? new Cron({ cron, key, nextRun: new DateTime(0) });
+            if (storedCron.notBefore.lt(new DateTime()) || process.env.DEBUG === "true") {
+                await runTask(cron, key, tasks[key]);
+            }
+            const schedule = time(cron);
+            storedCron.notBefore = new DateTime(schedule.sendAt().toUnixInteger());
+            await storedCron.save();
+        };
+        promises.push(promise());
     }
     await Promise.all(promises);
 };
 
-export const scheduleJobs = (cron: string, jobs: Record<string, () => Promise<void>>): void => {
-    schedule(cron, () => void runJobs(jobs));
-    void runJobs(jobs);
+export const scheduleTasks = (cron: string, tasks: Record<string, () => Promise<void>>): CronJob => {
+    return job(cron, () => void runTasks(cron, tasks), null, true, "Europe/Amsterdam", null, true);
 };
