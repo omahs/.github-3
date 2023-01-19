@@ -17,6 +17,7 @@ export enum MailType {
 
 export interface IMail {
     userId: string;
+    entityId: string;
     state: MailState;
     type: MailType;
     data: Record<string, string>;
@@ -25,6 +26,7 @@ export interface IMail {
 
 export const MailSchema = new Schema<IMail>({
     userId: { type: String, required: true },
+    entityId: { type: String, required: true },
     state: { type: Number, enum: MailState, required: true },
     type: { type: Number, enum: MailType, required: true },
     data: { type: Map, of: String, default: { } },
