@@ -10,8 +10,8 @@ export interface ICron {
 }
 
 const CronSchema = new Schema<ICron>({
-    cron: { type: String, required: true },
-    key: { type: String, required: true },
+    cron: { type: String, required: true, sparse: true },
+    key: { type: String, required: true, sparse: true },
     notBefore: { ...DateTimeSchema, required: true }
 });
 

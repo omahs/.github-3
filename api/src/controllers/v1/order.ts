@@ -50,7 +50,7 @@ export class OrderController {
         if (existingRefund != null) { throw new HttpError(400, "refund already found for this payment"); }
         const orders = await Order.find({ paymentId: payment.id as string, state: OrderState.open });
         if (orders.length === 0) { throw new HttpError(400, "nothing to refund"); }
-        const refund = new Refund({ paymentId: payment.stripeId, state: RefundState.pending });
+        const refund = new Refund({ userId: req.user.userId, paymentId: payment.stripeId, state: RefundState.pending });
         await refund.save();
         await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
     }

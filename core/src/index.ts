@@ -12,7 +12,6 @@ export * from "./entities/payment.js";
 export * from "./entities/ping.js";
 export * from "./entities/refund.js";
 export * from "./entities/stripe.js";
-export * from "./entities/token.js";
 export * from "./entities/transfer.js";
 export * from "./entities/user.js";
 export * from "./entities/void.js";

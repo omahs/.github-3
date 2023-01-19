@@ -25,8 +25,8 @@ export interface IPayment {
 }
 
 export const PaymentSchema = new Schema<IPayment>({
-    userId: { type: String, required: true },
-    stripeId: { type: String, required: true },
+    userId: { type: String, required: true, sparse: true },
+    stripeId: { type: String, required: true, sparse: true },
     state: { type: Number, enum: PaymentState, required: true },
     notBefore: { ...DateTimeSchema, default: new DateTime() },
     amount: { ...PreciseNumberSchema, required: true },

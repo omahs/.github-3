@@ -11,8 +11,8 @@ export interface IUser {
 }
 
 export const UserSchema = new Schema<IUser>({
-    userId: { type: String, required: true },
-    stripeId: { type: String },
+    userId: { type: String, required: true, unique: true },
+    stripeId: { type: String, sparse: true },
     addresses: { type: Map, of: String, default: {} },
     allocation: { type: Map, of: PreciseNumberSchema, default: {} }
 });

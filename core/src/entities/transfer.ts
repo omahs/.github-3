@@ -24,9 +24,9 @@ export interface ITransfer {
 }
 
 export const TransferSchema = new Schema<ITransfer>({
-    userId: { type: String, required: true },
-    orderId: { type: String, required: true },
-    coinbaseId: { type: String },
+    userId: { type: String, required: true, sparse: true },
+    orderId: { type: String, required: true, sparse: true },
+    coinbaseId: { type: String, sparse: true },
     state: { type: Number, enum: TransferState, required: true },
     currency: { type: String, required: true },
     amount: { ...PreciseNumberSchema, required: true },

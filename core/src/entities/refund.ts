@@ -11,6 +11,7 @@ export enum RefundState {
 }
 
 export interface IRefund {
+    userId: string;
     paymentId: string;
     state: RefundState;
     amount?: PreciseNumber;
@@ -18,10 +19,11 @@ export interface IRefund {
 }
 
 export const RefundSchema = new Schema<IRefund>({
-    paymentId: { type: String, required: true },
+    userId: { type: String, required: true, sparse: true },
+    paymentId: { type: String, required: true, sparse: true },
     state: { type: Number, enum: RefundState, required: true },
     amount: { ...PreciseNumberSchema },
-    stripeId: { type: String }
+    stripeId: { type: String, sparse: true }
 });
 
 export const Refund = createModel<IRefund>(RefundSchema, "refunds");

@@ -21,8 +21,8 @@ export interface IOrder {
 }
 
 export const OrderSchema = new Schema<IOrder>({
-    userId: { type: String, required: true },
-    paymentId: { type: String, required: true },
+    userId: { type: String, required: true, sparse: true },
+    paymentId: { type: String, required: true, sparse: true },
     state: { type: Number, enum: OrderState, required: true },
     created: { ...DateTimeSchema, required: true },
     currency: { type: String, required: true },
