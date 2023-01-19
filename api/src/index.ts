@@ -28,10 +28,14 @@ console.info(
     `Accepting connections at http://localhost:${process.env.PORT}`
 );
 
-process.on("SIGINT", () => {
+const onExit = (): void => {
     void mongoDisconnect();
     console.info(
         chalk.bgMagenta.bold(" INFO "),
         "Shutting down gracefully"
     );
-});
+};
+
+process.on("SIGINT", onExit);
+process.on("SIGQUIT", onExit);
+process.on("SIGTERM", onExit);
