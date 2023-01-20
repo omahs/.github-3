@@ -21,7 +21,7 @@ const middlewares = [
     RegisterErrorCatcher
 ];
 middlewares.forEach(x => x(app));
-app.listen(process.env.PORT);
+const server = app.listen(process.env.PORT);
 
 console.info(
     chalk.bgMagenta.bold(" INFO "),
@@ -29,6 +29,7 @@ console.info(
 );
 
 const onExit = (): void => {
+    server.close();
     void mongoDisconnect();
     console.info(
         chalk.bgMagenta.bold(" INFO "),
