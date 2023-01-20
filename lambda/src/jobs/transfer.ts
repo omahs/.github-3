@@ -18,8 +18,8 @@ export const transferJob = async (): Promise<void> => {
             userId: transfer.userId,
             entitiyId: transfer.id as string,
             state: MailState.pending,
-            type: MailType.transferComplete,
-            data: { currency: transfer.currency, amount: transfer.amount }
+            type: MailType.transfer,
+            data: { currency: transfer.currency, amount: transfer.amount, address: transfer.destination }
         });
         await mail.save();
     }

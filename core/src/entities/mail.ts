@@ -8,14 +8,11 @@ export enum MailState {
 
 export enum MailType {
     welcome = 0,
-    paymentAnnounce = 1,
-    paymentComplete = 2,
-    paymentFailed = 3,
-    refundInitiated = 4,
-    refundCompleted = 5,
-    refundFailed = 6,
-    transferComplete = 7,
-    invoice = 8
+    payment = 1,
+    refund = 2,
+    transfer = 3,
+    failed = 4,
+    invoice = 5
 }
 
 export interface IMail {

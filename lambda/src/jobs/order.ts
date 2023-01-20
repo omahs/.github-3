@@ -33,7 +33,7 @@ const issueRefunds = async (): Promise<void> => {
             userId: refund.userId,
             entitiyId: refund.id as string,
             state: MailState.pending,
-            type: MailType.refundInitiated,
+            type: MailType.refund,
             data: { amount }
         });
         await mail.save();

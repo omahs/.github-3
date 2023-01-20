@@ -8,7 +8,7 @@ import { convert } from "html-to-text";
 
 const smtpName = process.env.SMTP_NAME ?? "";
 
-export const openTemplate = async (name: string): Promise<string> => {
+const openTemplate = async (name: string): Promise<string> => {
     const fullPath = resolve(dirname(""), "src", "templates", `${name}.html`);
     return new Promise((res, rej) => {
         readFile(fullPath, "utf8", (err, data) => {
@@ -18,32 +18,20 @@ export const openTemplate = async (name: string): Promise<string> => {
     });
 };
 
-export const getSubject = (type: MailType): string => {
-    switch (type) {
-        case MailType.welcome: return `Welcome to ${smtpName}!`;
-        // TODO: <-
-        default: throw Error("subject not implemented");
-    }
+const subjects: Record<string, string> = {
+    welcome: `Welcome to ${smtpName}!`
 };
 
-export const templateName = (type: MailType): string => {
-    switch (type) {
-        case MailType.welcome: return "welcome";
-        // TODO: <-
-        default: throw Error("template not implemented");
-    }
-};
-
-export const getContent = async (type: MailType, data: Record<string, string>): Promise<string> => {
-    let template = await openTemplate(templateName(type));
-    const matches = template.matchAll(/\$\{\w*\}/ug);
+const getContent = async (type: MailType, data: Record<string, string>): Promise<string> => {
+    let template = await openTemplate(MailType[type]);
+    const matches = template.matchAll(/\$\w*/ug);
     for (const match of matches) {
         template = template.replaceAll(match[0], data[match[1]]);
     }
     return template;
 };
 
-export const sendMail = async (email: string, subject: string, body: string): Promise<string> => {
+const sendMail = async (email: string, subject: string, body: string): Promise<string> => {
     const transporter = createTransport({
         host: process.env.SMTP_HOST ?? "",
         port: 465,
@@ -74,7 +62,7 @@ export const mailJob = async (): Promise<void> => {
 
         const content = await getContent(mail.type, mail.data);
         const body = [header, footer, content].join("\n");
-        const subject = getSubject(mail.type);
+        const subject = subjects[MailType[mail.type]];
 
         mail.state = MailState.sent;
         await mail.save();
