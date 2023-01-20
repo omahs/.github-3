@@ -12,9 +12,9 @@ class Header extends Component<WithAuth0Props> {
     private loginPressed(): () => void {
         return (): void => {
             if (this.props.auth0.isAuthenticated) {
-                this.props.auth0.logout();
+                this.props.auth0.logout({ logoutParams: { returnTo: window.location.origin } });
             } else {
-                void this.props.auth0.loginWithRedirect();
+                void this.props.auth0.loginWithRedirect({ authorizationParams: { redirect_uri: window.location.origin } });
             }
         };
     }

@@ -6,13 +6,11 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 const authUrl = process.env.REACT_APP_AUTH0_URL ?? "";
 const authId = process.env.REACT_APP_AUTH0_ID ?? "";
-const audience = process.env.REACT_APP_SERVER_URL ?? "";
-const redirect = process.env.REACT_APP_REDIRECT_URL ?? "";
 
 const Root = (): ReactElement => {
     return (
         <StrictMode>
-            <Auth0Provider domain={authUrl} clientId={authId} redirectUri={redirect} audience={audience}>
+            <Auth0Provider domain={authUrl} clientId={authId}>
                 <App />
             </Auth0Provider>
         </StrictMode>
