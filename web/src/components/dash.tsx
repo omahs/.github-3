@@ -29,9 +29,6 @@ class Dash extends Component<WithAuth0Props, IState> {
             .then(x => this.handleCoinbaseProducts(x))
             .catch(console.log);
 
-        // TODO: Show banner \/
-        console.log(this.props.auth0.user?.email_verified);
-
         this.props.auth0
             .getAccessTokenSilently()
             .then(async x => apiClient.getPaymentMethod(x))
@@ -39,7 +36,7 @@ class Dash extends Component<WithAuth0Props, IState> {
             .catch(console.log);
     }
 
-    public handleCoinbaseProducts(products: Array<ICoinbaseProduct>): void {
+    private handleCoinbaseProducts(products: Array<ICoinbaseProduct>): void {
         const tokens = products.map(x => x.base_currency === "EUR" ? x.quote_currency : x.base_currency);
         const suggestedAllocation = {
             BTC: new PreciseNumber(0.4),
@@ -49,7 +46,7 @@ class Dash extends Component<WithAuth0Props, IState> {
         this.setState({ tokens, suggestedAllocation });
     }
 
-    public paymentPressed(): () => void {
+    private paymentPressed(): () => void {
         return (): void => {
             if (this.state.paymentConnected) {
                 this.props.auth0
@@ -72,7 +69,7 @@ class Dash extends Component<WithAuth0Props, IState> {
 
     public render(): ReactElement {
         return (
-            <div className="front">
+            <div className="dash">
                 Connected: {this.state.paymentConnected}
                 <br />
                 <button type="button" onClick={this.paymentPressed()} className="header-login">

@@ -1,12 +1,13 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
 import React, { Component } from "react";
-import Dash from "./dash";
+import Back from "./back";
 import Front from "./front";
 import Header from "./header";
 import Footer from "./footer";
 import type { WithAuth0Props } from "@auth0/auth0-react";
 import { withAuth0 } from "@auth0/auth0-react";
+import Spinner from "./spinner";
 
 class App extends Component<WithAuth0Props> {
     public constructor(props: WithAuth0Props) {
@@ -15,11 +16,11 @@ class App extends Component<WithAuth0Props> {
 
     private content(): ReactElement {
         if (this.props.auth0.isLoading) {
-            return <div className="spinner" />;
+            return <Spinner />;
         }
 
         if (this.props.auth0.isAuthenticated) {
-            return <Dash />;
+            return <Back />;
         }
 
         return <Front />;

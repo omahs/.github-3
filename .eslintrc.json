@@ -82,6 +82,8 @@
         "class-methods-use-this": "off",
         "newline-per-chained-call": "off",
         "react/destructuring-assignment": "off",
+        "react/require-default-props": "off",
+        "react/forbid-component-props": "off",
         "react/jsx-sort-props": "off",
         "react/jsx-max-props-per-line": "off",
         "react/function-component-definition": "off",

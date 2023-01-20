@@ -2,6 +2,7 @@ import type { CronJob } from "cron";
 import { job, time } from "cron";
 import chalk from "chalk";
 import { Cron, DateTime } from "jewl-core";
+import { apiClient } from "./network.js";
 
 const runTask = async (key: string, task: () => Promise<void>): Promise<void> => {
     const startTime = new Date();
@@ -34,6 +35,19 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
 };
 
 const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>): Promise<void> => {
+    try {
+        await apiClient.ping();
+    } catch {
+        const date = new Date();
+        const formattedTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        console.info(
+            chalk.bgBlue.bold(" CRON "),
+            chalk.dim(formattedTime),
+            `Skipping ${cron} because server is in maintainance mode`
+        );
+        return;
+    }
+
     const promises: Array<Promise<void>> = [];
     for (const key in tasks) {
         const promise = async (): Promise<void> => {
