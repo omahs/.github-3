@@ -23,12 +23,12 @@ This repository uses a couple of third party services:
 ## Getting Started
 
 Getting set up with this repository is very easy.
-* Install node and MongoDB - `brew install node mongodb-community`.
-* Start MongoDB server - `brew services start mongodb-community`.
-* Clone this repository `git clone https://github.com/jewl-app/.github`.
+* Install node and MongoDB using `brew install node mongodb-community`.
+* Start MongoDB server using `brew services start mongodb-community`.
+* Clone this repository using `git clone https://github.com/jewl-app/.github`.
 * Create the `.env` files for each component that you want to run.
-* Install dependencies using npm - `npm install`.
-* Run one of the commands below - `npm run start`.
+* Install dependencies using npm using `npm install`.
+* Run one of the commands below like `npm run start`.
 
 ## Commands
 
