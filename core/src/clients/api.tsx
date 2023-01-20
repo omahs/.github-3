@@ -1,5 +1,7 @@
 import type { IPaymentResponse, IPaymentSetupRequest, IPaymentSetupResponse } from "../entities/payment.js";
 import { PaymentResponse, PaymentSetupResponse } from "../entities/payment.js";
+import type { IPingResponse } from "../entities/ping.js";
+import { PingResponse } from "../entities/ping.js";
 import { NoResponse } from "../entities/void.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
@@ -12,9 +14,16 @@ export class ApiClient extends Client {
         super(url, staticHeaders);
     }
 
+    public async ping(): Promise<IPingResponse> {
+        const request: IRequest = {
+            endpoint: "v1/ping/"
+        };
+        return this.request(request, PingResponse);
+    }
+
     public async getPaymentMethod(token: string): Promise<IPaymentResponse> {
         const request: IRequest = {
-            endpoint: "v1/payment",
+            endpoint: "v1/payment/",
             headers: { Authorization: `Bearer ${token}` }
         };
         return this.request(request, PaymentResponse);
@@ -25,7 +34,7 @@ export class ApiClient extends Client {
             callback
         };
         const request: IRequest = {
-            endpoint: "v1/payment",
+            endpoint: "v1/payment/",
             headers: { Authorization: `Bearer ${token}` },
             method: "POST",
             body: JSON.stringify(body)
@@ -36,7 +45,7 @@ export class ApiClient extends Client {
 
     public async deletePaymentMethod(token: string): Promise<object> {
         const request: IRequest = {
-            endpoint: "v1/payment",
+            endpoint: "v1/payment/",
             headers: { Authorization: `Bearer ${token}` },
             method: "DELETE"
         };
