@@ -16,9 +16,9 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
         await task();
         success = true;
     } catch (err) {
-        let name = "Unknown Error";
-        if (err instanceof Error) { name = err.name; }
-        console.error(chalk.bgRed.bold(" ERRO "), name);
+        const name = err instanceof Error ? err.name : "Unknown Error";
+        const message = err instanceof Error ? err.message : "";
+        console.error(chalk.bgRed.bold(" ERRO "), name, message);
         if (process.env.DEBUG === "true") {
             console.error(err);
         }

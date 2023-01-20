@@ -16,11 +16,15 @@ export const RegisterErrorCatcher = (app: Application): void => {
     });
 
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-        console.error(chalk.bgRed.bold(" ERRO "), err.name);
-        if (process.env.DEBUG === "true") {
-            console.error(err);
+        const isHandled = err instanceof HttpError;
+        if (!isHandled) {
+            console.error(chalk.bgRed.bold(" ERRO "), err.name, err.message);
+            if (process.env.DEBUG === "true") {
+                console.error(err);
+            }
         }
-        const status = err instanceof HttpError ? err.status : 500;
+
+        const status = isHandled ? err.status : 500;
         res.status(status).send(err.message);
     });
 };
