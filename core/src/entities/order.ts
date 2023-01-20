@@ -14,7 +14,7 @@ export interface IOrder {
     userId: string;
     paymentId: string;
     state: OrderState;
-    created: DateTime;
+    notBefore: DateTime;
     currency: string;
     amount: PreciseNumber;
     destination: string;
@@ -24,7 +24,7 @@ export const OrderSchema = new Schema<IOrder>({
     userId: { type: String, required: true, sparse: true },
     paymentId: { type: String, required: true, sparse: true },
     state: { type: Number, enum: OrderState, required: true },
-    created: { ...DateTimeSchema, required: true },
+    notBefore: { ...DateTimeSchema, required: true },
     currency: { type: String, required: true },
     amount: { ...PreciseNumberSchema, required: true },
     destination: { type: String, required: true }

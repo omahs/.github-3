@@ -1,4 +1,4 @@
-import { Order, Refund, RefundState, OrderState, PreciseNumber, Transfer, TransferState, Mail, MailState, MailType } from "jewl-core";
+import { Order, Refund, RefundState, OrderState, PreciseNumber, Transfer, TransferState, Mail, MailState, MailType, DateTime } from "jewl-core";
 import type { ICoinbaseProduct, ICoinbaseAccount } from "jewl-core";
 import { coinbaseClient, coinbasePublicClient, stripeClient } from "../modules/network.js";
 
@@ -70,7 +70,7 @@ const payoutCurrentOrder = async (product: ICoinbaseProduct, accounts: Array<ICo
     const feeEstimate = await coinbaseClient.getTransferFee(currency);
     if (feeEstimate.fee.gt(1)) { return; } // TODO: <- is this in eur or in currency itself?
 
-    const cursor = Order.find({ state: OrderState.open, currency }).sort({ created: -1 }).cursor();
+    const cursor = Order.find({ state: OrderState.open, currency, notBefore: { $lt: new DateTime() } }).sort({ notBefore: -1 }).cursor();
 
     for await (const order of cursor) {
         if (availableBalance.lt(order.amount)) { break; }
@@ -90,14 +90,20 @@ const payoutCurrentOrder = async (product: ICoinbaseProduct, accounts: Array<ICo
         transfer.fee = withdrawal.fee; // TODO: <- is this in eur or in currency
         await transfer.save();
 
+        order.state = OrderState.fulfilled;
+        await order.save();
+
         averagePrice = averagePrice.minus(order.amount);
     }
 };
 
 const placeNewOrder = async (product: ICoinbaseProduct, accounts: Array<ICoinbaseAccount>): Promise<void> => {
     const currency = product.base_currency === "EUR" ? product.quote_currency : product.base_currency;
-    const pendingOrders = await Order.find({ state: OrderState.open, currency });
-    const pendingOrderSize = pendingOrders.reduce((x, y) => x.plus(y.amount), new PreciseNumber(0));
+    let pendingOrderSize = new PreciseNumber(0);
+    const cursor = Order.find({ state: OrderState.open, currency, notBefore: { $lt: new DateTime() } }).cursor();
+    for await (const order of cursor) {
+        pendingOrderSize = pendingOrderSize.plus(order.amount);
+    }
     const availableBalance = accounts.find(x => x.currency === currency)?.available ?? new PreciseNumber(0);
     const requiredOrderSize = pendingOrderSize.minus(availableBalance);
     const productBook = await coinbaseClient.getBook(product.id);
