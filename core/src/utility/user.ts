@@ -11,6 +11,7 @@ export const getOrCreateUser = async (userId: string): Promise<IUser & Document>
 
         const mail = new Mail({
             userId,
+            entityId: userId,
             state: MailState.pending,
             type: MailType.welcome
         });
