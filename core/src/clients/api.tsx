@@ -16,14 +16,14 @@ export class ApiClient extends Client {
 
     public async ping(): Promise<IPingResponse> {
         const request: IRequest = {
-            endpoint: "v1/ping/"
+            endpoint: "v1/ping"
         };
         return this.request(request, PingResponse);
     }
 
     public async getPaymentMethod(token: string): Promise<IPaymentResponse> {
         const request: IRequest = {
-            endpoint: "v1/payment/",
+            endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` }
         };
         return this.request(request, PaymentResponse);
@@ -34,7 +34,7 @@ export class ApiClient extends Client {
             callback
         };
         const request: IRequest = {
-            endpoint: "v1/payment/",
+            endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` },
             method: "POST",
             body: JSON.stringify(body)
@@ -45,7 +45,7 @@ export class ApiClient extends Client {
 
     public async deletePaymentMethod(token: string): Promise<object> {
         const request: IRequest = {
-            endpoint: "v1/payment/",
+            endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` },
             method: "DELETE"
         };

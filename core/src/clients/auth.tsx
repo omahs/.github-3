@@ -21,7 +21,7 @@ export class AuthClient extends Client {
 
     public async getUser(userId: string): Promise<IAuthUser> {
         const request: IRequest = {
-            endpoint: `api/v2/users/${encodeURIComponent(userId)}/`
+            endpoint: `api/v2/users/${encodeURIComponent(userId)}`
         };
         return this.request(request, AuthUser);
     }
@@ -34,7 +34,7 @@ export class AuthClient extends Client {
             grant_type: "client_credentials"
         };
         const request: IRequest = {
-            endpoint: "/oauth/token/",
+            endpoint: "/oauth/token",
             method: "POST",
             body: JSON.stringify(data)
         };

@@ -18,7 +18,7 @@ export class CoinbasePublicClient extends Client {
 
     public async getProducts(): Promise<Array<ICoinbaseProduct>> {
         const request: IRequest = {
-            endpoint: "products/"
+            endpoint: "products"
         };
 
         const response = await this.request(request, CoinbaseProducts);
@@ -50,7 +50,7 @@ export class CoinbaseClient extends Client {
 
     public async cancelOrders(productId: string): Promise<void> {
         const request: IRequest = {
-            endpoint: "orders/",
+            endpoint: "orders",
             method: "DELETE"
         };
 
@@ -66,7 +66,7 @@ export class CoinbaseClient extends Client {
     public async getRecentOrders(productId: string, onlyOpen = false): Promise<Array<ICoinbaseOrder>> {
         const params = onlyOpen ? "" : "?status=all";
         const request: IRequest = {
-            endpoint: `orders/${params}`
+            endpoint: `orders${params}`
         };
 
         const response = await this.request(request, CoinbaseOrders);
@@ -75,7 +75,7 @@ export class CoinbaseClient extends Client {
 
     public async getAccounts(): Promise<Array<ICoinbaseAccount>> {
         const request: IRequest = {
-            endpoint: "accounts/"
+            endpoint: "accounts"
         };
 
         const response = await this.request(request, CoinbaseAccounts);
@@ -84,7 +84,7 @@ export class CoinbaseClient extends Client {
 
     public async getBook(productId: string): Promise<ICoinbaseBook> {
         const request: IRequest = {
-            endpoint: `products/${productId}/book/`
+            endpoint: `products/${productId}/book`
         };
 
         return this.request(request, CoinbaseBook);
@@ -111,7 +111,7 @@ export class CoinbaseClient extends Client {
 
     public async getTransferFee(currency: string): Promise<ICoinbaseFee> {
         const request: IRequest = {
-            endpoint: `withdrawals/fee-estimate/?currency=${currency}`
+            endpoint: `withdrawals/fee-estimate?currency=${currency}`
         };
 
         if (this.isSandbox) {
@@ -131,7 +131,7 @@ export class CoinbaseClient extends Client {
         };
 
         const request: IRequest = {
-            endpoint: "withdrawals/crypto/",
+            endpoint: "withdrawals/crypto",
             method: "POST",
             body: JSON.stringify(body)
         };
@@ -145,7 +145,7 @@ export class CoinbaseClient extends Client {
 
     public async getTransfer(coinbaseId: string): Promise<ICoinbaseTransfer> {
         const request: IRequest = {
-            endpoint: `transfers/${coinbaseId}/`
+            endpoint: `transfers/${coinbaseId}`
         };
 
         if (this.isSandbox) {

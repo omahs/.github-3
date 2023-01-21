@@ -35,7 +35,7 @@ const getUserId: Record<string, (req: Request) => Promise<string>> = {
         const preimage = `${timestamp}.${req.rawBody.toString()}`;
         const secret = process.env.STRIPE_SECRET ?? "";
 
-        const verify = createVerify("SHA256")
+        const verify = createVerify("sha256")
             .update(preimage)
             .verify(secret, signature, "hex");
 
@@ -63,6 +63,6 @@ export const expressAuthentication = async (req: Request, securityName: string, 
         if (process.env.DEBUG === "true") {
             return { userId: "TestUserId", scopes: ["admin"] };
         }
-        throw new HttpError(401, "Invalid or missing authorization.");
+        throw new HttpError(401, "invalid or missing authorization.");
     }
 };

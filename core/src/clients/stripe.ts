@@ -25,7 +25,7 @@ export class StripeClient extends Client {
             "cancel_url": callback.toString()
         });
         const request = {
-            endpoint: "v1/checkout/sessions/",
+            endpoint: "v1/checkout/sessions",
             method: "POST",
             body: data.toString()
         };
@@ -40,7 +40,7 @@ export class StripeClient extends Client {
             reason: "requested_by_customer"
         });
         const request = {
-            endpoint: "v1/refunds/",
+            endpoint: "v1/refunds",
             method: "POST",
             body: data.toString()
         };
@@ -50,7 +50,7 @@ export class StripeClient extends Client {
 
     public async deleteCustomer(stripeId: string): Promise<void> {
         const request = {
-            endpoint: `v1/customers/${stripeId}/`,
+            endpoint: `v1/customers/${stripeId}`,
             method: "DELETE"
         };
         const response = await this.request(request, StripeDelete);
@@ -66,7 +66,7 @@ export class StripeClient extends Client {
             off_session: "true"
         });
         const request = {
-            endpoint: "v1/payment_intents/",
+            endpoint: "v1/payment_intents",
             method: "POST",
             body: data.toString()
         };

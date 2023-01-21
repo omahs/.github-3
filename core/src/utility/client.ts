@@ -37,8 +37,8 @@ export abstract class Client {
             body: req.body
         };
         const res = await isomorphic.fetch(url, request) as Response;
-        if (res.status < 200 && res.status >= 300) {
-            throw new Error(`received a status code of ${res.status}`);
+        if (res.status < 200 || res.status >= 300) {
+            throw new Error(`received a status code of ${res.status} for ${req.endpoint}`);
         }
         let json = await res.json() as object;
 

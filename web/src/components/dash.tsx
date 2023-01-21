@@ -56,7 +56,7 @@ class Dash extends Component<WithAuth0Props, IState> {
             } else {
                 this.props.auth0
                     .getAccessTokenSilently()
-                    .then(async x => apiClient.setupPaymentMethod(x, new URL(window.location.href)))
+                    .then(async x => apiClient.setupPaymentMethod(x, new URL(window.location.origin)))
                     .then(x => { window.location.href = x.redirect.toString(); })
                     .catch(console.log);
             }
