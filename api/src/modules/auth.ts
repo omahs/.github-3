@@ -27,6 +27,8 @@ const getUserId: Record<string, (req: Request) => Promise<string>> = {
         const signatureHeader = req.header("Stripe-Signature") ?? "";
         const signatureClaim = queryToObject(signatureHeader);
         const timestamp = new DateTime(signatureClaim.t);
+        console.log(timestamp);
+        console.log(new DateTime());
         if (!timestamp.isNow()) {
             throw new Error("request has expired");
         }
@@ -35,11 +37,14 @@ const getUserId: Record<string, (req: Request) => Promise<string>> = {
         const preimage = `${timestamp}.${req.rawBody.toString()}`;
         const secret = process.env.STRIPE_SECRET ?? "";
 
-        const verify = createVerify("sha256")
-            .update(preimage)
+        console.log(signature);
+        console.log(Buffer.from(preimage).toString("hex"));
+
+        const matches = createVerify("sha256")
+            .update(preimage, "utf-8")
             .verify(secret, signature, "hex");
 
-        if (!verify) {
+        if (!matches) {
             throw new Error("stripe signature is invalid");
         }
         return Promise.resolve("Stripe");

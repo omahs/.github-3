@@ -49,6 +49,6 @@ export class StripeController {
 
         const handler = handlers[`handle${eventType}`];
         if (handler == null) { return; }
-        await handler(body.data.object);
+        await handler(body.data.object as object);
     }
 }
