@@ -8,7 +8,7 @@ export class StripeClient extends Client {
         const staticHeaders = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": `Bearer ${key}`,
-            "Stripe-Version": "2022-08-01"
+            "Stripe-Version": "2022-11-15"
         };
         super(url, staticHeaders);
     }
