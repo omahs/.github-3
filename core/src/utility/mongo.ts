@@ -17,3 +17,16 @@ export const mongoDisconnect = async (): Promise<void> => {
 export const createModel = <T>(schema: Schema, name?: string): Model<T> => {
     return model(name ?? "ephemeral", schema, undefined, { overwriteModels: name == null }) as Model<T>;
 };
+
+export const validate = async <T>(Schema: Model<T>, json: object): Promise<T> => {
+    const schema = new Schema(json);
+    return new Promise<T>((resolve, reject) => {
+        schema.validate(err => {
+            if (err == null) {
+                resolve(schema);
+            } else {
+                reject(err);
+            }
+        });
+    });
+};

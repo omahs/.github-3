@@ -1,5 +1,5 @@
 import type { IInitiateOrderRequest, IOrderRenewResponse } from "jewl-core";
-import { PaymentState, Refund, RefundState, InitiateOrderRequest, Payment, Order, OrderState, getOrCreateUser } from "jewl-core";
+import { PaymentState, Refund, RefundState, InitiateOrderRequest, Payment, Order, OrderState, getOrCreateUser, validate } from "jewl-core";
 import { Delete, Get, Route, Security, Post, Body, Request, Put, SuccessResponse } from "tsoa";
 import type { WithAuthentication } from "../../modules/auth.js";
 import { HttpError } from "../../modules/error.js";
@@ -19,26 +19,26 @@ export class OrderController {
     @Post("/")
     @SuccessResponse(204)
     public async initiateOrder(@Request() req: WithAuthentication, @Body() body: IInitiateOrderRequest): Promise<void> {
-        const validatedBody = new InitiateOrderRequest(body);
+        await validate(InitiateOrderRequest, body);
 
         const user = await getOrCreateUser(req.user.userId);
         if (user.stripeId == null) { throw new HttpError(400, "no payment method set up"); }
         if (Object.keys(user.allocation).length === 0) { throw new HttpError(400, "no allocation set up"); }
 
-        const charge = await stripeClient.createPayment(user.stripeId, validatedBody.amount);
+        const charge = await stripeClient.createPayment(user.stripeId, body.amount);
 
         const payment = new Payment({
             userId: req.user.userId,
             stripeId: charge.id,
             state: PaymentState.initiated,
-            amount: validatedBody.amount,
-            installments: validatedBody.installments,
-            period: validatedBody.period
+            amount: body.amount,
+            installments: body.installments,
+            period: body.period
         });
 
         await payment.save();
 
-        if (validatedBody.autoRenew) { await this.enableAutoRenew(req); }
+        if (body.autoRenew) { await this.enableAutoRenew(req); }
     }
 
     @Delete("/")

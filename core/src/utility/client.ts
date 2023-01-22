@@ -1,5 +1,6 @@
 import type { Model } from "mongoose";
 import isomorphic from "jewl-isomorphic";
+import { validate } from "./mongo.js";
 
 export interface IRequest {
     method?: string;
@@ -24,7 +25,7 @@ export abstract class Client {
         }
     }
 
-    public async request<T>(req: IRequest, Schema: Model<T>): Promise<T> {
+    public async request<T>(req: IRequest, schema: Model<T>): Promise<T> {
         const infix = req.endpoint.startsWith("/") ? "" : "/";
         const url: RequestInfo = this.baseUrl + infix + req.endpoint;
         const headers: HeadersInit = {
@@ -50,15 +51,6 @@ export abstract class Client {
             default: break;
         }
 
-        const model = new Schema(json);
-        return new Promise<T>((resolve, reject) => {
-            model.validate(err => {
-                if (err == null) {
-                    resolve(model);
-                } else {
-                    reject(err);
-                }
-            });
-        });
+        return validate(schema, json);
     }
 }

@@ -30,6 +30,12 @@ Getting set up with this repository is very easy.
 * Install dependencies using npm using `npm install`.
 * Run one of the commands below like `npm run start`.
 
+### Testing Stripe webhooks locally
+To test the Stripe webhooks locally you can set webhooks up to be forwarded to your local machine. For this you will need to set up the Stripe cli.
+* Install the Stripe cli using `brew install stripe/stripe-cli/stripe`.
+* Log into the Stripe cli using `stripe login`
+* Start forwarding webhook evewnts using `stripe listen --forward-to localhost:4000/v1/stripe`.
+
 ## Commands
 
 All commands should be run from the root of the repository. Some commands will be resolved for each components individually (local) whereas others will just execute once (global). The local commands commands will try to run a command with the same name for each individual component, skipping the component if that specific command does not exist.

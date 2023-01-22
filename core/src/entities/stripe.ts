@@ -47,7 +47,7 @@ export const StripeDelete = createModel<IStripeDelete>(StripeDeleteSchema);
 export interface IStripeEvent {
     id: string;
     type: string;
-    data: object;
+    data: { object: Record<string, any> }; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const StripeEventSchema = new Schema<IStripeEvent>({
