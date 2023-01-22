@@ -43,3 +43,29 @@ export const StripeDeleteSchema = new Schema<IStripeDelete>({
 });
 
 export const StripeDelete = createModel<IStripeDelete>(StripeDeleteSchema);
+
+export interface IStripeEvent {
+    id: string;
+    type: string;
+    data: object;
+}
+
+export const StripeEventSchema = new Schema<IStripeEvent>({
+    id: { type: String, required: true },
+    type: { type: String, required: true },
+    data: { type: Object, required: true }
+});
+
+export const StripeEvent = createModel<IStripeEvent>(StripeEventSchema);
+
+export interface IStripeCompletedSession {
+    client_reference_id: string;
+    customer: string;
+}
+
+export const StripeCompletedSessionSchema = new Schema<IStripeCompletedSession>({
+    client_reference_id: { type: String, required: true },
+    customer: { type: String, required: true }
+});
+
+export const StripeCompletedSession = createModel<IStripeCompletedSession>(StripeCompletedSessionSchema);
