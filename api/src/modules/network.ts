@@ -1,7 +1,7 @@
 import { StripeClient, AuthClient } from "jewl-core";
 
 const stripeUrl = process.env.STRIPE_URL ?? "";
-const stripeKey = process.env.STRIPE_SECRET ?? "";
+const stripeKey = process.env.STRIPE_KEY ?? "";
 export const stripeClient = new StripeClient(stripeUrl, stripeKey);
 
 const auth0Url = process.env.AUTH0_URL ?? "";

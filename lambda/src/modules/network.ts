@@ -11,7 +11,7 @@ const serverUrl = process.env.SERVER_URL ?? "";
 export const apiClient = new ApiClient(serverUrl);
 
 const stripeUrl = process.env.STRIPE_URL ?? "";
-const stripeKey = process.env.STRIPE_SECRET ?? "";
+const stripeKey = process.env.STRIPE_KEY ?? "";
 export const stripeClient = new StripeClient(stripeUrl, stripeKey);
 
 const auth0Url = process.env.AUTH0_URL ?? "";
