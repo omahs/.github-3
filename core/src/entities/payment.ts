@@ -22,6 +22,7 @@ export interface IPayment {
     amount: PreciseNumber;
     installments: number;
     period: OrderPeriod;
+    fee?: PreciseNumber;
 }
 
 export const PaymentSchema = new Schema<IPayment>({
@@ -31,7 +32,8 @@ export const PaymentSchema = new Schema<IPayment>({
     notBefore: { ...DateTimeSchema, default: new DateTime() },
     amount: { ...PreciseNumberSchema, required: true },
     installments: { type: Number, required: true, min: 1, max: 12 },
-    period: { type: Number, enum: OrderPeriod, required: true }
+    period: { type: Number, enum: OrderPeriod, required: true },
+    fee: { ...PreciseNumberSchema }
 });
 
 export const Payment = createModel<IPayment>(PaymentSchema, "payments");

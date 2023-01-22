@@ -17,6 +17,7 @@ export interface IOrder {
     notBefore: DateTime;
     currency: string;
     amount: PreciseNumber;
+    fee: PreciseNumber;
     destination: string;
 }
 
@@ -27,6 +28,7 @@ export const OrderSchema = new Schema<IOrder>({
     notBefore: { ...DateTimeSchema, required: true },
     currency: { type: String, required: true },
     amount: { ...PreciseNumberSchema, required: true },
+    fee: { ...PreciseNumberSchema, required: true },
     destination: { type: String, required: true }
 });
 

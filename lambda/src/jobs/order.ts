@@ -65,27 +65,28 @@ const getAverageOrderPrice = async (product: ICoinbaseProduct, availableBalance:
 const payoutCurrentOrder = async (product: ICoinbaseProduct, accounts: Array<ICoinbaseAccount>): Promise<void> => {
     await coinbaseClient.cancelOrders(product.id);
     const currency = product.base_currency === "EUR" ? product.quote_currency : product.base_currency;
-    const availableBalance = accounts.find(x => x.currency === currency)?.available ?? new PreciseNumber(0);
-    let averagePrice = await getAverageOrderPrice(product, availableBalance);
+    let availableBalance = accounts.find(x => x.currency === currency)?.available ?? new PreciseNumber(0);
+    const averagePrice = await getAverageOrderPrice(product, availableBalance);
     const feeEstimate = await coinbaseClient.getTransferFee(currency);
     if (feeEstimate.fee.gt(1)) { return; } // TODO: <- is this in eur or in currency itself?
 
     const cursor = Order.find({ state: OrderState.open, currency, notBefore: { $lt: new DateTime() } }).sort({ notBefore: -1 }).cursor();
 
     for await (const order of cursor) {
-        if (availableBalance.lt(order.amount)) { break; }
+        const transferAmount = order.amount.minus(order.fee);
+        if (availableBalance.lt(transferAmount)) { break; }
         const transfer = new Transfer({
             userId: order.userId,
             orderId: order.id as string,
             state: TransferState.initiated,
             currency,
-            amount: order.amount,
+            amount: transferAmount,
             price: averagePrice,
             destination: order.destination
         });
         await transfer.save();
 
-        const withdrawal = await coinbaseClient.transfer(currency, order.amount, order.destination);
+        const withdrawal = await coinbaseClient.transfer(currency, transferAmount, order.destination);
         transfer.coinbaseId = withdrawal.id;
         transfer.fee = withdrawal.fee; // TODO: <- is this in eur or in currency
         await transfer.save();
@@ -93,7 +94,7 @@ const payoutCurrentOrder = async (product: ICoinbaseProduct, accounts: Array<ICo
         order.state = OrderState.fulfilled;
         await order.save();
 
-        averagePrice = averagePrice.minus(order.amount);
+        availableBalance = availableBalance.minus(transferAmount);
     }
 };
 
@@ -102,7 +103,7 @@ const placeNewOrder = async (product: ICoinbaseProduct, accounts: Array<ICoinbas
     let pendingOrderSize = new PreciseNumber(0);
     const cursor = Order.find({ state: OrderState.open, currency, notBefore: { $lt: new DateTime() } }).cursor();
     for await (const order of cursor) {
-        pendingOrderSize = pendingOrderSize.plus(order.amount);
+        pendingOrderSize = pendingOrderSize.plus(order.amount).minus(order.fee);
     }
     const availableBalance = accounts.find(x => x.currency === currency)?.available ?? new PreciseNumber(0);
     const requiredOrderSize = pendingOrderSize.minus(availableBalance);
