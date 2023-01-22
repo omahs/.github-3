@@ -1,6 +1,6 @@
 import type { Request } from "express";
 import { HttpError } from "./error.js";
-import { createVerify } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import type { JWTVerifyOptions } from "jose";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { DateTime, queryToObject } from "jewl-core";
@@ -27,24 +27,19 @@ const getUserId: Record<string, (req: Request) => Promise<string>> = {
         const signatureHeader = req.header("Stripe-Signature") ?? "";
         const signatureClaim = queryToObject(signatureHeader);
         const timestamp = new DateTime(signatureClaim.t);
-        console.log(timestamp);
-        console.log(new DateTime());
         if (!timestamp.isNow()) {
             throw new Error("request has expired");
         }
 
-        const signature = signatureClaim.v1;
+        const signature = Buffer.from(signatureClaim.v1, "hex");
         const preimage = `${timestamp}.${req.rawBody.toString()}`;
         const secret = process.env.STRIPE_SECRET ?? "";
 
-        console.log(signature);
-        console.log(Buffer.from(preimage).toString("hex"));
+        const hash = createHmac("sha256", secret)
+            .update(preimage, "utf8")
+            .digest();
 
-        const matches = createVerify("sha256")
-            .update(preimage, "utf-8")
-            .verify(secret, signature, "hex");
-
-        if (!matches) {
+        if (!timingSafeEqual(signature, hash)) {
             throw new Error("stripe signature is invalid");
         }
         return Promise.resolve("Stripe");
