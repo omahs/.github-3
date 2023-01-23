@@ -17,6 +17,7 @@ All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mo
 This repository uses a couple of third party services:
 * The deployments are hosted on [DigitalOcean](https://digitalocean.com).
 * Authentication and authorization are managed by [Auth0](https://auth0.com).
+* Logging and monitoring is done through [Logtail](https://betterstack.com/logtail).
 * Secure financial payments are managed through [Stripe](https://stripe.com).
 * Crypto transactions and purchases are managed through [Coinbase](https://coinbase.com).
 
