@@ -1,5 +1,5 @@
-import type { IStripeCharge, IStripeRefund, IStripeSession } from "../entities/stripe.js";
-import { StripeRefund, StripeSession, StripeDelete, StripeCharge } from "../entities/stripe.js";
+import type { IStripeCharge, IStripePayment, IStripeRefund, IStripeSession } from "../entities/stripe.js";
+import { StripeRefund, StripeSession, StripeDelete, StripePayment, StripeCharge } from "../entities/stripe.js";
 import { Client } from "../utility/client.js";
 import type { PreciseNumber } from "../utility/number.js";
 
@@ -57,7 +57,7 @@ export class StripeClient extends Client {
         if (!response.deleted) { throw Error("user not deleted"); }
     }
 
-    public async createPayment(stripeId: string, amount: PreciseNumber): Promise<IStripeCharge> {
+    public async createPayment(stripeId: string, amount: PreciseNumber): Promise<IStripePayment> {
         const data = new URLSearchParams({
             customer: stripeId,
             amount: amount.multipliedBy(100).toFixed(0),
@@ -69,6 +69,13 @@ export class StripeClient extends Client {
             endpoint: "v1/payment_intents",
             method: "POST",
             body: data.toString()
+        };
+        return this.request(request, StripePayment);
+    }
+
+    public async retrieveCharge(stripeId: string): Promise<IStripeCharge> {
+        const request = {
+            endpoint: `v1/charge/${stripeId}?expand[]=balance_transaction`
         };
         return this.request(request, StripeCharge);
     }

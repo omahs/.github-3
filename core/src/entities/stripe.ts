@@ -1,16 +1,8 @@
 import { Schema } from "mongoose";
 import { createModel } from "../utility/mongo.js";
+import type { PreciseNumber } from "../utility/number.js";
+import { PreciseNumberSchema } from "../utility/number.js";
 import { URLSchema } from "../utility/url.js";
-
-export interface IStripeCharge {
-    id: string;
-}
-
-export const StripeChargeSchema = new Schema<IStripeCharge>({
-    id: { type: String, required: true }
-});
-
-export const StripeCharge = createModel<IStripeCharge>(StripeChargeSchema);
 
 export interface IStripeSession {
     url: URL;
@@ -24,10 +16,12 @@ export const StripeSession = createModel<IStripeSession>(StripeSessionSchema);
 
 export interface IStripeRefund {
     id: string;
+    status: string;
 }
 
 export const StripeRefundSchema = new Schema<IStripeRefund>({
-    id: { type: String, required: true }
+    id: { type: String, required: true },
+    status: { type: String, required: true }
 });
 
 export const StripeRefund = createModel<IStripeRefund>(StripeRefundSchema);
@@ -70,3 +64,35 @@ export const StripeCompletedSessionSchema = new Schema<IStripeCompletedSession>(
 });
 
 export const StripeCompletedSession = createModel<IStripeCompletedSession>(StripeCompletedSessionSchema);
+
+export interface IStripePayment {
+    id: string;
+    latest_charge?: string;
+}
+
+export const StripePaymentSchema = new Schema<IStripePayment>({
+    id: { type: String, required: true },
+    latest_charge: { type: String }
+});
+
+export const StripePayment = createModel<IStripePayment>(StripePaymentSchema);
+
+export interface IStripeTransaction {
+    fee: PreciseNumber;
+}
+
+export const StripeTransactionSchema = new Schema<IStripeTransaction>({
+    fee: { ...PreciseNumberSchema, required: true }
+});
+
+export const StripeTransaction = createModel<IStripeTransaction>(StripeTransactionSchema);
+
+export interface IStripeCharge {
+    balance_transaction: IStripeTransaction;
+}
+
+export const StripeChargeSchema = new Schema<IStripeCharge>({
+    balance_transaction: { type: StripeTransactionSchema, required: true }
+});
+
+export const StripeCharge = createModel<IStripeCharge>(StripeChargeSchema);
