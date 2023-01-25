@@ -3,14 +3,13 @@ import type { ReactElement } from "react";
 import React, { Component } from "react";
 import type { WithAuth0Props } from "@auth0/auth0-react";
 import { withAuth0 } from "@auth0/auth0-react";
-import type { ICoinbaseProduct } from "jewl-core";
-import { PreciseNumber } from "jewl-core";
-import { apiClient, coinbaseClient } from "../modules/network";
+import Timeline from "./timeline";
+import Checklist from "./checklist";
+import { apiClient } from "../modules/network";
 
 interface IState {
-    paymentConnected: boolean;
-    tokens: Array<string>;
-    suggestedAllocation: Record<string, PreciseNumber>;
+    userName: string;
+    showConfirmationPopup: boolean;
 }
 
 class Dash extends Component<WithAuth0Props, IState> {
@@ -18,48 +17,39 @@ class Dash extends Component<WithAuth0Props, IState> {
     public constructor(props: WithAuth0Props) {
         super(props);
         this.state = {
-            paymentConnected: false,
-            tokens: [],
-            suggestedAllocation: { }
+            userName: "",
+            showConfirmationPopup: false
         };
     }
 
     public componentDidMount(): void {
-        coinbaseClient.getProducts()
-            .then(x => this.handleCoinbaseProducts(x))
-            .catch(console.log);
-
         this.props.auth0
             .getAccessTokenSilently()
-            .then(async x => apiClient.getPaymentMethod(x))
-            .then(x => this.setState({ paymentConnected: x.connected }))
+            .then(() => this.setUsername())
             .catch(console.log);
     }
 
-    private handleCoinbaseProducts(products: Array<ICoinbaseProduct>): void {
-        const tokens = products.map(x => x.base_currency === "EUR" ? x.quote_currency : x.base_currency);
-        const suggestedAllocation = {
-            BTC: new PreciseNumber(0.4),
-            ETH: new PreciseNumber(0.4),
-            USDT: new PreciseNumber(0.2)
-        };
-        this.setState({ tokens, suggestedAllocation });
+    private setUsername(): void {
+        const email = this.props.auth0.user?.email;
+        if (email == null) { return; }
+        const parts = email.split("@");
+        if (parts.length < 1) { return; }
+        this.setState({ userName: parts[0] });
     }
 
-    private paymentPressed(): () => void {
+    private refundPopup(open: boolean): () => void {
         return (): void => {
-            if (this.state.paymentConnected) {
-                this.props.auth0
-                    .getAccessTokenSilently()
-                    .then(async x => apiClient.deletePaymentMethod(x))
-                    .catch(console.log);
-            } else {
-                this.props.auth0
-                    .getAccessTokenSilently()
-                    .then(async x => apiClient.setupPaymentMethod(x, new URL(window.location.origin)))
-                    .then(x => { window.location.href = x.redirect.toString(); })
-                    .catch(console.log);
-            }
+            this.setState({ showConfirmationPopup: open });
+        };
+    }
+
+    private confirmRefund(): () => void {
+        return (): void => {
+            this.props.auth0
+                .getAccessTokenSilently()
+                .then(async x => apiClient.refundOrders(x))
+                .then(() => this.setState({ showConfirmationPopup: false }))
+                .catch(console.log);
         };
     }
 
@@ -70,15 +60,21 @@ class Dash extends Component<WithAuth0Props, IState> {
     public render(): ReactElement {
         return (
             <div className="dash">
-                Connected: {this.state.paymentConnected}
-                <br />
-                <button type="button" onClick={this.paymentPressed()} className="header-login">
-                    {this.state.paymentConnected ? "Disconnect" : "Connect"}
-                </button>
-                <br />
-                {this.state.tokens.join(" ")}
-                <br />
-                {JSON.stringify(this.state.suggestedAllocation)}
+                <div className="dash-title">
+                    Hi! {this.state.userName}
+                </div>
+                <Checklist />
+                <Timeline />
+                <div className="dash-footer">
+                    Don&apos;t worry, we will also keep you updated on any purchase we make on your behalf via email!
+                    If you&apos;ve changed your mind you can refund all your open orders
+                    {" "}
+                    <span className="dash-footer-link" onClick={this.refundPopup(true)}>here</span>.
+                </div>
+                <div className="dash-confirmation" hidden={!this.state.showConfirmationPopup}>
+                    <button type="button" onClick={this.refundPopup(false)}>Cancel</button>
+                    <button type="button" onClick={this.confirmRefund()}>Refund</button>
+                </div>
             </div>
         );
     }

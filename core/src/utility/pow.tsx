@@ -4,7 +4,6 @@ import { nanoid } from "nanoid";
 import { createHash } from "crypto";
 import { BigNumber } from "bignumber.js";
 
-
 const issuer = "jewl.app";
 
 export const createChallenge = async (ip: string, key: string): Promise<string> => {

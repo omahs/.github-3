@@ -96,3 +96,25 @@ export const StripeChargeSchema = new Schema<IStripeCharge>({
 });
 
 export const StripeCharge = createModel<IStripeCharge>(StripeChargeSchema);
+
+export interface IStripePaymentMethod {
+    id: string;
+    type: string;
+}
+
+export const StripePaymentMethodSchema = new Schema<IStripePaymentMethod>({
+    id: { type: String, required: true },
+    type: { type: String, required: true }
+});
+
+export const StripePaymentMethod = createModel<IStripePaymentMethod>(StripePaymentMethodSchema);
+
+export interface IStripePaymentMethods {
+    data: Array<IStripePaymentMethod>;
+}
+
+export const StripePaymentMethodsSchema = new Schema<IStripePaymentMethods>({
+    data: { type: [StripePaymentMethodSchema], required: true }
+});
+
+export const StripePaymentMethods = createModel<IStripePaymentMethods>(StripePaymentMethodsSchema);

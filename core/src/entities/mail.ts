@@ -7,7 +7,6 @@ export enum MailState {
 }
 
 export enum MailType {
-    welcome = 0,
     payment = 1,
     refund = 2,
     transfer = 3,

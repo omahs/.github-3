@@ -9,6 +9,14 @@ export interface IRequest {
     headers?: Record<string, string>;
 }
 
+class ClientError extends Error {
+    public readonly status: number;
+    public constructor(status: number, message: string) {
+        super(message);
+        this.status = status;
+    }
+}
+
 export abstract class Client {
     private readonly baseUrl: string;
 
@@ -39,7 +47,7 @@ export abstract class Client {
         };
         const res = await isomorphic.fetch(url, request) as Response;
         if (res.status < 200 || res.status >= 300) {
-            throw new Error(`received a status code of ${res.status} for ${req.endpoint}`);
+            throw new ClientError(res.status, `received a status code of ${res.status} for ${req.endpoint}`);
         }
         let json = await res.json() as object;
 
@@ -54,3 +62,22 @@ export abstract class Client {
         return validate(schema, json);
     }
 }
+
+declare global {
+    interface Promise<T> {
+        ignore: (statusCode: number | Array<number>) => Promise<T | null>;
+    }
+}
+
+Promise.prototype.ignore = async function<T>(this: Promise<T>, statusCode: number | Array<number>): Promise<T | null> {
+    const statusCodes = typeof statusCode === "number" ? [statusCode] : statusCode;
+    try {
+        const result = await this;
+        return result;
+    } catch (err) {
+        if (err instanceof ClientError && statusCodes.includes(err.status)) {
+            return null;
+        }
+        throw err;
+    }
+};

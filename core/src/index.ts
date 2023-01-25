@@ -23,4 +23,3 @@ export * from "./utility/mongo.js";
 export * from "./utility/number.js";
 export * from "./utility/string.js";
 export * from "./utility/url.js";
-export * from "./utility/user.js";

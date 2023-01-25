@@ -1,5 +1,5 @@
 import type { IStripeEvent, IOrder } from "jewl-core";
-import { StripeEvent, StripeCompletedSession, validate, User, StripePayment, Payment, PaymentState, Mail, MailState, MailType, StripeRefund, Refund, RefundState, OrderState, DateTime, Order } from "jewl-core";
+import { StripeEvent, StripeCompletedSession, validate, Stripe, StripePayment, Payment, PaymentState, Mail, MailState, MailType, StripeRefund, Refund, RefundState, OrderState, DateTime, Order, Allocation } from "jewl-core";
 import { Body, Hidden, Post, Route, Security, SuccessResponse } from "tsoa";
 import { HttpError } from "../../modules/error.js";
 import { stripeClient } from "../../modules/network.js";
@@ -7,7 +7,14 @@ import { stripeClient } from "../../modules/network.js";
 const handlers: Record<string, (data: object) => Promise<void>> = {
     handleCheckoutSessionCompleted: async (data: object): Promise<void> => {
         const body = await validate(StripeCompletedSession, data);
-        await User.updateOne({ userId: body.client_reference_id }, { stripeId: body.customer });
+        const paymentMethod = await stripeClient.getPaymentMethod(body.customer);
+        const stripe = new Stripe({
+            userId: body.client_reference_id,
+            customerId: body.customer,
+            paymentId: paymentMethod.id,
+            paymentType: paymentMethod.type
+        });
+        await stripe.save();
     },
 
     handlePaymentintentSucceeded: async (data: object): Promise<void> => {
@@ -15,8 +22,8 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
         const payment = await Payment.findOne({ stripeId: body.id });
         if (payment == null) { throw new HttpError(404, "payment could not be found"); }
 
-        const user = await User.findOne({ userId: payment.userId });
-        if (user == null) { throw new HttpError(404, "user could not be found"); }
+        const allocations = await Allocation.findOne({ userId: payment.userId });
+        if (allocations == null) { throw new HttpError(404, "allocation could not be found"); }
 
         if (body.latest_charge == null) { throw new HttpError(404, "charge could not be found"); }
         if (payment.state !== PaymentState.initiated) { throw new HttpError(403, "payment already registered"); }
@@ -30,17 +37,17 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
         const feeAmount = orderAmount.multipliedBy(0.1);
         const orders: Array<IOrder> = [];
         for (const installment of [...Array(payment.installments).keys()]) {
-            for (const currency of Object.keys(user.allocation)) {
-                const allocation = user.allocation[currency];
+            for (const currency of Object.keys(allocations.allocation)) {
+                const allocation = allocations.allocation[currency];
                 const order: IOrder = {
-                    userId: user.userId,
+                    userId: payment.userId,
                     paymentId: payment.id as string,
                     state: OrderState.open,
                     notBefore: new DateTime().addingDays(installment * payment.period),
                     currency,
                     amount: orderAmount.dividedBy(allocation),
                     fee: feeAmount.dividedBy(allocation),
-                    destination: user.addresses[currency]
+                    destination: allocations.addresses[currency]
                 };
                 orders.push(order);
             }

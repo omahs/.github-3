@@ -2,10 +2,14 @@ import { Schema } from "mongoose";
 import { DateTime } from "../utility/date.js";
 import { DateTimeSchema } from "../utility/date.js";
 import { createModel } from "../utility/mongo.js";
-import type { PreciseNumber } from "../utility/number.js";
-import { PreciseNumberSchema } from "../utility/number.js";
-import { URLSchema } from "../utility/url.js";
-import { OrderPeriod } from "./order.js";
+import { PreciseNumber, PreciseNumberSchema } from "../utility/number.js";
+
+export enum OrderPeriod {
+    daily = 1,
+    weekly = 7,
+    biweekly = 14,
+    quadweekly = 28
+}
 
 export enum PaymentState {
     scheduled = 0,
@@ -38,32 +42,48 @@ export const PaymentSchema = new Schema<IPayment>({
 
 export const Payment = createModel<IPayment>(PaymentSchema, "payments");
 
-export interface IPaymentSetupRequest {
-    callback: URL;
+export interface IPaymentRequest {
+    amount: PreciseNumber;
+    installments: number;
+    period: OrderPeriod;
+    autoRenew: boolean;
 }
 
-export const PaymentSetupRequestSchema = new Schema<IPaymentSetupRequest>({
-    callback: { ...URLSchema, required: true }
+export const PaymentRequestSchema = new Schema<IPaymentRequest>({
+    amount: { ...PreciseNumberSchema, required: true },
+    installments: { type: Number, required: true, min: 1, max: 12 },
+    period: { type: Number, enum: OrderPeriod, required: true },
+    autoRenew: { type: Boolean, required: true }
 });
 
-export const PaymentSetupRequest = createModel<IPaymentSetupRequest>(PaymentSetupRequestSchema);
-
-export interface IPaymentSetupResponse {
-    redirect: URL;
-}
-
-export const PaymentSetupResponseSchema = new Schema<IPaymentSetupResponse>({
-    redirect: { ...URLSchema, required: true }
+/* eslint-disable @typescript-eslint/no-invalid-this */
+PaymentRequestSchema.pre("validate", function(next) {
+    const totalTerm = new PreciseNumber(this.installments).multipliedBy(this.period);
+    const multiplier = new PreciseNumber(356).div(totalTerm);
+    const yearlyEquivalent = this.amount.div(multiplier);
+    if (yearlyEquivalent.gte(1e5)) {
+        this.invalidate("amount", "maximum amount of 100k per year exceeded");
+    }
+    next();
 });
+/* eslint-enable @typescript-eslint/no-invalid-this */
 
-export const PaymentSetupResponse = createModel<IPaymentSetupResponse>(PaymentSetupResponseSchema);
+export const PaymentRequest = createModel<IPaymentRequest>(PaymentRequestSchema);
 
 export interface IPaymentResponse {
-    connected: boolean;
+    amount: PreciseNumber;
+    installments: number;
+    period: OrderPeriod;
+    autoRenew: boolean;
+    isActive: boolean;
 }
 
 export const PaymentResponseSchema = new Schema<IPaymentResponse>({
-    connected: { type: Boolean, required: true }
+    amount: { ...PreciseNumberSchema, required: true },
+    installments: { type: Number, required: true, min: 1, max: 12 },
+    period: { type: Number, enum: OrderPeriod, required: true },
+    autoRenew: { type: Boolean, required: true },
+    isActive: { type: Boolean, required: true }
 });
 
 export const PaymentResponse = createModel<IPaymentResponse>(PaymentResponseSchema);

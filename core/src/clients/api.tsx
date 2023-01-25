@@ -1,10 +1,13 @@
-import type { IPaymentResponse, IPaymentSetupRequest, IPaymentSetupResponse } from "../entities/payment.js";
-import { PaymentResponse, PaymentSetupResponse } from "../entities/payment.js";
+import type { IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
+import { PaymentMethodResponse, PaymentMethodSetupResponse } from "../entities/user.js";
 import type { IPingResponse } from "../entities/ping.js";
 import { PingResponse } from "../entities/ping.js";
 import { NoResponse } from "../entities/void.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
+import type { IPaymentRequest, IPaymentResponse, OrderPeriod } from "../entities/payment.js";
+import { PaymentResponse } from "../entities/payment.js";
+import type { PreciseNumber } from "../utility/number.js";
 
 export class ApiClient extends Client {
     public constructor(url: string) {
@@ -21,33 +24,75 @@ export class ApiClient extends Client {
         return this.request(request, PingResponse);
     }
 
-    public async getPaymentMethod(token: string): Promise<IPaymentResponse> {
+    public async getPaymentMethod(token: string): Promise<IPaymentMethodResponse> {
         const request: IRequest = {
-            endpoint: "v1/payment",
+            endpoint: "v1/user/payment",
             headers: { Authorization: `Bearer ${token}` }
         };
-        return this.request(request, PaymentResponse);
+        return this.request(request, PaymentMethodResponse);
     }
 
-    public async setupPaymentMethod(token: string, callback: URL): Promise<IPaymentSetupResponse> {
-        const body: IPaymentSetupRequest = {
+    public async setupPaymentMethod(token: string, callback: URL): Promise<IPaymentMethodSetupResponse> {
+        const body: IPaymentMethodSetupRequest = {
             callback
+        };
+        const request: IRequest = {
+            endpoint: "v1/user/payment",
+            headers: { Authorization: `Bearer ${token}` },
+            method: "POST",
+            body: JSON.stringify(body)
+        };
+
+        return this.request(request, PaymentMethodSetupResponse);
+    }
+
+    public async deletePaymentMethod(token: string): Promise<object> {
+        const request: IRequest = {
+            endpoint: "v1/user/payment",
+            headers: { Authorization: `Bearer ${token}` },
+            method: "DELETE"
+        };
+        return this.request(request, NoResponse);
+    }
+
+    public async refundOrders(token: string): Promise<object> {
+        const request: IRequest = {
+            endpoint: "v1/payment",
+            headers: { Authorization: `Bearer ${token}` },
+            method: "DELETE"
+        };
+        return this.request(request, NoResponse);
+    }
+
+    public async setAutoRenew(token: string, enabled: boolean): Promise<object> {
+        const request: IRequest = {
+            endpoint: "v1/payment/renew",
+            headers: { Authorization: `Bearer ${token}` },
+            method: enabled ? "PUT" : "DELETE"
+        };
+        return this.request(request, NoResponse);
+    }
+
+    public async getLastPayment(token: string): Promise<IPaymentResponse | null> {
+        const request: IRequest = {
+            endpoint: "v1/payment/last",
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        return this.request(request, PaymentResponse).ignore(404);
+    }
+
+    public async initiatePayment(token: string, amount: PreciseNumber, installments: number, period: OrderPeriod, autoRenew: boolean): Promise<object> {
+        const body: IPaymentRequest = {
+            amount,
+            installments,
+            period,
+            autoRenew
         };
         const request: IRequest = {
             endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` },
             method: "POST",
             body: JSON.stringify(body)
-        };
-
-        return this.request(request, PaymentSetupResponse);
-    }
-
-    public async deletePaymentMethod(token: string): Promise<object> {
-        const request: IRequest = {
-            endpoint: "v1/payment",
-            headers: { Authorization: `Bearer ${token}` },
-            method: "DELETE"
         };
         return this.request(request, NoResponse);
     }

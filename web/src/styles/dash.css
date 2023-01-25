@@ -3,3 +3,11 @@
     overflow-y: overlay;
     height: calc(100vh - 56px);
 }
+
+.dash-footer-link {
+    cursor: pointer;
+}
+
+.dash-footer-link:hover {
+    text-decoration: underline;
+}
