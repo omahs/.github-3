@@ -24,6 +24,7 @@
     ],
     "ignorePatterns": ["build", "*.gen.*"],
     "rules": {
+        "array-bracket-newline": ["error", "consistent"],
         "arrow-parens": ["error", "as-needed"],
         "array-element-newline": ["error", "consistent"],
         "dot-location": ["error", "property"],

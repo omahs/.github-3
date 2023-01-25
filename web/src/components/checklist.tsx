@@ -3,15 +3,14 @@ import type { ReactElement } from "react";
 import React, { Component } from "react";
 import type { WithAuth0Props } from "@auth0/auth0-react";
 import { withAuth0 } from "@auth0/auth0-react";
-import type { ICoinbaseProduct, IPaymentResponse } from "jewl-core";
+import type { IAllocationItem, ICoinbaseProduct, IPaymentResponse } from "jewl-core";
 import { OrderPeriod } from "jewl-core";
 import { PreciseNumber } from "jewl-core";
 import { apiClient, coinbaseClient } from "../modules/network";
 
 interface IState {
     tokens: Array<string>;
-    allocation: Record<string, PreciseNumber>;
-    addresses: Record<string, string>;
+    allocation: Array<IAllocationItem>;
     isActive: boolean;
     paymentMethod: boolean;
     amount: PreciseNumber;
@@ -25,16 +24,15 @@ class Checklist extends Component<WithAuth0Props, IState> {
     public constructor(props: WithAuth0Props) {
         super(props);
 
-        const suggestedAllocation = {
-            BTC: new PreciseNumber(0.4),
-            ETH: new PreciseNumber(0.4),
-            USDT: new PreciseNumber(0.2)
-        };
+        // Const suggestedAllocation = {
+        //     BTC: new PreciseNumber(0.4),
+        //     ETH: new PreciseNumber(0.4),
+        //     USDT: new PreciseNumber(0.2)
+        // };
 
         this.state = {
             tokens: [],
-            allocation: suggestedAllocation,
-            addresses: { },
+            allocation: [],
             paymentMethod: false,
             isActive: false,
             amount: new PreciseNumber(0),
@@ -61,7 +59,11 @@ class Checklist extends Component<WithAuth0Props, IState> {
             .then(x => this.handleLastPayment(x))
             .catch(console.log);
 
-        // TODO: get addresses & allocations
+        this.props.auth0
+            .getAccessTokenSilently()
+            .then(async x => apiClient.getAllocation(x))
+            .then(x => this.setState({ allocation: x ?? [] }))
+            .catch(console.log);
     }
 
     private handleLastPayment(lastPayment: IPaymentResponse | null): void {
@@ -95,6 +97,19 @@ class Checklist extends Component<WithAuth0Props, IState> {
                     .then(x => { window.location.href = x.redirect.toString(); })
                     .catch(console.log);
             }
+        };
+    }
+
+    private setAllocation(): () => void {
+        return (): void => {
+            const btc = [
+                { currency: "BTC", percentage: new PreciseNumber(1), address: "bc1qlf5797zh08f4e7nr3u2znmem0c95043hh5y230" }
+            ];
+            this.props.auth0
+                .getAccessTokenSilently()
+                .then(async x => apiClient.setAllocation(x, btc))
+                .then(() => this.setState({ allocation: btc }))
+                .catch(console.log);
         };
     }
 
@@ -159,8 +174,11 @@ class Checklist extends Component<WithAuth0Props, IState> {
                 </div>
                 <div className="checklist-item">
                     2. Set up your preferred allocation
+                    {" "}
+                    <button type="button" onClick={this.setAllocation()}>
+                        Commit
+                    </button>
                     {JSON.stringify(this.state.allocation)}
-                    {JSON.stringify(this.state.addresses)}
                     {this.state.tokens.length}
                 </div>
                 <div className="checklist-item">

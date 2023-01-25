@@ -20,16 +20,28 @@ export const StripeSchema = new Schema<IStripe>({
 
 export const Stripe = createModel<IStripe>(StripeSchema, "stripes");
 
+export interface IAllocationItem {
+    currency: string;
+    percentage: PreciseNumber;
+    address: string;
+}
+
+export const AllocationItemSchema = new Schema<IAllocationItem>({
+    currency: { type: String, required: true },
+    percentage: { ...PreciseNumberSchema, required: true },
+    address: { type: String, required: true }
+});
+
+export const AllocationItem = createModel<IAllocationItem>(AllocationItemSchema);
+
 export interface IAllocation {
     userId: string;
-    addresses: Record<string, string>;
-    percentages: Record<string, PreciseNumber>;
+    allocation: Array<IAllocationItem>;
 }
 
 export const AllocationSchema = new Schema<IAllocation>({
     userId: { type: String, required: true, unique: true },
-    addresses: { type: Map, of: String, required: true },
-    percentages: { type: Map, of: PreciseNumberSchema, required: true }
+    allocation: { type: [AllocationItemSchema], required: true }
 });
 
 AllocationSchema.pre("validate", allocationValidator);
@@ -67,13 +79,11 @@ export const PaymentMethodResponseSchema = new Schema<IPaymentMethodResponse>({
 export const PaymentMethodResponse = createModel<IPaymentMethodResponse>(PaymentMethodResponseSchema);
 
 export interface IAllocationRequest {
-    addresses: Record<string, string>;
-    percentages: Record<string, PreciseNumber>;
+    allocation: Array<IAllocationItem>;
 }
 
 export const AllocationRequestSchema = new Schema<IAllocationRequest>({
-    addresses: { type: Map, of: String, required: true },
-    percentages: { type: Map, of: PreciseNumberSchema, required: true }
+    allocation: { type: [AllocationItemSchema], required: true }
 });
 
 AllocationRequestSchema.pre("validate", allocationValidator);
@@ -81,13 +91,11 @@ AllocationRequestSchema.pre("validate", allocationValidator);
 export const AllocationRequest = createModel<IAllocationRequest>(AllocationRequestSchema);
 
 export interface IAllocationResponse {
-    addresses: Record<string, string>;
-    percentages: Record<string, PreciseNumber>;
+    allocation: Array<IAllocationItem>;
 }
 
 export const AllocationResponseSchema = new Schema<IAllocationResponse>({
-    addresses: { type: Map, of: String, required: true },
-    percentages: { type: Map, of: PreciseNumberSchema, required: true }
+    allocation: { type: [AllocationItemSchema], required: true }
 });
 
 AllocationResponseSchema.pre("validate", allocationValidator);

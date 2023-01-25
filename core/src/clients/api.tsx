@@ -1,4 +1,5 @@
-import type { IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
+import type { IAllocationItem, IAllocationRequest, IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
+import { AllocationResponse } from "../entities/user.js";
 import { PaymentMethodResponse, PaymentMethodSetupResponse } from "../entities/user.js";
 import type { IPingResponse } from "../entities/ping.js";
 import { PingResponse } from "../entities/ping.js";
@@ -92,6 +93,27 @@ export class ApiClient extends Client {
             endpoint: "v1/payment",
             headers: { Authorization: `Bearer ${token}` },
             method: "POST",
+            body: JSON.stringify(body)
+        };
+        return this.request(request, NoResponse);
+    }
+
+    public async getAllocation(token: string): Promise<Array<IAllocationItem> | null> {
+        const request: IRequest = {
+            endpoint: "v1/user/allocation",
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        return this.request(request, AllocationResponse).then(x => x.allocation).ignore(404);
+    }
+
+    public async setAllocation(token: string, allocation: Array<IAllocationItem>): Promise<object> {
+        const body: IAllocationRequest = {
+            allocation
+        };
+        const request: IRequest = {
+            endpoint: "v1/user/allocation",
+            headers: { Authorization: `Bearer ${token}` },
+            method: "PUT",
             body: JSON.stringify(body)
         };
         return this.request(request, NoResponse);

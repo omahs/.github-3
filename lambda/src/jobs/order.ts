@@ -50,8 +50,8 @@ const getAverageOrderPrice = async (product: ICoinbaseProduct, availableBalance:
 
     while (cumlative.lt(availableBalance) && index < orders.length) {
         const order = orders[index];
-        equivalent = equivalent.plus(product.base_currency === "EUR" ? order.filled_size : order.filled_size.div(order.price));
-        cumlative = cumlative.plus(product.base_currency === "EUR" ? order.filled_size.div(order.price) : order.filled_size);
+        equivalent = equivalent.plus(product.base_currency === "EUR" ? order.filled_size : order.filled_size.dividedBy(order.price));
+        cumlative = cumlative.plus(product.base_currency === "EUR" ? order.filled_size.dividedBy(order.price) : order.filled_size);
         index += 1;
     }
 
@@ -110,7 +110,7 @@ const placeNewOrder = async (product: ICoinbaseProduct, accounts: Array<ICoinbas
     const productBook = await coinbaseClient.getBook(product.id);
     const side = product.base_currency === "EUR" ? "sell" : "buy";
     const [[price]] = product.base_currency === "EUR" ? productBook.asks : productBook.bids;
-    const size = product.base_currency === "EUR" ? requiredOrderSize : requiredOrderSize.div(price);
+    const size = product.base_currency === "EUR" ? requiredOrderSize : requiredOrderSize.dividedBy(price);
     await coinbaseClient.placeOrder(side, product.id, price, size);
 };
 

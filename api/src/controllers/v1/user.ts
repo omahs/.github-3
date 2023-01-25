@@ -13,15 +13,14 @@ export class UserController {
         const allocation = await Allocation.findOne({ userId: req.user.userId });
         if (allocation == null) { throw new HttpError(404, "no allocation found"); }
         return {
-            percentages: allocation.percentages,
-            addresses: allocation.addresses
+            allocation: allocation.allocation
         };
     }
 
     @Put("/allocation")
     public async setAllocation(@Request() req: WithAuthentication, @Body() body: IAllocationRequest): Promise<void> {
         const validatedBody = await validate(AllocationRequest, body);
-        await Allocation.updateOne({ userId: req.user.userId }, { percentages: validatedBody.percentages, addresses: validatedBody.addresses }, { upsert: true });
+        await Allocation.updateOne({ userId: req.user.userId }, { allocation: validatedBody.allocation }, { upsert: true });
     }
 
     @Get("/payment")

@@ -34,20 +34,21 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
         await payment.save();
 
         const orderAmount = payment.amount.minus(payment.fee);
-        const feeAmount = orderAmount.multipliedBy(0.1);
+        const feeAmount = orderAmount.multipliedBy(0.01);
         const orders: Array<IOrder> = [];
         for (const installment of [...Array(payment.installments).keys()]) {
-            for (const currency of Object.keys(allocations.percentages)) {
-                const allocation = allocations.percentages[currency];
+            const installmentAmount = orderAmount.dividedBy(payment.installments);
+            const installementFee = feeAmount.dividedBy(payment.installments);
+            for (const allocationItem of allocations.allocation) {
                 const order: IOrder = {
                     userId: payment.userId,
                     paymentId: payment.id as string,
                     state: OrderState.open,
                     notBefore: new DateTime().addingDays(installment * payment.period),
-                    currency,
-                    amount: orderAmount.dividedBy(allocation),
-                    fee: feeAmount.dividedBy(allocation),
-                    destination: allocations.addresses[currency]
+                    currency: allocationItem.currency,
+                    amount: installmentAmount.dividedBy(allocationItem.percentage).decimalPlaces(2, 3),
+                    fee: installementFee.dividedBy(allocationItem.percentage).decimalPlaces(2, 3),
+                    destination: allocationItem.address
                 };
                 orders.push(order);
             }
