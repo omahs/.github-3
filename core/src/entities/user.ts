@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { createModel } from "../utility/mongo.js";
+import { allocationValidator, createModel } from "../utility/mongo.js";
 import type { PreciseNumber } from "../utility/number.js";
 import { PreciseNumberSchema } from "../utility/number.js";
 import { URLSchema } from "../utility/url.js";
@@ -23,26 +23,16 @@ export const Stripe = createModel<IStripe>(StripeSchema, "stripes");
 export interface IAllocation {
     userId: string;
     addresses: Record<string, string>;
-    allocation: Record<string, PreciseNumber>;
+    percentages: Record<string, PreciseNumber>;
 }
 
 export const AllocationSchema = new Schema<IAllocation>({
     userId: { type: String, required: true, unique: true },
     addresses: { type: Map, of: String, required: true },
-    allocation: { type: Map, of: PreciseNumberSchema, required: true }
+    percentages: { type: Map, of: PreciseNumberSchema, required: true }
 });
 
-/* eslint-disable @typescript-eslint/no-invalid-this */
-AllocationSchema.pre("validate", function(next) {
-    if (Object.keys(this.allocation).length < 1) { this.invalidate("allocation", "empty allocation"); }
-    for (const key in this.allocation) {
-        if (this.addresses[key] === null) {
-            this.invalidate("addresses", `address for ${key} missing`);
-        }
-    }
-    next();
-});
-/* eslint-enable @typescript-eslint/no-invalid-this */
+AllocationSchema.pre("validate", allocationValidator);
 
 export const Allocation = createModel<IAllocation>(AllocationSchema, "allocations");
 
@@ -75,3 +65,31 @@ export const PaymentMethodResponseSchema = new Schema<IPaymentMethodResponse>({
 });
 
 export const PaymentMethodResponse = createModel<IPaymentMethodResponse>(PaymentMethodResponseSchema);
+
+export interface IAllocationRequest {
+    addresses: Record<string, string>;
+    percentages: Record<string, PreciseNumber>;
+}
+
+export const AllocationRequestSchema = new Schema<IAllocationRequest>({
+    addresses: { type: Map, of: String, required: true },
+    percentages: { type: Map, of: PreciseNumberSchema, required: true }
+});
+
+AllocationRequestSchema.pre("validate", allocationValidator);
+
+export const AllocationRequest = createModel<IAllocationRequest>(AllocationRequestSchema);
+
+export interface IAllocationResponse {
+    addresses: Record<string, string>;
+    percentages: Record<string, PreciseNumber>;
+}
+
+export const AllocationResponseSchema = new Schema<IAllocationResponse>({
+    addresses: { type: Map, of: String, required: true },
+    percentages: { type: Map, of: PreciseNumberSchema, required: true }
+});
+
+AllocationResponseSchema.pre("validate", allocationValidator);
+
+export const AllocationResponse = createModel<IAllocationResponse>(AllocationResponseSchema);

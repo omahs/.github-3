@@ -37,8 +37,8 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
         const feeAmount = orderAmount.multipliedBy(0.1);
         const orders: Array<IOrder> = [];
         for (const installment of [...Array(payment.installments).keys()]) {
-            for (const currency of Object.keys(allocations.allocation)) {
-                const allocation = allocations.allocation[currency];
+            for (const currency of Object.keys(allocations.percentages)) {
+                const allocation = allocations.percentages[currency];
                 const order: IOrder = {
                     userId: payment.userId,
                     paymentId: payment.id as string,

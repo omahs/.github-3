@@ -1,8 +1,9 @@
 import { Schema } from "mongoose";
 import { DateTime } from "../utility/date.js";
 import { DateTimeSchema } from "../utility/date.js";
-import { createModel } from "../utility/mongo.js";
-import { PreciseNumber, PreciseNumberSchema } from "../utility/number.js";
+import { amountValidator, createModel } from "../utility/mongo.js";
+import type { PreciseNumber } from "../utility/number.js";
+import { PreciseNumberSchema } from "../utility/number.js";
 
 export enum OrderPeriod {
     daily = 1,
@@ -40,6 +41,8 @@ export const PaymentSchema = new Schema<IPayment>({
     fee: { ...PreciseNumberSchema }
 });
 
+PaymentSchema.pre("validate", amountValidator);
+
 export const Payment = createModel<IPayment>(PaymentSchema, "payments");
 
 export interface IPaymentRequest {
@@ -56,17 +59,7 @@ export const PaymentRequestSchema = new Schema<IPaymentRequest>({
     autoRenew: { type: Boolean, required: true }
 });
 
-/* eslint-disable @typescript-eslint/no-invalid-this */
-PaymentRequestSchema.pre("validate", function(next) {
-    const totalTerm = new PreciseNumber(this.installments).multipliedBy(this.period);
-    const multiplier = new PreciseNumber(356).div(totalTerm);
-    const yearlyEquivalent = this.amount.div(multiplier);
-    if (yearlyEquivalent.gte(1e5)) {
-        this.invalidate("amount", "maximum amount of 100k per year exceeded");
-    }
-    next();
-});
-/* eslint-enable @typescript-eslint/no-invalid-this */
+PaymentRequestSchema.pre("validate", amountValidator);
 
 export const PaymentRequest = createModel<IPaymentRequest>(PaymentRequestSchema);
 
@@ -85,5 +78,7 @@ export const PaymentResponseSchema = new Schema<IPaymentResponse>({
     autoRenew: { type: Boolean, required: true },
     isActive: { type: Boolean, required: true }
 });
+
+PaymentResponseSchema.pre("validate", amountValidator);
 
 export const PaymentResponse = createModel<IPaymentResponse>(PaymentResponseSchema);

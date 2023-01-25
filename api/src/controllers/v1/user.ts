@@ -1,7 +1,6 @@
-import type { IPaymentMethodSetupRequest, IPaymentMethodResponse, IPaymentMethodSetupResponse, IPingResponse } from "jewl-core";
-import { Stripe } from "jewl-core";
-import { PaymentMethodSetupRequest, Payment, PaymentState, validate } from "jewl-core";
-import { Delete, Get, Route, Security, Post, Body, Request, SuccessResponse } from "tsoa";
+import type { IPaymentMethodSetupRequest, IPaymentMethodResponse, IPaymentMethodSetupResponse, IAllocationResponse, IAllocationRequest } from "jewl-core";
+import { PaymentMethodSetupRequest, Payment, PaymentState, validate, Stripe, Allocation, AllocationRequest } from "jewl-core";
+import { Delete, Get, Route, Security, Post, Body, Request, SuccessResponse, Put } from "tsoa";
 import type { WithAuthentication } from "../../modules/auth.js";
 import { HttpError } from "../../modules/error.js";
 import { authClient, stripeClient } from "../../modules/network.js";
@@ -9,12 +8,21 @@ import { authClient, stripeClient } from "../../modules/network.js";
 @Route("/v1/user")
 @Security("token")
 export class UserController {
-    @Get("/")
-    public getMessage(): IPingResponse {
-        return { message: "user" };
+    @Get("/allocation")
+    public async getAllocation(@Request() req: WithAuthentication): Promise<IAllocationResponse> {
+        const allocation = await Allocation.findOne({ userId: req.user.userId });
+        if (allocation == null) { throw new HttpError(404, "no allocation found"); }
+        return {
+            percentages: allocation.percentages,
+            addresses: allocation.addresses
+        };
     }
 
-    // TODO: set allocations and addresses
+    @Put("/allocation")
+    public async setAllocation(@Request() req: WithAuthentication, @Body() body: IAllocationRequest): Promise<void> {
+        const validatedBody = await validate(AllocationRequest, body);
+        await Allocation.updateOne({ userId: req.user.userId }, { percentages: validatedBody.percentages, addresses: validatedBody.addresses }, { upsert: true });
+    }
 
     @Get("/payment")
     public async getPaymentMethod(@Request() req: WithAuthentication): Promise<IPaymentMethodResponse> {
