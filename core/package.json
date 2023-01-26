@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "jewl-isomorphic": "*",
-        "mongoose": "^6.8.4",
+        "mongoose": "^6.9.0",
         "bignumber.js": "^9.1.0",
         "nanoid": "^4.0.0",
         "jose": "^4.11.0"
