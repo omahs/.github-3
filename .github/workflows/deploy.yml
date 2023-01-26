@@ -11,7 +11,7 @@ jobs:
   digitalocean:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event_name == 'release' && 'prod' || 'dev' }}
+      name: ${{ github.event_name == 'release' && 'prd' || 'dev' }}
       url: ${{ github.event_name == 'release' && 'https://jewl.app/' || 'https://dev.jewl.app/' }}
     steps:
     - name: Install doctl
