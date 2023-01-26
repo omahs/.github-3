@@ -19,7 +19,6 @@ export const Back = (): ReactElement => {
             .finally(() => setLoading(false));
     }, []);
 
-
     let content: ReactElement = <Dash />;
 
     if (loading) {
