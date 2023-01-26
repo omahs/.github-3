@@ -8,14 +8,18 @@ export interface IStripe {
     userId: string;
     customerId: string;
     paymentId: string;
-    paymentType: string;
+    type: string;
+    subtype?: string;
+    last4?: string;
 }
 
 export const StripeSchema = new Schema<IStripe>({
     userId: { type: String, required: true, unique: true },
     customerId: { type: String, required: true, unique: true },
     paymentId: { type: String, required: true, unique: true },
-    paymentType: { type: String, required: true }
+    type: { type: String, required: true },
+    subtype: { type: String },
+    last4: { type: String }
 });
 
 export const Stripe = createModel<IStripe>(StripeSchema, "stripes");
@@ -69,11 +73,15 @@ export const PaymentMethodSetupResponseSchema = new Schema<IPaymentMethodSetupRe
 export const PaymentMethodSetupResponse = createModel<IPaymentMethodSetupResponse>(PaymentMethodSetupResponseSchema);
 
 export interface IPaymentMethodResponse {
-    connected: boolean;
+    type: string;
+    subtype?: string;
+    last4?: string;
 }
 
 export const PaymentMethodResponseSchema = new Schema<IPaymentMethodResponse>({
-    connected: { type: Boolean, required: true }
+    type: { type: String, required: true },
+    subtype: { type: String },
+    last4: { type: String }
 });
 
 export const PaymentMethodResponse = createModel<IPaymentMethodResponse>(PaymentMethodResponseSchema);

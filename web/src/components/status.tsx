@@ -1,6 +1,6 @@
 import "../styles/status.css";
 import type { ReactElement } from "react";
-import React, { Component } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,25 +10,14 @@ interface IProps {
     message?: string;
 }
 
-export default class Status extends Component<IProps> {
-
-    public constructor(props: IProps) {
-        super(props);
-    }
-
-    public shouldComponentUpdate(): boolean {
-        return true;
-    }
-
-    public render(): ReactElement {
-        return (
-            <div className="status">
-                <div className="status-image">
-                    <FontAwesomeIcon className="status-image-icon" icon={this.props.icon} />
-                </div>
-                <div className="status-title">{this.props.title}</div>
-                <div className="status-message" hidden={this.props.message == null}>{this.props.message ?? ""}</div>
+export const Status = (props: IProps): ReactElement => {
+    return (
+        <div className="status">
+            <div className="status-image">
+                <FontAwesomeIcon className="status-image-icon" icon={props.icon} />
             </div>
-        );
-    }
-}
+            <div className="status-title">{props.title}</div>
+            <div className="status-message" hidden={props.message == null}>{props.message ?? ""}</div>
+        </div>
+    );
+};

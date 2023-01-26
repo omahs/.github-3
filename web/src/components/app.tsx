@@ -1,44 +1,30 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
-import React, { Component } from "react";
-import Back from "./back";
-import Front from "./front";
-import Header from "./header";
-import Footer from "./footer";
-import type { WithAuth0Props } from "@auth0/auth0-react";
-import { withAuth0 } from "@auth0/auth0-react";
-import Spinner from "./spinner";
+import React from "react";
+import { Back } from "./back";
+import { Front } from "./front";
+import { Header } from "./header";
+import { Footer } from "./footer";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Spinner } from "./spinner";
 
-class App extends Component<WithAuth0Props> {
-    public constructor(props: WithAuth0Props) {
-        super(props);
+export const App = (): ReactElement => {
+    const { isLoading, isAuthenticated } = useAuth0();
+
+    let content: ReactElement = <Front />;
+    if (isLoading) {
+        content = <Spinner />;
     }
 
-    private content(): ReactElement {
-        if (this.props.auth0.isLoading) {
-            return <Spinner />;
-        }
-
-        if (this.props.auth0.isAuthenticated) {
-            return <Back />;
-        }
-
-        return <Front />;
+    if (isAuthenticated) {
+        content = <Back />;
     }
 
-    public shouldComponentUpdate(): boolean {
-        return true;
-    }
-
-    public render(): ReactElement {
-        return (
-            <div className="app">
-                <Header />
-                {this.content()}
-                <Footer />
-            </div>
-        );
-    }
-}
-
-export default withAuth0(App);
+    return (
+        <div className="app">
+            <Header />
+            {content}
+            <Footer />
+        </div>
+    );
+};

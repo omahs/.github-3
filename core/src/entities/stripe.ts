@@ -97,14 +97,92 @@ export const StripeChargeSchema = new Schema<IStripeCharge>({
 
 export const StripeCharge = createModel<IStripeCharge>(StripeChargeSchema);
 
+export interface IStripePaymentMethodDetail {
+    brand?: string;
+    bank?: string;
+    bank_name?: string;
+    bank_code?: string;
+    last4?: string;
+}
+
+export const StripePaymentMethodDetailSchema = new Schema<IStripePaymentMethodDetail>({
+    brand: { type: String },
+    bank: { type: String },
+    bank_name: { type: String },
+    bank_code: { type: String },
+    last4: { type: String }
+});
+
 export interface IStripePaymentMethod {
     id: string;
     type: string;
+
+    acss_debit?: IStripePaymentMethodDetail;
+    affirm?: IStripePaymentMethodDetail;
+    afterpay_clearpay?: IStripePaymentMethodDetail;
+    alipay?: IStripePaymentMethodDetail;
+    au_becs_debit?: IStripePaymentMethodDetail;
+    bacs_debit?: IStripePaymentMethodDetail;
+    bancontact?: IStripePaymentMethodDetail;
+    blik?: IStripePaymentMethodDetail;
+    boleto?: IStripePaymentMethodDetail;
+    card?: IStripePaymentMethodDetail;
+    card_present?: IStripePaymentMethodDetail;
+    customer_balance?: IStripePaymentMethodDetail;
+    eps?: IStripePaymentMethodDetail;
+    fpx?: IStripePaymentMethodDetail;
+    giropay?: IStripePaymentMethodDetail;
+    grabpay?: IStripePaymentMethodDetail;
+    ideal?: IStripePaymentMethodDetail;
+    interac_present?: IStripePaymentMethodDetail;
+    klarna?: IStripePaymentMethodDetail;
+    konbini?: IStripePaymentMethodDetail;
+    link?: IStripePaymentMethodDetail;
+    oxxo?: IStripePaymentMethodDetail;
+    p24?: IStripePaymentMethodDetail;
+    paynow?: IStripePaymentMethodDetail;
+    pix?: IStripePaymentMethodDetail;
+    promptpay?: IStripePaymentMethodDetail;
+    sepa_debit?: IStripePaymentMethodDetail;
+    sofort?: IStripePaymentMethodDetail;
+    us_bank_account?: IStripePaymentMethodDetail;
+    wechat_pay?: IStripePaymentMethodDetail;
 }
 
 export const StripePaymentMethodSchema = new Schema<IStripePaymentMethod>({
     id: { type: String, required: true },
-    type: { type: String, required: true }
+    type: { type: String, required: true },
+
+    acss_debit: { type: StripePaymentMethodDetailSchema },
+    affirm: { type: StripePaymentMethodDetailSchema },
+    afterpay_clearpay: { type: StripePaymentMethodDetailSchema },
+    alipay: { type: StripePaymentMethodDetailSchema },
+    au_becs_debit: { type: StripePaymentMethodDetailSchema },
+    bacs_debit: { type: StripePaymentMethodDetailSchema },
+    bancontact: { type: StripePaymentMethodDetailSchema },
+    blik: { type: StripePaymentMethodDetailSchema },
+    boleto: { type: StripePaymentMethodDetailSchema },
+    card: { type: StripePaymentMethodDetailSchema },
+    card_present: { type: StripePaymentMethodDetailSchema },
+    customer_balance: { type: StripePaymentMethodDetailSchema },
+    eps: { type: StripePaymentMethodDetailSchema },
+    fpx: { type: StripePaymentMethodDetailSchema },
+    giropay: { type: StripePaymentMethodDetailSchema },
+    grabpay: { type: StripePaymentMethodDetailSchema },
+    ideal: { type: StripePaymentMethodDetailSchema },
+    interac_present: { type: StripePaymentMethodDetailSchema },
+    klarna: { type: StripePaymentMethodDetailSchema },
+    konbini: { type: StripePaymentMethodDetailSchema },
+    link: { type: StripePaymentMethodDetailSchema },
+    oxxo: { type: StripePaymentMethodDetailSchema },
+    p24: { type: StripePaymentMethodDetailSchema },
+    paynow: { type: StripePaymentMethodDetailSchema },
+    pix: { type: StripePaymentMethodDetailSchema },
+    promptpay: { type: StripePaymentMethodDetailSchema },
+    sepa_debit: { type: StripePaymentMethodDetailSchema },
+    sofort: { type: StripePaymentMethodDetailSchema },
+    us_bank_account: { type: StripePaymentMethodDetailSchema },
+    wechat_pay: { type: StripePaymentMethodDetailSchema }
 });
 
 export const StripePaymentMethod = createModel<IStripePaymentMethod>(StripePaymentMethodSchema);

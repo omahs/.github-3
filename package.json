@@ -5,7 +5,7 @@
         "build": "nx run-many --target build --projects",
         "clean": "nx reset && rm -r ./**/build",
         "start": "nx run-many --target start --projects",
-        "watch": "nodemon --quiet --watch \".\" --ext \"*\" --exec npm start",
+        "watch": "nodemon --quiet --watch \".\" --ext ts --ext css --ext tsx --exec npm start",
         "test": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/jest -u",
         "lint": "node ./node_modules/.bin/eslint ."
     },

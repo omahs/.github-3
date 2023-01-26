@@ -1,4 +1,4 @@
-import type { IStripeEvent, IOrder } from "jewl-core";
+import type { IStripeEvent, IOrder, IStripePaymentMethodDetail } from "jewl-core";
 import { StripeEvent, StripeCompletedSession, validate, Stripe, StripePayment, Payment, PaymentState, Mail, MailState, MailType, StripeRefund, Refund, RefundState, OrderState, DateTime, Order, Allocation } from "jewl-core";
 import { Body, Hidden, Post, Route, Security, SuccessResponse } from "tsoa";
 import { HttpError } from "../../modules/error.js";
@@ -8,11 +8,14 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
     handleCheckoutSessionCompleted: async (data: object): Promise<void> => {
         const body = await validate(StripeCompletedSession, data);
         const paymentMethod = await stripeClient.getPaymentMethod(body.customer);
+        const details = (paymentMethod as unknown as Record<string, IStripePaymentMethodDetail>)[paymentMethod.type];
         const stripe = new Stripe({
             userId: body.client_reference_id,
             customerId: body.customer,
             paymentId: paymentMethod.id,
-            paymentType: paymentMethod.type
+            type: paymentMethod.type,
+            subtype: details?.brand ?? details?.bank_name ?? details?.bank_name ?? details?.bank,
+            last4: details?.last4
         });
         await stripe.save();
     },

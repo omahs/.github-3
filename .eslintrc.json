@@ -53,6 +53,7 @@
         "max-statements": "off",
         "max-classes-per-file": "off",
         "max-params": "off",
+        "max-lines-per-function": "off",
         "multiline-comment-style": "off",
         "func-names": "off",
         "new-cap": "off",

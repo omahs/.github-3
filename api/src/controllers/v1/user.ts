@@ -26,8 +26,12 @@ export class UserController {
     @Get("/payment")
     public async getPaymentMethod(@Request() req: WithAuthentication): Promise<IPaymentMethodResponse> {
         const stripe = await Stripe.findOne({ userId: req.user.userId });
-        const connected = stripe != null;
-        return { connected };
+        if (stripe == null) { throw new HttpError(404, "no payment method found"); }
+        return {
+            type: stripe.type,
+            subtype: stripe.subtype,
+            last4: stripe.last4
+        };
     }
 
     @Post("/payment")
