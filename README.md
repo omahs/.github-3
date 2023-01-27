@@ -18,6 +18,7 @@ This repository uses a couple of third party services:
 * The deployments are hosted on [DigitalOcean](https://digitalocean.com).
 * Authentication and authorization are managed by [Auth0](https://auth0.com).
 * Logging and monitoring is done through [Logtail](https://betterstack.com/logtail).
+* Domain management and registrar services are handled by [Namecheap](https://namecheap.com/)
 * Secure financial payments are managed through [Stripe](https://stripe.com).
 * Crypto transactions and purchases are managed through [Coinbase](https://coinbase.com).
 
