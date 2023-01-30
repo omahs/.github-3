@@ -23,8 +23,10 @@ export const App = (): ReactElement => {
     return (
         <div className="app">
             <Header />
-            {content}
-            <Footer />
+            <div className="scrollframe">
+                {content}
+                <Footer />
+            </div>
         </div>
     );
 };

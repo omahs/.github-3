@@ -72,3 +72,9 @@ img, a {
     background: rgba(46, 46, 46, 0.2);
     border-radius: 6px;
 }
+
+.scrollframe {
+    overflow-y: overlay;
+    overflow-x: hidden;
+    height: calc(100vh - 56px);
+}
