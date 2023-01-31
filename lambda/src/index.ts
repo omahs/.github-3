@@ -6,6 +6,7 @@ import { paymentJob } from "./jobs/payment.js";
 import { transferJob } from "./jobs/transfer.js";
 import { mailJob } from "./jobs/mail.js";
 import { announcePaymentJob } from "./jobs/announce.js";
+import { heartbeatJob } from "./jobs/heartbeat.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -16,7 +17,8 @@ console.info(
 
 // Every five minutes
 const minute = scheduleTasks("*/5 * * * *", {
-    mailJob
+    mailJob,
+    heartbeatJob
 });
 
 // Hourly
