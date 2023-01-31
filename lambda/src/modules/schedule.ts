@@ -52,10 +52,10 @@ const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>
     for (const key in tasks) {
         const promise = async (): Promise<void> => {
             const storedCron = await Cron.findOne({ cron, key }) ?? new Cron({ cron, key, notBefore: new DateTime(0) });
-            if (storedCron.notBefore.lt(new DateTime()) || process.env.DEBUG === "true") {
+            if (storedCron.notBefore.lte(new DateTime()) || process.env.DEBUG === "true") {
                 await runTask(key, tasks[key]);
                 const schedule = time(cron);
-                storedCron.notBefore = new DateTime(schedule.sendAt().toUnixInteger());
+                storedCron.notBefore = new DateTime(schedule.sendAt().toUnixInteger()).addingSeconds(-5);
                 await storedCron.save();
             }
         };
