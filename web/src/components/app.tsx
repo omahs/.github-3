@@ -12,6 +12,7 @@ export const App = (): ReactElement => {
     const { isLoading, isAuthenticated } = useAuth0();
 
     let content: ReactElement = <Front />;
+
     if (isLoading) {
         content = <Spinner />;
     }

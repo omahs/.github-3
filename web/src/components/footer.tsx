@@ -34,7 +34,7 @@ export const Footer = (): ReactElement => {
         <div className="footer">
             <div className="footer-content">
                 <span className="footer-left-long">Copyright © 2023 jewl.app</span>
-                <span className="footer-left-short">© 2022</span>
+                <span className="footer-left-short">© 2023</span>
                 <span className="footer-right" onClick={openPrivacy}>Privacy Policy</span>
                 <span className="footer-right" onClick={openTerms}>Terms of Service</span>
                 <span className="footer-right" onClick={sendEmail}>Contact</span>

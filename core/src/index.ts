@@ -9,7 +9,7 @@ export * from "./entities/cron.js";
 export * from "./entities/mail.js";
 export * from "./entities/order.js";
 export * from "./entities/payment.js";
-export * from "./entities/ping.js";
+export * from "./entities/public.js";
 export * from "./entities/refund.js";
 export * from "./entities/stripe.js";
 export * from "./entities/transfer.js";

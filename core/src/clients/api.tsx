@@ -1,8 +1,9 @@
 import type { IAllocationItem, IAllocationRequest, IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
 import { AllocationResponse } from "../entities/user.js";
 import { PaymentMethodResponse, PaymentMethodSetupResponse } from "../entities/user.js";
-import type { IPingResponse } from "../entities/ping.js";
-import { PingResponse } from "../entities/ping.js";
+import type { IPingResponse, IStatsResponse } from "../entities/public.js";
+import { StatsResponse } from "../entities/public.js";
+import { PingResponse } from "../entities/public.js";
 import { NoResponse } from "../entities/void.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
@@ -23,6 +24,13 @@ export class ApiClient extends Client {
             endpoint: "v1/ping"
         };
         return this.request(request, PingResponse);
+    }
+
+    public async getStats(): Promise<IStatsResponse> {
+        const request: IRequest = {
+            endpoint: "v1/stats"
+        };
+        return this.request(request, StatsResponse);
     }
 
     public async getPaymentMethod(token: string): Promise<IPaymentMethodResponse> {

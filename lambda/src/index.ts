@@ -7,6 +7,7 @@ import { transferJob } from "./jobs/transfer.js";
 import { mailJob } from "./jobs/mail.js";
 import { announcePaymentJob } from "./jobs/announce.js";
 import { heartbeatJob } from "./jobs/heartbeat.js";
+import { statsJob } from "./jobs/stats.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -30,7 +31,8 @@ const hour = scheduleTasks("0 * * * *", {
 
 // Daily at 10 am
 const day = scheduleTasks("0 10 * * *", {
-    announcePaymentJob
+    announcePaymentJob,
+    statsJob
 });
 
 const onExit = (): void => {

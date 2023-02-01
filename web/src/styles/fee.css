@@ -1,0 +1,49 @@
+.fee {
+    text-align: center;
+    align-items: center;
+    display: flex;
+}
+
+@media only screen and (max-width: 768px) {
+    .fee {
+        display: block;
+    }
+}
+
+.fee-image {
+    display: inline-block;
+    flex: 1;
+}
+
+.fee-text {
+    display: inline-block;
+    flex: 1;
+}
+
+.fee-title {
+    font-weight: 800;
+    padding: 0 12px;
+    font-size: 36px;
+}
+
+.fee-message {
+    text-align: left;
+    padding: 12px 12px 0;
+}
+
+.fee-list {
+    text-align: left;
+    list-style-position: inside;
+    padding: 0 12px;
+}
+
+.fee-footnote {
+    font-size: 10px;
+    color: #bdbdbd;
+    text-align: left;
+    padding: 12px 12px 0;
+}
+
+.fee-footnote-link {
+    text-decoration: underline;
+}

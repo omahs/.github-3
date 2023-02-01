@@ -36,7 +36,9 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
 
 const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>): Promise<void> => {
     try {
-        await apiClient.ping();
+        if (process.env.DEBUG !== "true") {
+            await apiClient.ping();
+        }
     } catch {
         const date = new Date();
         const formattedTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;

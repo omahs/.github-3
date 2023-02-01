@@ -1,0 +1,15 @@
+.callout {
+    text-align: center;
+}
+
+.callout-title {
+    font-weight: 800;
+    padding: 62px 16px 12px;
+    font-size: 56px;
+}
+
+.callout-cta {
+    margin: 36px 24px;
+    padding: 16px 36px;
+    font-size: 36px;
+}
