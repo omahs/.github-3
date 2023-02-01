@@ -2,19 +2,24 @@
     text-align: center;
 }
 
-.callout-image {
-    width: 80%;
-    aspect-ratio: 1.5;
-}
-
 .callout-title {
     font-weight: 800;
     padding: 62px 16px 12px;
     font-size: 56px;
 }
 
+.callout-subtitle {
+    margin-bottom: 36px;
+}
+
 .callout-cta {
-    margin: 36px 24px;
+    display: block;
+    margin: auto;
     padding: 16px 36px;
     font-size: 36px;
+}
+
+.callout-image {
+    width: 80%;
+    aspect-ratio: 1.5;
 }
