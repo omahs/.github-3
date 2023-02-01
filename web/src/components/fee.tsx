@@ -15,7 +15,7 @@ export const Fee = (): ReactElement => {
     return (
         <div className="fee">
             <div className="fee-image">
-                <img src="/fee.webp" width="80%" title="Graphic by vectorjuice" alt="Transparent fees through jewl.app" />
+                <img src="/fee.webp" className="fee-image-img" title="Graphic by vectorjuice" alt="Transparent fees through jewl.app" />
             </div>
             <div className="fee-text">
                 <div className="fee-title">Pay less.<br />Invest more.</div>

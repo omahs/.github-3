@@ -16,6 +16,11 @@
     flex: 1;
 }
 
+.dca-image-img {
+    width: 80%;
+    aspect-ratio: 1;
+}
+
 .dca-text {
     display: inline-block;
     flex: 1;

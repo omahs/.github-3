@@ -15,6 +15,11 @@
     flex: 1;
 }
 
+.custodial-image-img {
+    width: 80%;
+    aspect-ratio: 1;
+}
+
 .custodial-text {
     display: inline-block;
     flex: 1;

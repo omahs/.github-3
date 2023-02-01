@@ -6,7 +6,7 @@ export const DollarCostAverage = (): ReactElement => {
     return (
         <div className="dca">
             <div className="dca-image">
-                <img src="/dca.webp" width="80%" title="Graphic by vectorjuice" alt="Dollar-cost averaging to reduce effect of price volatility" />
+                <img src="/dca.webp" className="dca-image-img" title="Graphic by vectorjuice" alt="Dollar-cost averaging to reduce effect of price volatility" />
             </div>
             <div className="dca-text">
                 <div className="dca-title">The power<br />of DCA</div>

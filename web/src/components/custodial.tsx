@@ -6,7 +6,7 @@ export const Custodial = (): ReactElement => {
     return (
         <div className="custodial">
             <div className="custodial-image">
-                <img src="/custodial.webp" width="80%" title="Graphic by vectorjuice" alt="Exclusive control of your assets" />
+                <img src="/custodial.webp" className="custodial-image-img" title="Graphic by vectorjuice" alt="Exclusive control of your assets" />
             </div>
             <div className="custodial-text">
                 <div className="custodial-title">Your Wallet.<br />Your investment.</div>
