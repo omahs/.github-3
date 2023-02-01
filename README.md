@@ -8,7 +8,7 @@ This repository consists of several components:
 * `Core` - contains all the shared logic and models.
 * `Web` - contains the [React](https://reactjs.org) frontend code.
 * `API` - contains the [Express](https://expressjs.com) backend code.
-* `Lambda` - contains the [Cron](https://github.com/node-cron/node-cron) backend code.
+* `Lambda` - contains the [Cron](https://github.com/kelektiv/node-cron) backend code.
 
 All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mongo](https://www.mongodb.com) NoSQL database.
 
@@ -36,7 +36,7 @@ Getting set up with this repository is very easy.
 To test the Stripe webhooks locally you can set webhooks up to be forwarded to your local machine. For this you will need to set up the Stripe cli.
 * Install the Stripe cli using `brew install stripe/stripe-cli/stripe`.
 * Log into the Stripe cli using `stripe login`
-* Start forwarding webhook evewnts using `stripe listen --forward-to localhost:4000/v1/stripe`.
+* Start forwarding webhook events using `stripe listen --forward-to localhost:4000/v1/stripe`.
 
 ## Commands
 
