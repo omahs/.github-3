@@ -18,7 +18,7 @@ export const Header = (): ReactElement => {
         <div className="header">
             <div className="header-content">
                 <a href="/" className="header-link">
-                    <img src="/apple-touch-icon.png" className="header-logo" />
+                    <img src="/apple-touch-icon.png" className="header-logo" alt="jewl.app logo" />
                     <span className="header-title">jewl.app</span>
                 </a>
                 <button type="button" onClick={loginPressed} className="header-login">

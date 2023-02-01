@@ -16,7 +16,7 @@ export const Callout = (): ReactElement => {
             <div className="callout-title">The only crypto platform<br />you will ever need</div>
             <div className="callout-subtitle">Set up once, invest automatically in your favorite crypto assets.</div>
             <button className="callout-cta" type="button" onClick={ctaPressed}>Start Investing</button>
-            <img src="/callout.webp" width="80%" title="Graphic by vectorjuice" />
+            <img src="/callout.webp" width="80%" title="Graphic by vectorjuice" alt="Investing with jewl.app" />
         </div>
     );
 };
