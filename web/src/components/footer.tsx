@@ -40,7 +40,7 @@ export const Footer = (): ReactElement => {
                 <span className="footer-right" onClick={sendEmail}>Contact</span>
             </div>
             <div className="footer-legal-overlay" hidden={legalText == null} onClick={closeModal} />
-            <div className="footer-legal-content" hidden={legalText == null} ref={legalDiv}>
+            <div className="footer-legal-popup" hidden={legalText == null} ref={legalDiv}>
                 <ReactMarkdown>{legalText ?? ""}</ReactMarkdown>
             </div>
         </div>
