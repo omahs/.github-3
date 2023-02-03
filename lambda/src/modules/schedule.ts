@@ -37,7 +37,8 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
 const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>): Promise<void> => {
     try {
         if (process.env.DEBUG !== "true") {
-            await apiClient.ping();
+            const response = await apiClient.status();
+            if (response.status !== "") { throw new Error(); }
         }
     } catch {
         const date = new Date();

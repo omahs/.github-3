@@ -14,7 +14,8 @@ export const Back = (): ReactElement => {
     const { user } = useAuth0();
 
     useEffect((): void => {
-        apiClient.ping()
+        apiClient.status()
+            .then(x => { if (x.status !== "") { throw new Error(); } })
             .catch(() => setMaintainance(true))
             .finally(() => setLoading(false));
     }, []);

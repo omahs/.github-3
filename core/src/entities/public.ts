@@ -13,6 +13,16 @@ export const PingResponseSchema = new Schema<IPingResponse>({
 
 export const PingResponse = createModel<IPingResponse>(PingResponseSchema);
 
+export interface IStatusResponse {
+    status: string;
+}
+
+export const StatusResponseSchema = new Schema<IStatusResponse>({
+    status: { type: String, required: true }
+});
+
+export const StatusResponse = createModel<IStatusResponse>(StatusResponseSchema);
+
 export interface IStatistic {
     metric: string;
     value: PreciseNumber;

@@ -56,6 +56,9 @@ export interface WithAuthentication {
 }
 
 export const expressAuthentication = async (req: Request, securityName: string, scopes: Array<string>): Promise<Authentication> => {
+    if (process.env.MAINTAINANCE === "true") {
+        throw new HttpError(503, "server down for maintainance");
+    }
     try {
         const userId = await getUserId[securityName](req);
         return { userId, scopes };
