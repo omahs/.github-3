@@ -7,6 +7,7 @@ import { Spinner } from "./spinner";
 import { Status } from "./status";
 import { Dash } from "./dash";
 import { faEnvelopeCircleCheck, faPersonDigging } from "@fortawesome/free-solid-svg-icons";
+import { ServerStatus } from "jewl-core";
 
 export const Back = (): ReactElement => {
     const [loading, setLoading] = useState(false);
@@ -14,8 +15,8 @@ export const Back = (): ReactElement => {
     const { user } = useAuth0();
 
     useEffect((): void => {
-        apiClient.status()
-            .then(x => { if (x.status !== "") { throw new Error(); } })
+        apiClient.getStatus()
+            .then(x => { if (x.status !== ServerStatus.normal) { throw new Error(); } })
             .catch(() => setMaintainance(true))
             .finally(() => setLoading(false));
     }, []);

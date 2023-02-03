@@ -1,6 +1,6 @@
 import { Get, Route } from "tsoa";
 import type { IPingResponse, IStatusResponse, IStatsResponse } from "jewl-core";
-import { Statistic } from "jewl-core";
+import { Statistic, ServerStatus } from "jewl-core";
 
 @Route("/v1")
 export class PublicController {
@@ -13,7 +13,7 @@ export class PublicController {
     public getStatus(): IStatusResponse {
         const isMaintainance = process.env.MAINTAINANCE === "true";
         return {
-            status: isMaintainance ? "maintainance" : ""
+            status: isMaintainance ? ServerStatus.maintainance : ServerStatus.normal
         };
     }
 

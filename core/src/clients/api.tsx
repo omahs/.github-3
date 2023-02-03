@@ -18,7 +18,7 @@ export class ApiClient extends Client {
         super(url, staticHeaders);
     }
 
-    public async status(): Promise<IStatusResponse> {
+    public async getStatus(): Promise<IStatusResponse> {
         const request: IRequest = {
             endpoint: "v1/status"
         };

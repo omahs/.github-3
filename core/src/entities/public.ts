@@ -13,12 +13,17 @@ export const PingResponseSchema = new Schema<IPingResponse>({
 
 export const PingResponse = createModel<IPingResponse>(PingResponseSchema);
 
+export enum ServerStatus {
+    normal = 0,
+    maintainance = 1
+}
+
 export interface IStatusResponse {
-    status: string;
+    status: ServerStatus;
 }
 
 export const StatusResponseSchema = new Schema<IStatusResponse>({
-    status: { type: String, required: true }
+    status: { type: Number, enum: ServerStatus, required: true }
 });
 
 export const StatusResponse = createModel<IStatusResponse>(StatusResponseSchema);
