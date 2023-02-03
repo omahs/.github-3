@@ -12,7 +12,7 @@ export const Method = (): ReactElement => {
     const [paymentMethod, setPaymentMethod] = useState<IPaymentMethodResponse | null>(null);
     const { getAccessTokenSilently } = useAuth0();
 
-    useEffect((): void => {
+    useEffect(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.getPaymentMethod(x))
             .then(setPaymentMethod)

@@ -9,7 +9,7 @@ export const Payment = (): ReactElement => {
     const [lastPayment, setLastPayment] = useState<IPaymentResponse | null>(null);
     const { getAccessTokenSilently } = useAuth0();
 
-    useEffect((): void => {
+    useEffect(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.getLastPayment(x))
             .then(setLastPayment)

@@ -14,7 +14,7 @@ export const Back = (): ReactElement => {
     const [maintainance, setMaintainance] = useState(false);
     const { user } = useAuth0();
 
-    useEffect((): void => {
+    useEffect(() => {
         apiClient.getStatus()
             .then(x => { if (x.status !== ServerStatus.normal) { throw new Error(); } })
             .catch(() => setMaintainance(true))

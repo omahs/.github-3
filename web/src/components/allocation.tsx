@@ -10,13 +10,13 @@ export const Allocation = (): ReactElement => {
     const [allocation, setAllocation] = useState<Array<IAllocationItem> | null>(null);
     const { getAccessTokenSilently } = useAuth0();
 
-    useEffect((): void => {
+    useEffect(() => {
         coinbaseClient.getProducts()
             .then(products => setTokens(products.map(x => x.base_currency === "EUR" ? x.quote_currency : x.base_currency)))
             .catch(console.log);
     }, []);
 
-    useEffect((): void => {
+    useEffect(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.getAllocation(x))
             .then(setAllocation)
