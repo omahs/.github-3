@@ -24,9 +24,7 @@ export const Stats = (): ReactElement => {
 
     return (
         <div className="stats" >
-            <div className="stats-list" hidden={statsItems.length === 0}>
-                {items}
-            </div>
+            <div className="stats-list" hidden={statsItems.length === 0}>{items}</div>
             <div className="stats-separator" hidden={statsItems.length !== 0} />
         </div>
     );
