@@ -19,18 +19,14 @@ export const Checklist = (): ReactElement => {
             .catch(console.log);
     }, []);
 
-    let title = "You're only a few steps away from reactivating your crypto investment";
+    let title = "Start Dollar Cost averaging crypto in 3 easy steps";
     if (lastPayment != null) {
-        if (lastPayment.amount.eq(0)) {
-            title = "Start Dollar Cost averaging crypto in 3 easy steps";
-        }
-
-        if (lastPayment.autoRenew) {
-            title = "You're all set and investing xyz EUR every x weeks";
-        }
-
+        title = "You're only a few steps away from reactivating your crypto investment";
         if (lastPayment.isActive) {
             title = "You're DCA investment will not auto-renew. Turn on auto-renew to keep investing";
+        }
+        if (lastPayment.autoRenew) {
+            title = `You're all set and investing ${lastPayment.amount.toFixed(0)} EUR every x weeks`;
         }
     }
 

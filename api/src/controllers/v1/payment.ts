@@ -45,7 +45,7 @@ export class PaymentController {
         if (existingRefund != null) { throw new HttpError(400, "refund already found for this payment"); }
         const orders = await Order.find({ paymentId: payment.id as string, state: OrderState.open });
         if (orders.length === 0) { throw new HttpError(400, "nothing to refund"); }
-        const refund = new Refund({ userId: req.user.userId, paymentId: payment.stripeId, state: RefundState.pending });
+        const refund = new Refund({ userId: req.user.userId, paymentId: payment.id as string, state: RefundState.pending });
         await refund.save();
         await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
     }
@@ -54,7 +54,7 @@ export class PaymentController {
     public async getLastPayment(@Request() req: WithAuthentication): Promise<IPaymentResponse> {
         const lastPayment = await Payment.findOne({ userId: req.user.userId }).sort({ notBefore: -1 });
         if (lastPayment == null) { throw new HttpError(404, "no payment found"); }
-        const firstOrder = await Order.findOne({ paymentId: lastPayment.id as string });
+        const firstOrder = await Order.findOne({ userId: req.user.userId, state: OrderState.open });
         const hasOrders = firstOrder != null;
         const autoRenew = lastPayment.state === PaymentState.scheduled;
         return {
@@ -80,9 +80,10 @@ export class PaymentController {
         if (stripe == null) { throw new HttpError(400, "no payment method set up"); }
         const allocation = await Allocation.findOne({ userId: req.user.userId });
         if (allocation == null) { throw new HttpError(400, "no allocation set up"); }
-        const payment = await Payment.findOne({ userId: req.user.userId, state: PaymentState.completed }).sort({ notBefore: -1 });
+        const payment = await Payment.findOne({ userId: req.user.userId }).sort({ notBefore: -1 });
         if (payment == null) { throw new HttpError(400, "no payment to auto-renew"); }
         payment.notBefore = payment.notBefore.addingDays(payment.period * payment.installments);
+        payment.state = PaymentState.scheduled;
         payment._id = new Types.ObjectId();
         payment.isNew = true;
         await payment.save();

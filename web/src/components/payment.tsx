@@ -34,7 +34,7 @@ export const Payment = (): ReactElement => {
             .then(async x => apiClient.setAutoRenew(x, newStatus))
             .then(() => setLastPayment({ ...lastPayment, autoRenew: newStatus }))
             .catch(console.log);
-    }, []);
+    }, [lastPayment]);
 
 
     return (

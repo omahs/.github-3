@@ -71,7 +71,8 @@ export abstract class Client {
             if (res.status < 200 || res.status >= 300) {
                 throw new ClientError(res.status, `received a status code of ${res.status} for ${req.endpoint}`);
             }
-            let json = await res.json() as object;
+
+            let json = res.status === 204 ? { } : await res.json() as object;
 
             switch (typeof json) {
                 case "string": json = { text: json }; break;
