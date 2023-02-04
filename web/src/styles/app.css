@@ -73,8 +73,12 @@ img, a {
     border-radius: 6px;
 }
 
-.scrollframe {
+.port {
     overflow-y: overlay;
     overflow-x: hidden;
     height: calc(100vh - 56px);
+}
+
+.content {
+    min-height: calc(100vh - 100px);
 }
