@@ -2,9 +2,10 @@ import type { ReactElement } from "react";
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./components/app";
+import { Helmet } from "react-helmet";
+import { ContextProvider } from "./modules/state";
 import type { AuthorizationParams } from "@auth0/auth0-react";
 import { Auth0Provider } from "@auth0/auth0-react";
-import { Helmet } from "react-helmet";
 
 const authUrl = process.env.REACT_APP_AUTH0_URL ?? "";
 const authId = process.env.REACT_APP_AUTH0_ID ?? "";
@@ -22,7 +23,9 @@ const Root = (): ReactElement => {
                 <meta name="robots" content={robots} />
             </Helmet>
             <Auth0Provider domain={authUrl} clientId={authId} authorizationParams={authorizationParams}>
-                <App />
+                <ContextProvider>
+                    <App />
+                </ContextProvider>
             </Auth0Provider>
         </StrictMode>
     );

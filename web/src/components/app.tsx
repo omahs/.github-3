@@ -1,6 +1,6 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
-import React from "react";
+import React, { useMemo } from "react";
 import { Back } from "./back";
 import { Front } from "./front";
 import { Header } from "./header";
@@ -11,15 +11,11 @@ import { Spinner } from "./spinner";
 export const App = (): ReactElement => {
     const { isLoading, isAuthenticated } = useAuth0();
 
-    let content: ReactElement = <Front />;
-
-    if (isLoading) {
-        content = <Spinner />;
-    }
-
-    if (isAuthenticated) {
-        content = <Back />;
-    }
+    const content = useMemo<ReactElement>(() => {
+        if (isAuthenticated) { return <Back />; }
+        if (isLoading) { return <Spinner />; }
+        return <Front />;
+    }, [isLoading, isAuthenticated]);
 
     return (
         <div className="app">

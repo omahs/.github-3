@@ -1,6 +1,6 @@
 import "../styles/faq.css";
 import type { ReactElement } from "react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -43,24 +43,34 @@ const faqItems: Array<[string, string]> = [
         "wallet."]
 ];
 
+interface IProps {
+    item: [string, string];
+    selected: boolean;
+    handler: () => void;
+}
+
+const FrequentlyAskedQuestionsItem = (props: IProps): ReactElement => {
+    return (
+        <div className="faq-item">
+            <div className="faq-item-banner" onClick={props.handler}>
+                <span className="faq-item-title">{props.item[0]}</span>
+                <FontAwesomeIcon className="faq-item-chevron" icon={props.selected ? faChevronUp : faChevronDown} />
+            </div>
+            <div className="faq-item-text" hidden={!props.selected}>
+                {props.item[1]}
+            </div>
+        </div>
+    );
+};
+
 export const FrequentlyAskedQuestions = (): ReactElement => {
     const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
     const itemClicked = faqItems.map((_, i) => useCallback(() => setCurrentIndex(i === currentIndex ? null : i), [currentIndex]));
 
-    const items = faqItems.map((x, i) => {
-        return (
-            <div className="faq-item" key={x[0]}>
-                <div className="faq-item-banner" onClick={itemClicked[i]}>
-                    <span className="faq-item-title">{x[0]}</span>
-                    <FontAwesomeIcon className="faq-item-chevron" icon={currentIndex === i ? faChevronUp : faChevronDown} />
-                </div>
-                <div className="faq-item-text" hidden={currentIndex !== i}>
-                    {x[1]}
-                </div>
-            </div>
-        );
-    });
+    const items = useMemo(() => {
+        return faqItems.map((x, i) => <FrequentlyAskedQuestionsItem key={x[0]} item={x} selected={currentIndex === i} handler={itemClicked[i]} />);
+    }, [currentIndex]);
 
     return (
         <div className="faq">

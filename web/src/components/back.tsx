@@ -1,6 +1,6 @@
 import "../styles/back.css";
 import type { ReactElement } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { apiClient } from "../modules/network";
 import { Spinner } from "./spinner";
@@ -21,21 +21,18 @@ export const Back = (): ReactElement => {
             .finally(() => setLoading(false));
     }, []);
 
-    let content: ReactElement = <Dash />;
-
-    if (loading) {
-        content = <Spinner />;
-    }
-
-    if (!(user?.email_verified ?? false)) {
-        const message = "Before you can use jewl.app you will need to verify your email address.";
-        content = <Status icon={faEnvelopeCircleCheck} title="Verify Email" message={message} />;
-    }
-
-    if (maintainance) {
-        const message = "jewl.app is currently down for maintainance. We'll be back online shortly.";
-        content = <Status icon={faPersonDigging} title="Maintainance" message={message} />;
-    }
+    const content = useMemo(() => {
+        if (loading) { return <Spinner />; }
+        if (!(user?.email_verified ?? false)) {
+            const message = "Before you can use jewl.app you will need to verify your email address.";
+            return <Status icon={faEnvelopeCircleCheck} title="Verify Email" message={message} />;
+        }
+        if (maintainance) {
+            const message = "jewl.app is currently down for maintainance. We'll be back online shortly.";
+            return <Status icon={faPersonDigging} title="Maintainance" message={message} />;
+        }
+        return <Dash />;
+    }, [loading, user, maintainance]);
 
     return (
         <div className="back">

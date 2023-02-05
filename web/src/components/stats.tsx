@@ -1,8 +1,22 @@
 import "../styles/stats.css";
-import type { IStatistic } from "jewl-core";
+import type { IStatistic, PreciseNumber } from "jewl-core";
 import type { ReactElement } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { apiClient } from "../modules/network";
+
+interface IProps {
+    metric: string;
+    value: PreciseNumber;
+}
+
+const StatsItem = (props: IProps): ReactElement => {
+    return (
+        <div className="stats-item" key={props.metric}>
+            <div className="stats-item-value">{props.value.toString()}</div>
+            <div className="stats-item-metric">{props.metric}</div>
+        </div>
+    );
+};
 
 export const Stats = (): ReactElement => {
     const [statsItems, setStatsItems] = useState<Array<IStatistic>>([]);
@@ -13,14 +27,9 @@ export const Stats = (): ReactElement => {
             .catch(console.log);
     }, []);
 
-    const items = statsItems.map(x => {
-        return (
-            <div className="stats-item" key={x.metric}>
-                <div className="stats-item-value">{x.value.toString()}</div>
-                <div className="stats-item-metric">{x.metric}</div>
-            </div>
-        );
-    });
+    const items = useMemo(() => {
+        return statsItems.map(x => <StatsItem key={x.metric} {...x} />);
+    }, [statsItems]);
 
     return (
         <div className="stats" >

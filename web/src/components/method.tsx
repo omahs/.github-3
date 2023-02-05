@@ -2,7 +2,7 @@ import "../styles/method.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import type { IPaymentMethodResponse } from "jewl-core";
 import type { ReactElement } from "react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { faAlipay, faCcAmex, faCcDinersClub, faCcDiscover, faCcJcb, faCcMastercard, faCcVisa, faIdeal, faPix, faStripe, faWeixin } from "@fortawesome/free-brands-svg-icons";
@@ -33,28 +33,28 @@ export const Method = (): ReactElement => {
             .catch(console.log);
     }, []);
 
-    let paymentIcon = faCreditCard;
-
-    if (paymentMethod != null) {
+    const paymentIcon = useMemo(() => {
+        if (paymentMethod == null) { return faCreditCard; }
         switch (paymentMethod.subtype) {
-            case "visa": paymentIcon = faCcVisa; break;
-            case "mastercard": paymentIcon = faCcMastercard; break;
-            case "amex": paymentIcon = faCcAmex; break;
-            case "discover": paymentIcon = faCcDiscover; break;
-            case "jcb": paymentIcon = faCcJcb; break;
-            case "diners": paymentIcon = faCcDinersClub; break;
+            case "visa": return faCcVisa;
+            case "mastercard": return faCcMastercard;
+            case "amex": return faCcAmex;
+            case "discover": return faCcDiscover;
+            case "jcb": return faCcJcb;
+            case "diners": return faCcDinersClub;
             default: break;
         }
         switch (paymentMethod.type) {
-            case "alipay": paymentIcon = faAlipay; break;
-            case "customer_balance": paymentIcon = faStripe; break;
-            case "ideal": paymentIcon = faIdeal; break;
-            case "link": paymentIcon = faStripe; break;
-            case "pix": paymentIcon = faPix; break;
-            case "wechat_pay": paymentIcon = faWeixin; break;
+            case "alipay": return faAlipay;
+            case "customer_balance": return faStripe;
+            case "ideal": return faIdeal;
+            case "link": return faStripe;
+            case "pix": return faPix;
+            case "wechat_pay": return faWeixin;
             default: break;
         }
-    }
+        return faCreditCard;
+    }, [paymentMethod]);
 
     return (
         <div className="method">

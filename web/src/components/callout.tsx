@@ -6,7 +6,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const Callout = (): ReactElement => {
     const { loginWithRedirect } = useAuth0();
 
-
     const ctaPressed = useCallback(() => {
         void loginWithRedirect({ authorizationParams: { redirect_uri: window.location.origin, screen_hint: "signup" } });
     }, []);

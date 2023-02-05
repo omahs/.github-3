@@ -1,20 +1,13 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import type { IPaymentResponse } from "jewl-core";
 import { PreciseNumber, OrderPeriod } from "jewl-core";
 import type { ReactElement } from "react";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { apiClient } from "../modules/network";
+import { useGlobalState } from "../modules/state";
 
 export const Payment = (): ReactElement => {
-    const [lastPayment, setLastPayment] = useState<IPaymentResponse | null>(null);
+    const { lastPayment, reloadLastPayment } = useGlobalState();
     const { getAccessTokenSilently } = useAuth0();
-
-    useEffect(() => {
-        getAccessTokenSilently()
-            .then(async x => apiClient.getLastPayment(x))
-            .then(setLastPayment)
-            .catch(console.log);
-    }, []);
 
     const commitPayment = useCallback(() => {
         const amount = new PreciseNumber(1000);
@@ -23,7 +16,7 @@ export const Payment = (): ReactElement => {
         const autoRenew = true;
         getAccessTokenSilently()
             .then(async x => apiClient.initiatePayment(x, amount, installments, period, autoRenew))
-            .then(() => setLastPayment({ amount, installments, period, autoRenew, isActive: true }))
+            .then(reloadLastPayment)
             .catch(console.log);
     }, []);
 
@@ -32,7 +25,7 @@ export const Payment = (): ReactElement => {
         const newStatus = !lastPayment.autoRenew;
         getAccessTokenSilently()
             .then(async x => apiClient.setAutoRenew(x, newStatus))
-            .then(() => setLastPayment({ ...lastPayment, autoRenew: newStatus }))
+            .then(reloadLastPayment)
             .catch(console.log);
     }, [lastPayment]);
 
