@@ -67,7 +67,7 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
         if (payment.state !== PaymentState.initiated) { throw new HttpError(403, "payment already registered"); }
         payment.state = PaymentState.failed;
         await payment.save();
-        await Payment.deleteMany({ userId: payment.userId, state: PaymentState.scheduled });
+        await Payment.deleteOne({ userId: payment.userId, state: PaymentState.scheduled });
 
         const mail = new Mail({
             userId: payment.userId,

@@ -14,7 +14,7 @@ export const Disclaimer = (): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.refundOrders(x))
             .then(() => setShowConfirmationPopup(false))
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const toggleRefundPopup = useCallback(() => {

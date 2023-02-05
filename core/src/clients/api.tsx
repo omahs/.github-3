@@ -1,4 +1,4 @@
-import type { IAllocationItem, IAllocationRequest, IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
+import type { IAllocationItem, IAllocationRequest, IAllocationResponse, IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "../entities/user.js";
 import { AllocationResponse } from "../entities/user.js";
 import { PaymentMethodResponse, PaymentMethodSetupResponse } from "../entities/user.js";
 import type { IStatsResponse, IStatusResponse } from "../entities/public.js";
@@ -9,6 +9,8 @@ import { Client } from "../utility/client.js";
 import type { IPaymentRequest, IPaymentResponse, OrderPeriod } from "../entities/payment.js";
 import { PaymentResponse } from "../entities/payment.js";
 import type { PreciseNumber } from "../utility/number.js";
+import type { IOrdersResponse } from "../entities/order.js";
+import { OrdersResponse } from "../entities/order.js";
 
 export class ApiClient extends Client {
     public constructor(url: string) {
@@ -105,12 +107,12 @@ export class ApiClient extends Client {
         return this.request(request, NoResponse);
     }
 
-    public async getAllocation(token: string): Promise<Array<IAllocationItem> | null> {
+    public async getAllocation(token: string): Promise<IAllocationResponse | null> {
         const request: IRequest = {
             endpoint: "v1/user/allocation",
             headers: { Authorization: `Bearer ${token}` }
         };
-        return this.request(request, AllocationResponse).then(x => x.allocation).ignore(404);
+        return this.request(request, AllocationResponse).ignore(404);
     }
 
     public async setAllocation(token: string, allocation: Array<IAllocationItem>): Promise<object> {
@@ -124,6 +126,14 @@ export class ApiClient extends Client {
             body: JSON.stringify(body)
         };
         return this.request(request, NoResponse);
+    }
+
+    public async getOpenOrders(token: string): Promise<IOrdersResponse> {
+        const request: IRequest = {
+            endpoint: "v1/order/open",
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        return this.request(request, OrdersResponse);
     }
 }
 

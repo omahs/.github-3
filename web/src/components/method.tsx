@@ -16,21 +16,21 @@ export const Method = (): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.getPaymentMethod(x))
             .then(setPaymentMethod)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const setupPayment = useCallback(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.setupPaymentMethod(x, new URL(window.location.origin)))
             .then(x => { window.location.href = x.redirect.toString(); })
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const deletePayment = useCallback(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.deletePaymentMethod(x))
             .then(() => setPaymentMethod(null))
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const paymentIcon = useMemo(() => {

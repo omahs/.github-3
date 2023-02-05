@@ -51,6 +51,6 @@ export class UserController {
         const stripe = await Stripe.findOneAndDelete({ userId: req.user.userId });
         if (stripe == null) { throw new HttpError(404, "no payment method found"); }
         await stripeClient.deleteCustomer(stripe.customerId);
-        await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
+        await Payment.deleteOne({ userId: req.user.userId, state: PaymentState.scheduled });
     }
 }

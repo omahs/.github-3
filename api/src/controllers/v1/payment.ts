@@ -15,6 +15,14 @@ export class PaymentController {
     public async initiatePayment(@Request() req: WithAuthentication, @Body() body: IPaymentRequest): Promise<void> {
         const validatedBody = await validate(PaymentRequest, body);
 
+        const lastPayment = await Payment.findOne({ userId: req.user.userId }).sort({ notBefore: -1 });
+        if (lastPayment != null) {
+            if (lastPayment.state === PaymentState.scheduled) { throw new HttpError(400, "auto-renew is already enabled"); }
+            if (lastPayment.state === PaymentState.initiated) { throw new HttpError(400, "a payment already exists"); }
+            const orders = await Order.findOne({ paymentId: lastPayment.id as string, state: OrderState.open });
+            if (orders != null) { throw new HttpError(400, "an active order already exists"); }
+        }
+
         const stripe = await Stripe.findOne({ userId: req.user.userId });
         if (stripe == null) { throw new HttpError(400, "no payment method set up"); }
         const allocation = await Allocation.findOne({ userId: req.user.userId });
@@ -43,11 +51,11 @@ export class PaymentController {
         if (payment == null) { throw new HttpError(400, "no payment to refund"); }
         const existingRefund = await Refund.findOne({ paymentId: payment.id as string });
         if (existingRefund != null) { throw new HttpError(400, "refund already found for this payment"); }
-        const orders = await Order.find({ paymentId: payment.id as string, state: OrderState.open });
-        if (orders.length === 0) { throw new HttpError(400, "nothing to refund"); }
+        const lastOrder = await Order.findOne({ paymentId: payment.id as string, state: OrderState.open });
+        if (lastOrder == null) { throw new HttpError(400, "nothing to refund"); }
         const refund = new Refund({ userId: req.user.userId, paymentId: payment.id as string, state: RefundState.pending });
         await refund.save();
-        await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
+        await Payment.deleteOne({ userId: req.user.userId, state: PaymentState.scheduled });
     }
 
     @Get("/last")
@@ -94,7 +102,7 @@ export class PaymentController {
     public async cancelAuthRenew(@Request() req: WithAuthentication): Promise<void> {
         const autoRenewStatus = await this.getAutoRenewStatus(req);
         if (!autoRenewStatus) { throw new HttpError(400, "auto-renew not enabled"); }
-        await Payment.deleteMany({ userId: req.user.userId, state: PaymentState.scheduled });
+        await Payment.deleteOne({ userId: req.user.userId, state: PaymentState.scheduled });
     }
 
 }

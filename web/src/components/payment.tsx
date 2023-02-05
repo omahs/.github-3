@@ -17,7 +17,7 @@ export const Payment = (): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.initiatePayment(x, amount, installments, period, autoRenew))
             .then(reloadLastPayment)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const toggleAutoRenew = useCallback(() => {
@@ -26,7 +26,7 @@ export const Payment = (): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.setAutoRenew(x, newStatus))
             .then(reloadLastPayment)
-            .catch(console.log);
+            .catch(console.error);
     }, [lastPayment]);
 
 

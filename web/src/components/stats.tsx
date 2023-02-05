@@ -24,7 +24,7 @@ export const Stats = (): ReactElement => {
     useEffect(() => {
         apiClient.getStats()
             .then(x => setStatsItems(x.stats))
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const items = useMemo(() => {

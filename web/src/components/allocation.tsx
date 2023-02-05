@@ -13,14 +13,15 @@ export const Allocation = (): ReactElement => {
     useEffect(() => {
         coinbaseClient.getProducts()
             .then(products => setTokens(products.map(x => x.base_currency === "EUR" ? x.quote_currency : x.base_currency)))
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     useEffect(() => {
         getAccessTokenSilently()
             .then(async x => apiClient.getAllocation(x))
+            .then(x => x?.allocation ?? null)
             .then(setAllocation)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const commitAllocation = useCallback(() => {
@@ -30,7 +31,7 @@ export const Allocation = (): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.setAllocation(x, btc))
             .then(() => setAllocation(btc))
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     return (

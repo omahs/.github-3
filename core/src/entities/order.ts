@@ -34,3 +34,27 @@ export const OrderSchema = new Schema<IOrder>({
 });
 
 export const Order = createModel<IOrder>(OrderSchema, "orders");
+
+export interface IOrderResponse {
+    executionDate: DateTime;
+    currency: string;
+    amount: PreciseNumber;
+}
+
+export const OrderResponseSchema = new Schema<IOrderResponse>({
+    executionDate: { ...DateTimeSchema, required: true },
+    currency: { type: String, required: true },
+    amount: { ...PreciseNumberSchema, required: true }
+});
+
+export const OrderResponse = createModel<IOrderResponse>(OrderResponseSchema);
+
+export interface IOrdersResponse {
+    orders: Array<IOrderResponse>;
+}
+
+export const OrdersResponseSchema = new Schema<IOrdersResponse>({
+    orders: { type: [OrderResponseSchema], required: true }
+});
+
+export const OrdersResponse = createModel<IOrdersResponse>(OrdersResponseSchema);

@@ -84,6 +84,10 @@ export class DateTime {
     public toString(): string {
         return this.timestamp.toString();
     }
+
+    public toJSON(): number {
+        return this.timestamp;
+    }
 }
 
 export const DateTimeSchema = {

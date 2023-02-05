@@ -15,14 +15,14 @@ export const Footer = (): ReactElement => {
         window.fetch("./terms.md")
             .then(async x => x.text())
             .then(setLegalText)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const openPrivacy = useCallback(() => {
         window.fetch("./privacy.md")
             .then(async x => x.text())
             .then(setLegalText)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const closeModal = useCallback(() => {

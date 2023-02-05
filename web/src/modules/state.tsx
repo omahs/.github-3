@@ -26,7 +26,7 @@ export const ContextProvider = (props: PropsWithChildren): ReactElement => {
         getAccessTokenSilently()
             .then(async x => apiClient.getLastPayment(x))
             .then(setLastPayment)
-            .catch(console.log);
+            .catch(console.error);
     }, []);
 
     const context = useMemo<IGlobalState>(() => {
