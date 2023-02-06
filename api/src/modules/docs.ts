@@ -5,13 +5,10 @@ import { serve, generateHTML } from "swagger-ui-express";
 const domain = process.env.AUTH0_AUDIENCE ?? "";
 
 export const RegisterDocs = (app: Application): void => {
-    const redirectScript = `
-        if (!window.location.pathname.endsWith("/")) {
-            window.location.pathname = window.location.pathname + "/";
-        }
-    `;
+    const redirectScript = "if (!window.location.pathname.endsWith(\"/\")) { window.location.pathname = window.location.pathname + \"/\"; }";
 
-    const additionalHead = [
+    const head = [
+        "<meta charset=\"UTF-8\">",
         "<meta name=\"robots\" content=\"noindex,follow\">",
         `<script type="text/javascript">${redirectScript}</script>`
     ];
@@ -39,7 +36,7 @@ export const RegisterDocs = (app: Application): void => {
     };
 
     const html = generateHTML(undefined, specs)
-        .replace("<meta charset=\"UTF-8\">", `<meta charset="UTF-8">${additionalHead.join("\n\t\r")}`);
+        .replace("<meta charset=\"UTF-8\">", head.join("\n  "));
 
     app.use("/", serve, (_: Request, res: Response) => res.send(html));
 };
