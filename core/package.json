@@ -11,7 +11,7 @@
         "jewl-isomorphic": "*",
         "mongoose": "^6.9.0",
         "bignumber.js": "^9.1.0",
-        "nanoid": "^4.0.0",
+        "nanoid": "^4.0.1",
         "jose": "^4.11.0"
     }
 }
