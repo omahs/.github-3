@@ -3,6 +3,16 @@
     height: 100%;
 }
 
+.dot {
+    color: #bcbfb2;
+    cursor: pointer;
+}
+
+.dot-selected {
+    color: #dbddd6;
+    user-select: none;
+}
+
 .dots {
     position: absolute;
     display: flex;

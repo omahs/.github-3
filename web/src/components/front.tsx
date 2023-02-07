@@ -31,12 +31,15 @@ export const Front = (): ReactElement => {
     const currentSlide = useMemo(() => slides[currentIndex], [currentIndex]);
 
     const dotsPressed = useMemo(() => {
-        return slides.map((_, i) => useCallback(() => setCurrentIndex(i), [currentIndex]));
+        return slides.map((_, i) => () => {
+            if (currentIndex === i) { return; }
+            setCurrentIndex(i);
+        });
     }, [currentIndex]);
 
     const dots = useMemo(() => {
         return [...Array(slides.length).keys()]
-            .map(x => <FontAwesomeIcon key={x} icon={faCircle} color={currentIndex === x ? "#dbddd6" : "#bcbfb2"} onClick={dotsPressed[x]} />);
+            .map(x => <FontAwesomeIcon key={x} icon={faCircle} className={currentIndex === x ? "dot-selected" : "dot"} onClick={dotsPressed[x]} />);
     }, [currentIndex]);
 
     return (
