@@ -20,10 +20,8 @@ export const App = (): ReactElement => {
     return (
         <div className="app">
             <Header />
-            <div className="port">
-                <div className="content">{content}</div>
-                <Footer />
-            </div>
+            <div className="content">{content}</div>
+            <Footer />
         </div>
     );
 };

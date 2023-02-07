@@ -3,7 +3,6 @@ import type { ReactElement } from "react";
 import React, { useCallback } from "react";
 
 export const Fee = (): ReactElement => {
-
     const openPaymentFee = useCallback(() => {
         window.open("https://stripe.com/en-nl/pricing#pricing-details");
     }, []);
@@ -15,7 +14,7 @@ export const Fee = (): ReactElement => {
     return (
         <div className="fee">
             <div className="fee-image">
-                <img src="/fee.svg" className="fee-image-img" title="Graphic by vectorjuice" alt="Transparent fees through jewl.app" />
+                <img src="./fee.svg" className="fee-image-img" title="Graphic by vectorjuice" alt="Transparent fees through jewl.app" />
             </div>
             <div className="fee-text">
                 <div className="fee-title">Pay less.<br />Invest more.</div>

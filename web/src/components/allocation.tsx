@@ -43,6 +43,7 @@ export const Allocation = (): ReactElement => {
             </button>
             {JSON.stringify(allocation)}
             {tokens.length}
+            {/* Your new allocation will go into effect for your next payment */}
         </div>
     );
 };

@@ -1,5 +1,6 @@
 .callout {
     text-align: center;
+    height: 100%;
 }
 
 .callout-title {
@@ -8,18 +9,32 @@
     font-size: 56px;
 }
 
+@media only screen and (max-width: 768px) {
+    .callout-title {
+        font-size: 36px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .callout-title {
+        font-size: 24px;
+    }
+}
+
 .callout-subtitle {
-    margin-bottom: 36px;
+    margin: 0 25px 36px
 }
 
 .callout-cta {
     display: block;
-    margin: auto;
+    margin: 36px auto;
     padding: 16px 36px;
     font-size: 36px;
 }
 
-.callout-image {
-    width: 80%;
-    aspect-ratio: 1.5;
+@media only screen and (max-width: 480px) {
+    .callout-cta {
+        font-size: 24px;
+    }
 }
+

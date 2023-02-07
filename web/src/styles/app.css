@@ -4,11 +4,11 @@ html {
 
 body {
     margin: 0;
-    background: linear-gradient(-45deg, #e6e6e6, #fff7f0, #f2fff9, #fff0ff);
+    background: linear-gradient(-45deg, #0a1045, #4d1f53, #1a3f27, #1a3f27, #4d1f53, #0a1045);
     background-size: 400% 400%;
     background-attachment: fixed;
-    animation: gradient 15s ease-in-out infinite;
-    color: #4C4C4C;
+    animation: gradient 60s ease-in-out infinite;
+    color: #dbddd6;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
     overflow: hidden;
@@ -26,19 +26,13 @@ button {
     cursor: pointer;
     outline: inherit;
     font-weight: bold;
-    color: #ffffff;
-    background-color: #429e61;
     font-size: 14px;
     border-radius: 4px;
+    color: #dbddd6;
 }
 
-button:hover:enabled {
-    background-color: #429e61bb;
-}
-
-button:disabled {
-    background-color: #b1b1b1;
-    cursor: default;
+button:hover {
+    color: #bcbfb2;
 }
 
 img, a {
@@ -73,12 +67,14 @@ img, a {
     border-radius: 6px;
 }
 
-.port {
-    overflow-y: overlay;
-    overflow-x: hidden;
-    height: calc(100vh - 56px);
+.app {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
 }
 
 .content {
-    min-height: calc(100vh - 100px);
+    flex: 1;
+    overflow: hidden;
 }

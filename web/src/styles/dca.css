@@ -3,6 +3,7 @@
     align-items: center;
     display: flex;
     flex-direction: row-reverse;
+    height: 100%;
 }
 
 @media only screen and (max-width: 768px) {
@@ -24,6 +25,13 @@
 .dca-text {
     display: inline-block;
     flex: 1;
+    padding: 0 36px;
+}
+
+@media only screen and (max-width: 768px) {
+    .dca-text {
+        padding: 0;
+    }
 }
 
 .dca-title {
@@ -35,4 +43,23 @@
 .dca-message {
     text-align: left;
     padding: 12px 12px 0;
+}
+
+.dca-cta {
+    display: block;
+    margin: 36px auto;
+    padding: 16px 36px;
+    font-size: 36px;
+}
+
+@media only screen and (max-width: 480px) {
+    .dca-cta {
+        font-size: 24px;
+    }
+}
+
+@media only screen and (max-height: 768px) {
+    .dca-cta {
+        display: none;
+    }
 }

@@ -98,6 +98,7 @@
         "react/sort-comp": "off",
         "react/no-set-state": "off",
         "react/no-multi-comp": "off",
+        "react/no-danger": "off",
         "react/jsx-props-no-spreading": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/naming-convention": "off",

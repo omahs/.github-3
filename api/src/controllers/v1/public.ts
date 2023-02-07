@@ -1,6 +1,6 @@
 import { Get, Route } from "tsoa";
-import type { IPingResponse, IStatusResponse, IStatsResponse } from "jewl-core";
-import { Statistic, ServerStatus } from "jewl-core";
+import type { IPingResponse, IStatusResponse } from "jewl-core";
+import { ServerStatus } from "jewl-core";
 
 @Route("/v1")
 export class PublicController {
@@ -14,14 +14,6 @@ export class PublicController {
         const isMaintainance = process.env.MAINTAINANCE === "true";
         return {
             status: isMaintainance ? ServerStatus.maintainance : ServerStatus.normal
-        };
-    }
-
-    @Get("/stats")
-    public async getStats(): Promise<IStatsResponse> {
-        const _stats = await Statistic.find();
-        return {
-            stats: []
         };
     }
 }
