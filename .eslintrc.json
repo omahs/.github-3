@@ -82,6 +82,7 @@
         "no-extend-native": "off",
         "no-confusing-arrow": "off",
         "no-underscore-dangle": "off",
+        "no-duplicate-imports": "off",
         "class-methods-use-this": "off",
         "newline-per-chained-call": "off",
         "react/destructuring-assignment": "off",
