@@ -1,12 +1,8 @@
 import { mongoConnect, mongoDisconnect } from "jewl-core";
 import chalk from "chalk";
-import { scheduleTasks } from "./modules/schedule.js";
-import { orderAndRefundJob } from "./jobs/order.js";
-import { paymentJob } from "./jobs/payment.js";
-import { transferJob } from "./jobs/transfer.js";
-import { mailJob } from "./jobs/mail.js";
-import { announcePaymentJob } from "./jobs/announce.js";
-import { heartbeatJob } from "./jobs/heartbeat.js";
+import { Cron } from "./modules/schedule.js";
+import { heartbeat } from "./jobs/heartbeat.js";
+import { getSupportedCurrencies } from "./jobs/currency.js";
 
 await mongoConnect(process.env.MONGO_URL ?? "");
 
@@ -15,26 +11,15 @@ console.info(
     "Starting up lambda worker"
 );
 
-// Every five minutes
-const minute = scheduleTasks("*/5 * * * *", {
-    mailJob,
-    heartbeatJob
-});
+const cron = new Cron();
 
-// Hourly
-const hour = scheduleTasks("0 * * * *", {
-    orderAndRefundJob,
-    paymentJob,
-    transferJob
-});
+cron.addTask("heartbeat", heartbeat);
+cron.addTask("currencies", getSupportedCurrencies, false, 5);
 
-// Daily at 10 am
-const day = scheduleTasks("0 10 * * *", {
-    announcePaymentJob
-});
+cron.start();
 
 const onExit = (): void => {
-    [minute, hour, day].forEach(x => x.stop());
+    cron.stop();
     void mongoDisconnect();
     console.info(
         chalk.bgMagenta.bold(" INFO "),

@@ -1,20 +1,8 @@
-import { CoinbasePublicClient, CoinbaseClient, StripeClient, AuthClient, ApiClient } from "jewl-core";
-
-const coinbaseUrl = process.env.COINBASE_URL ?? "";
-const coinbaseKey = process.env.COINBASE_KEY ?? "";
-const coinbaseSecret = process.env.COINBASE_SECRET ?? "";
-const coinbasePass = process.env.COINBASE_PASS ?? "";
-export const coinbasePublicClient = new CoinbasePublicClient();
-export const coinbaseClient = new CoinbaseClient(coinbaseUrl, coinbaseKey, coinbaseSecret, coinbasePass);
+import { ApiClient, BinanceClient } from "jewl-core";
 
 const serverUrl = process.env.SERVER_URL ?? "";
 export const apiClient = new ApiClient(serverUrl);
 
-const stripeUrl = process.env.STRIPE_URL ?? "";
-const stripeKey = process.env.STRIPE_KEY ?? "";
-export const stripeClient = new StripeClient(stripeUrl, stripeKey);
-
-const auth0Url = process.env.AUTH0_URL ?? "";
-const auth0Id = process.env.AUTH0_CLIENT_ID ?? "";
-const auth0Secret = process.env.AUTH0_CLIENT_SECRET ?? "";
-export const authClient = new AuthClient(auth0Url, auth0Id, auth0Secret);
+const binanceKey = process.env.BINANCE_KEY ?? "";
+const binanceSecret = process.env.BINANCE_SECRET ?? "";
+export const binanceClient = new BinanceClient(binanceKey, binanceSecret);

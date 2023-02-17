@@ -1,14 +1,12 @@
-import type { CronJob } from "cron";
-import { job, time } from "cron";
 import chalk from "chalk";
-import { Cron, DateTime, ServerStatus } from "jewl-core";
+import { ServerStatus } from "jewl-core";
 import { apiClient } from "./network.js";
 
 const isInMaintainanceMode = async (): Promise<boolean> => {
     if (process.env.DEBUG === "true") { return false; }
     try {
         const response = await apiClient.getStatus();
-        if (response.status === ServerStatus.normal) { return false; }
+        if (response.status === ServerStatus.up) { return false; }
     } catch { /* Empty */ }
     return true;
 };
@@ -23,14 +21,10 @@ const log = (message: string): void => {
     );
 };
 
-const runTask = async (key: string, task: () => Promise<void>): Promise<boolean> => {
-    if (key !== "heartbeatJob" && await isInMaintainanceMode()) {
-        log(`Skipping ${key} because server is in maintainance mode`);
-        return false;
-    }
-
+const runTask = async (key: string, task: () => Promise<void>): Promise<void> => {
     const startTime = new Date();
-    log(chalk.cyan(`Started cron job ${key}`));
+    const optionalLog = key === "" ? (): void => { /* Empty */ } : log;
+    optionalLog(chalk.cyan(`Started cron job ${key}`));
     let success = false;
     try {
         await task();
@@ -45,27 +39,66 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<boolean>
     }
     const endTime = new Date();
     const duration = endTime.getTime() - startTime.getTime();
-    log(chalk[success ? "green" : "red"](`Finished ${key} in ${duration} ms`));
-    return success;
+    optionalLog(chalk[success ? "green" : "red"](`Finished ${key} in ${duration} ms`));
 };
 
-const runTasks = async (cron: string, tasks: Record<string, () => Promise<void>>): Promise<void> => {
-    const promises: Array<Promise<void>> = [];
-    for (const key in tasks) {
-        const promise = async (): Promise<void> => {
-            const storedCron = await Cron.findOne({ cron, key }) ?? new Cron({ cron, key, notBefore: new DateTime(0) });
-            if (storedCron.notBefore.gt(new DateTime()) && process.env.DEBUG !== "true") { return; }
-            const status = await runTask(key, tasks[key]);
-            if (!status) { return; }
-            const schedule = time(cron);
-            storedCron.notBefore = new DateTime(schedule.sendAt().toUnixInteger()).addingSeconds(-5);
-            await storedCron.save();
-        };
-        promises.push(promise());
+export class Cron {
+    private readonly tasks = new Map<string, () => Promise<void>>();
+    private readonly isSecure = new Map<string, boolean>();
+    private readonly modulo = new Map<string, number>();
+    private iteration = 0;
+    private started = false;
+
+    public constructor(minInterval = 5) {
+        const spacer = async (): Promise<void> => new Promise<void>(resolve => { setTimeout(resolve, minInterval * 1000); });
+        this.tasks.set("", spacer);
     }
-    await Promise.all(promises);
-};
 
-export const scheduleTasks = (cron: string, tasks: Record<string, () => Promise<void>>): CronJob => {
-    return job(cron, () => void runTasks(cron, tasks), null, true, "Europe/Amsterdam", null, true);
-};
+    public addTask(key: string, task: () => Promise<void>, secure = false, modulo = 1): void {
+        this.tasks.set(key, task);
+        this.modulo.set(key, modulo);
+        this.isSecure.set(key, secure);
+    }
+
+    public removeTask(key: string): void {
+        this.tasks.delete(key);
+    }
+
+    public start(): void {
+        if (this.started) {
+            throw Error("cron already started");
+        }
+        this.started = true;
+        void this.runTasks();
+    }
+
+    public stop(): void {
+        if (!this.started) {
+            throw Error("cron not stared");
+        }
+        this.started = false;
+    }
+
+    private async runTasks(): Promise<void> {
+        const promises: Array<Promise<void>> = [];
+
+        const isMaintainance = await isInMaintainanceMode();
+
+        this.tasks.forEach((task, key) => {
+            const isSecure = this.isSecure.get(key) ?? false;
+            if (isSecure && isMaintainance) { return; }
+            const modulo = this.modulo.get(key) ?? 1;
+            if (this.iteration % modulo !== 0) { return; }
+            const promise = runTask(key, task);
+            promises.push(promise);
+        });
+
+        await Promise.all(promises);
+
+        this.iteration += 1;
+
+        if (this.started) {
+            void this.runTasks();
+        }
+    }
+}

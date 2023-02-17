@@ -5,18 +5,12 @@
     "spec": {
         "outputDirectory": "public",
         "specFileBaseName": "swagger.gen",
-        "specVersion": 3,
-        "securityDefinitions": {
-            "token": {
-                "type": "http",
-                "scheme": "bearer"
-            }
-        }
+        "specVersion": 3
     },
     "routes": {
         "routesDir": "src/modules",
         "routesFileName": "routes.gen.ts",
-        "authenticationModule": "src/modules/auth.ts",
+        "authenticationModule": "src/modules/security.ts",
         "noWriteIfUnchanged": true,
         "useSuccessResponseCode": true,
         "esm": true

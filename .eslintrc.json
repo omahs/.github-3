@@ -33,6 +33,7 @@
         "space-before-function-paren": ["error", { "anonymous": "never", "named": "never", "asyncArrow": "always" }],
         "function-call-argument-newline": ["error", "consistent"],
         "function-paren-newline": ["error", "consistent"],
+        "operator-linebreak": ["error", "before"],
         "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
         "@typescript-eslint/indent": ["error", 4],
         "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],

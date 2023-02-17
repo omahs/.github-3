@@ -6,6 +6,7 @@ import { validate } from "./mongo.js";
 export interface IRequest {
     method?: string;
     endpoint: string;
+    query?: string;
     body?: string;
     headers?: Record<string, string>;
 }
@@ -35,7 +36,11 @@ export abstract class Client {
 
     public async request<T>(req: IRequest, schema: Model<T>): Promise<T> {
         const infix = req.endpoint.startsWith("/") ? "" : "/";
-        const url: RequestInfo = this.baseUrl + infix + req.endpoint;
+        let url: RequestInfo = this.baseUrl + infix + req.endpoint;
+        if (req.query != null) {
+            url = `${url}?${req.query}`;
+        }
+
         const headers: HeadersInit = {
             ...this.headers,
             ...req.headers ?? { }

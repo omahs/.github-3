@@ -1,5 +1,6 @@
 .footer {
-    user-select: none;
+    position: absolute;
+    bottom: 0
 }
 
 .footer-content-long, .footer-content-short {

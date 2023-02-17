@@ -92,6 +92,6 @@ export class DateTime {
 
 export const DateTimeSchema = {
     type: Number,
-    get: (x: string): DateTime => new DateTime(x),
+    get: (x?: string): DateTime | undefined => x == null ? undefined : new DateTime(x),
     set: (x: DateTime): number => x.valueOf()
 };

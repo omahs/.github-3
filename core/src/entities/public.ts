@@ -12,8 +12,9 @@ export const PingResponseSchema = new Schema<IPingResponse>({
 export const PingResponse = createModel<IPingResponse>(PingResponseSchema);
 
 export enum ServerStatus {
-    normal = 0,
-    maintainance = 1
+    up = 0,
+    down = 1,
+    maintainance = 2
 }
 
 export interface IStatusResponse {

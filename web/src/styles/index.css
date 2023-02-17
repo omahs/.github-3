@@ -1,0 +1,69 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(-45deg, #0a1045, #4d1f53, #1a3f27, #1a3f27, #4d1f53, #0a1045);
+    background-size: 400% 400%;
+    background-attachment: fixed;
+    animation: gradient 60s ease-in-out infinite;
+    color: #dbddd6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+    overflow: hidden;
+    user-select: none;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 7px 14px;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 4px;
+    color: #dbddd6;
+}
+
+button:hover {
+    color: #bcbfb2;
+}
+
+img, a {
+    border:none;
+    outline: none;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+::-webkit-scrollbar {
+    background: transparent;
+    display: fixed;
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(46, 46, 46, 0.2);
+    border-radius: 6px;
+}

@@ -8,9 +8,6 @@
     },
     "dependencies": {
         "chalk": "^5.2.0",
-        "cron": "^2.2.0",
-        "html-to-text": "^9.0.4",
-        "jewl-core": "*",
-        "nodemailer": "^6.9.1"
+        "jewl-core": "*"
     }
 }

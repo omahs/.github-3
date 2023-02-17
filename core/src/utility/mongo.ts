@@ -1,9 +1,7 @@
-import type { Model, Schema } from "mongoose";
+import type { CallbackWithoutResultAndOptionalError, Model, Schema } from "mongoose";
 import { set, pluralize, connect, disconnect, model } from "mongoose";
-import type { CallbackWithoutResultAndOptionalError } from "mongoose";
+import type { IEstimateRequest } from "../entities/swap.js";
 import { PreciseNumber } from "./number.js";
-import type { OrderPeriod } from "../entities/payment.js";
-import type { IAllocationItem } from "../entities/user.js";
 
 if (typeof window === "undefined") {
     set("strictQuery", false);
@@ -39,34 +37,40 @@ interface ValidatorThis {
     invalidate: (field: string, reason: string) => void;
 }
 
-interface AllocationValidatorThis extends ValidatorThis {
-    allocation: Array<IAllocationItem>;
-}
-
-export const allocationValidator = function(this: AllocationValidatorThis, next: CallbackWithoutResultAndOptionalError): void {
-    if (this.allocation.length < 1) { this.invalidate("allocation", "empty allocation"); }
-    let total = new PreciseNumber(0);
-    for (const item of this.allocation) {
-        total = total.plus(item.percentage);
+export const estimateValidator = function(this: ValidatorThis & IEstimateRequest, next: CallbackWithoutResultAndOptionalError): void {
+    if (this.input.percentage != null) {
+        this.invalidate("input", "cannot specify an input percentage");
     }
-    if (!total.eq(1)) {
-        this.invalidate("allocation", "allocation not equal to 1");
-    }
-    next();
-};
 
-interface AmountValidatorThis extends ValidatorThis {
-    amount: PreciseNumber;
-    installments: number;
-    period: OrderPeriod;
-}
-
-export const amountValidator = function(this: AmountValidatorThis, next: CallbackWithoutResultAndOptionalError): void {
-    const totalTerm = new PreciseNumber(this.installments).multipliedBy(this.period);
-    const multiplier = new PreciseNumber(356).dividedBy(totalTerm);
-    const yearlyEquivalent = this.amount.dividedBy(multiplier);
-    if (yearlyEquivalent.gte(1e5)) {
-        this.invalidate("amount", "maximum amount of 100k per year exceeded");
+    if (this.input.amount?.lt(0) ?? false) {
+        this.invalidate("input", "input amount cannot be less than 0");
     }
+
+    if (this.output.some(x => x.percentage?.lt(0) ?? false)) {
+        this.invalidate("output", "no single percentage can be less than 0");
+    }
+
+    if (this.output.some(x => x.amount?.lte(0) ?? false)) {
+        this.invalidate("output", "no single amount can be less than 0");
+    }
+
+    if (this.input.amount == null) {
+        if (this.output.some(x => x.percentage != null)) {
+            this.invalidate("output", "cannot specify a percentage without an input amount");
+        }
+
+        if (this.output.some(x => x.amount == null)) {
+            this.invalidate("output", "need to specify either an input or output amount");
+        }
+    } else {
+        const percentage = this.output.reduce((prev, current) => prev.plus(current.percentage ?? 0), new PreciseNumber(0));
+        if (!percentage.eq(1)) {
+            this.invalidate("output", "percentages must sum to 1");
+        }
+        if (this.output.some(x => x.amount != null)) {
+            this.invalidate("output", "cannot specify both in input and output amount");
+        }
+    }
+
     next();
 };

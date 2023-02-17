@@ -12,8 +12,6 @@
         "express": "^4.18.2",
         "express-slow-down": "^1.5.0",
         "jewl-core": "*",
-        "jose": "^4.11.4",
-        "node-cron": "^3.0.2",
         "on-finished": "^2.4.1",
         "swagger-ui-express": "^4.6.0",
         "tsoa": "^5.1.1"
