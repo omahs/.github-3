@@ -49,7 +49,7 @@ export class Cron {
     private iteration = 0;
     private started = false;
 
-    public constructor(minInterval = 5) {
+    public constructor(minInterval = 60) {
         const spacer = async (): Promise<void> => new Promise<void>(resolve => { setTimeout(resolve, minInterval * 1000); });
         this.tasks.set("", spacer);
     }
