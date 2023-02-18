@@ -4,6 +4,7 @@ import type { PreciseNumber } from "../utility/number.js";
 import { PreciseNumberSchema } from "../utility/number.js";
 
 export interface ICurrencyResponseItem {
+    name: string;
     coin: string;
     requiresMemo: boolean;
     addressRegex?: string;
@@ -14,6 +15,7 @@ export interface ICurrencyResponseItem {
 }
 
 export const CurrencyResponseItemSchema = new Schema<ICurrencyResponseItem>({
+    name: { type: String, required: true },
     coin: { type: String, required: true },
     requiresMemo: { type: Boolean, required: true },
     addressRegex: { type: String },
@@ -26,11 +28,11 @@ export const CurrencyResponseItemSchema = new Schema<ICurrencyResponseItem>({
 export const CurrencyResponseItem = createModel<ICurrencyResponseItem>(CurrencyResponseItemSchema);
 
 export interface ICurrencyResponse {
-    currencies: Record<string, ICurrencyResponseItem>;
+    currencies: Array<ICurrencyResponseItem>;
 }
 
 export const CurrencyResponseSchema = new Schema<ICurrencyResponse>({
-    currencies: { type: Object, of: CurrencyResponseItemSchema, required: true }
+    currencies: { type: [CurrencyResponseItemSchema], required: true }
 });
 
 export const CurrencyResponse = createModel<ICurrencyResponse>(CurrencyResponseSchema);
@@ -86,8 +88,8 @@ export interface IEstimateResponse {
 }
 
 const EstimateResponseSchema = new Schema<IEstimateResponse>({
-    input: { type: EstimateRequestItemSchema, required: true },
-    output: { type: [EstimateRequestItemSchema], required: true },
+    input: { type: EstimateResponseItemSchema, required: true },
+    output: { type: [EstimateResponseItemSchema], required: true },
     fee: { ...PreciseNumberSchema, required: true },
     deliveryTime: { type: Number, required: true }
 });

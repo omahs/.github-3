@@ -3,8 +3,7 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    width: min(512px, 80vw, 50vh);
-    height: min(512px, 80vw, 50vh);
+    width: min(512px, 80vw);
     border: solid 1px #dbddd6;
     border-radius: 24px;
     top: 50%;
@@ -49,6 +48,10 @@
 .app-footer {
     display: flex;
     justify-content: center;
+}
+
+.app-footer-button {
+    padding: 12px 24px;
 }
 
 .app-status {

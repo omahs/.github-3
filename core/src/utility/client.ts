@@ -66,8 +66,7 @@ export abstract class Client {
             default: break;
         }
 
-        const response = await validate(schema, json);
-        return response;
+        return validate(schema, json);
     }
 }
 

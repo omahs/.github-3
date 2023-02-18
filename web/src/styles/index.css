@@ -36,6 +36,18 @@ button:hover {
     color: #bcbfb2;
 }
 
+input {
+    background: none;
+    border: solid 1px #dbddd6;
+    padding: 7px 14px;
+    font: inherit;
+    outline: inherit;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 4px;
+    color: #dbddd6;
+}
+
 img, a {
     border:none;
     outline: none;

@@ -18,28 +18,28 @@ export const App = (): ReactElement => {
     const [serverStatus, setServerStatus] = useState(ServerStatus.up);
     const { isLoading, setLoading } = useLoading();
     const [pageValidated, setPageValidated] = useState(0);
-    const [currencies, setCurrencies] = useState<Record<string, ICurrencyResponseItem>>();
+    const [currencies, setCurrencies] = useState<Map<string, ICurrencyResponseItem>>();
     const [estimate, setEstimate] = useState<IEstimateResponse>();
     const [index, setIndex] = useState(0);
 
-    const reloadServerStatus = useCallback(() => {
-        setLoading(true);
-        apiClient.getStatus()
-            .then(x => setServerStatus(x.status))
-            .catch(() => setServerStatus(ServerStatus.down))
-            .finally(() => setLoading(false));
-    }, [setLoading, setServerStatus]);
-
     useEffect(() => {
-        const id = setInterval(reloadServerStatus, 10000);
+        const id = setInterval(() => {
+            setLoading(true);
+            apiClient.getStatus()
+                .then(x => setServerStatus(x.status))
+                .catch(() => setServerStatus(ServerStatus.down))
+                .finally(() => setLoading(false));
+        }, 10000);
         return () => clearInterval(id);
-    }, [reloadServerStatus]);
+    }, []);
 
     useEffect(() => {
         apiClient.getCurrencies()
-            .then(x => setCurrencies(x.currencies))
+            .then(x => x.currencies)
+            .then(x => new Map(x.map(y => [y.name, y])))
+            .then(x => setCurrencies(x))
             .catch(console.log);
-    }, [setCurrencies]);
+    }, []);
 
     const statusClicked = useCallback(() => {
         window.open("https://status.jewl.app/", "_blank");
@@ -54,7 +54,7 @@ export const App = (): ReactElement => {
                 setNextEnabled: (enabled: boolean): void => setPageValidated(enabled ? page + 1 : page)
             };
         };
-    }, [currencies, setPageValidated, setEstimate, setPageValidated]);
+    }, [currencies, estimate]);
 
     const contentPages = useMemo(() => {
         return [
@@ -95,7 +95,7 @@ export const App = (): ReactElement => {
         } else {
             setIndex(index + 1);
         }
-    }, [index, setIndex, contentPages, nextEnabled]);
+    }, [index, contentPages, nextEnabled]);
 
     const backPressed = useCallback(() => {
         if (index === 0) { return; }
@@ -103,7 +103,7 @@ export const App = (): ReactElement => {
             // TODO: clear the address again
         }
         setIndex(index - 1);
-    }, [index, setIndex]);
+    }, [index]);
 
     return (
         <div className="app">

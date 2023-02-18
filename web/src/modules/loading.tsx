@@ -43,14 +43,14 @@ export const Loading = (props: PropsWithChildren): ReactElement => {
         return (key: string, isLoading: boolean): void => {
             setLoadingMap({ ...loadingMap, [key]: isLoading });
         };
-    }, [loadingMap, setLoadingMap]);
+    }, [loadingMap]);
 
     const context = useMemo(() => {
         return {
             loadingMap,
             setGlobalLoading
         };
-    }, [loadingMap, setGlobalLoading]);
+    }, [loadingMap]);
 
     return (
         <Context.Provider value={context}>

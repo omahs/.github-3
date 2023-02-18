@@ -1,5 +1,5 @@
 import { Body, Get, Post, Route, Security } from "tsoa";
-import type { ICoin, ICurrencyResponse, ICurrencyResponseItem, IEstimateRequest, IEstimateResponse, IEstimateResponseItem } from "jewl-core";
+import type { ICoin, ICurrencyResponse, IEstimateRequest, IEstimateResponse, IEstimateResponseItem } from "jewl-core";
 import { Coin, PreciseNumber, EstimateRequest } from "jewl-core";
 import { validateBody } from "../../modules/mongo.js";
 
@@ -9,9 +9,9 @@ export class SwapController {
     @Get("/currency/all")
     public async getCurrencies(): Promise<ICurrencyResponse> {
         const coins = await Coin.find();
-        const currencies: Record<string, ICurrencyResponseItem> = { };
-        coins.forEach(x => {
-            currencies[x.name] = {
+        const currencies = coins.map(x => {
+            return {
+                name: x.name,
                 coin: x.coin,
                 requiresMemo: x.requiresMemo,
                 addressRegex: x.addressRegex,
