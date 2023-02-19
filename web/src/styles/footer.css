@@ -71,6 +71,7 @@
     color: #2f323a;
     border-radius: 24px;
     filter: drop-shadow(4px 4px 20px #00000020);
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     overscroll-behavior: contain;
 }
