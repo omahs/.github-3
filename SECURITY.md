@@ -81,7 +81,7 @@ To be eligible for a reward, you must not:
 * Be an immediate family member of a person employed by jewl.app or its subsidiaries or affiliates.
 * Be less than 18 years of age. If you are under 18 years old, or considered a minor in your place of residence, you must get your parents’ or legal guardian’s permission prior to participating in the program.
 
-# Code of Conduct
+## Code of Conduct
 Violations of this terms can result in a warning and/or ban of this Security Bounty Program.
 
 * Be kind.
