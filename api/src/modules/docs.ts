@@ -2,9 +2,8 @@ import type { Application, Request, Response } from "express";
 import type { SwaggerUiOptions } from "swagger-ui-express";
 import { serve, generateHTML } from "swagger-ui-express";
 
-const domain = process.env.AUTH0_AUDIENCE ?? "";
-
 export const RegisterDocs = (app: Application): void => {
+    const domainPlaceholder = "<DOMAIN />";
     const redirectScript = "if (!window.location.pathname.endsWith(\"/\")) { window.location.pathname = window.location.pathname + \"/\"; }";
 
     const head = [
@@ -14,15 +13,15 @@ export const RegisterDocs = (app: Application): void => {
     ];
 
     const css = `
-        .topbar, .info, .servers, .servers-title, #operations-tag-default {
-            display: none;
+        .topbar, .info, .servers, .servers-title, #operations-tag-default, .unlocked {
+            display: none !important;
         }
         .auth-wrapper:before {
             display: flex;
             justify-content: flex-start;
             align-self: center;
             flex: 1;
-            content: '${domain}';
+            content: '${domainPlaceholder}';
             font-family: sans-serif;
             font-size: 18px;
             font-weight: 700;
@@ -38,5 +37,9 @@ export const RegisterDocs = (app: Application): void => {
     const html = generateHTML(undefined, specs)
         .replace("<meta charset=\"UTF-8\">", head.join("\n  "));
 
-    app.use("/", serve, (_: Request, res: Response) => res.send(html));
+    app.use("/", serve, (req: Request, res: Response) => {
+        const domain = `${req.get("host")}`;
+        const response = html.replace(domainPlaceholder, domain);
+        res.send(response);
+    });
 };
