@@ -5,10 +5,11 @@
 ## The app
 
 This repository consists of several components:
-* `Core` - contains all the shared logic and models.
-* `Web` - contains the [React](https://reactjs.org) frontend code.
-* `API` - contains the [Express](https://expressjs.com) backend code.
-* `Lambda` - contains the [Cron](https://github.com/kelektiv/node-cron) backend code.
+* `Isomorphic` - platform-specific code.
+* `Core` - shared logic and models.
+* `Web` - a [React](https://reactjs.org) static site.
+* `API` - an [Express](https://expressjs.com) backend application interface.
+* `Lambda` - a [Node](https://nodejs.org) worker program.
 
 All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mongo](https://www.mongodb.com) NoSQL database.
 
@@ -16,8 +17,8 @@ All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mo
 
 This repository uses a couple of third party services:
 * The deployments are hosted on [DigitalOcean](https://digitalocean.com).
-* Logging and monitoring is done through [BetterStack](https://betterstack.com/).
-* Domain management and registrar services are handled by [Namecheap](https://namecheap.com/)
+* Logging and monitoring is done through [BetterStack](https://betterstack.com).
+* Domain management and registrar services are handled by [Namecheap](https://namecheap.com)
 * Crypto transactions and purchases are managed through [Binance](https://binance.com).
 
 ## Getting Started
