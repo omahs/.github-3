@@ -42,7 +42,7 @@ export const App = (): ReactElement => {
     }, []);
 
     const statusClicked = useCallback(() => {
-        window.open("https://status.jewl.app/", "_blank");
+        window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
     }, []);
 
     const pageProps = useMemo(() => {
