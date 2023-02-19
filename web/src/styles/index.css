@@ -13,6 +13,7 @@ body {
     "Segoe UI Emoji", "Segoe UI Symbol";
     overflow: hidden;
     user-select: none;
+    cursor: default;
 }
 
 [hidden] {
