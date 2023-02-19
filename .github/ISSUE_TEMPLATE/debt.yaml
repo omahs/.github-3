@@ -1,0 +1,37 @@
+name: Technical Debt
+description: When you want to suggest a technical improvement.
+title: "[Technical] "
+labels: ["technical-debt"]
+body:
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: A clear and concise description of what you want to happen.
+      placeholder: Something needs to change.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+      placeholder: Other alternatives are not viable.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+      description: A clear and concise description of why this change is necessary.
+      placeholder: Not changing this will cause something to happen.
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms of service
+      description: By submitting this issue you hereby grant jewl.app a nonexclusive, royalty-free, fully paid-up, irrevocable, perpetual, worldwide license, with the right to grant and authorize sublicenses, to make, have made, modify, use, import, offer for sale, and sell your contribution or a part thereof.
+      options:
+        - label: I agree
+          required: true
