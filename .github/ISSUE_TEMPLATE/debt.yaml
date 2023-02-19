@@ -7,7 +7,7 @@ body:
     id: details
     attributes:
       label: Details
-      description: A clear and concise description of what you want to happen.
+      description: A clear and concise description of what should happen.
       placeholder: Something needs to change.
     validations:
       required: true
@@ -15,8 +15,8 @@ body:
     id: alternatives
     attributes:
       label: Alternatives considered
-      description: A clear and concise description of any alternative solutions or features you've considered.
-      placeholder: Other alternatives are not viable.
+      description: A clear and concise description of any alternative solutions or features considered.
+      placeholder: All the other alternatives are not viable solutions.
     validations:
       required: true
   - type: textarea
@@ -24,7 +24,7 @@ body:
     attributes:
       label: Risks
       description: A clear and concise description of why this change is necessary.
-      placeholder: Not changing this will cause something to happen.
+      placeholder: Not changing this will cause something bad to happen.
     validations:
       required: true
   - type: checkboxes

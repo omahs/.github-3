@@ -2,7 +2,7 @@
 
 **The security bounty is currently paused while jewl.app is still in Beta!**
 
-jewl.app believes in better security through openness. We welcome and value technical reports of vulnerabilities that could substantially affect the confidentiality or integrity of our services. If you believe that you have discovered such a vulnerability, please report it at [vulnerabilities@jewl.app](mailto:vulnerabilities@jewl.app). The jewl.app team will work with you to investigate and resolve the issue. The first reporter of a security vulnerability is elligable to receive a monetary reward.
+jewl.app believes in better security through openness. We welcome and value technical reports of vulnerabilities that could substantially affect the confidentiality or integrity of our services. If you believe that you have discovered such a vulnerability, please report it through a [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new). The jewl.app team will work with you to investigate and resolve the issue. The first reporter of a security vulnerability is elligable to receive a monetary reward.
 
 ## Eligibility
 The jewl.app Security Bounty Program covers our main website and service hosted at `https://jewl.app` and `https://jewl.app/api` respectively. Development environments and third-party services are not included int he security bounty program. We are mainly interested in vulnerabilities that would allow attackers to extract private information or steal funds. We are interested in real vulnerabilites, not in output of automated scanners or tools. We require all vulnerability reports to be accompanied by a proof-of-concept that demonstrates the vulnerabilty and the implications.
@@ -47,7 +47,7 @@ Do not engage in testing that:
 ## Submission Process
 Submission reports should include a detailed description of your discovery with clear, concise steps allowing us to reproduce the issue, and should contain a working proof-of-concept.
 
-All reports should go through [vulnerabilities@jewl.app](mailto:vulnerabilities@jewl.app) unless instructed otherwise by jewl.app.
+All reports should go through a [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new) unless instructed otherwise by jewl.app.
 
 Low quality reports, such as those that include inadequate information to investigate, may incur significant delays in the disclosure process, which is in nobody’s interest. Please only submit one report per issue.
 
@@ -86,6 +86,6 @@ Violations of this terms can result in a warning and/or ban of this Security Bou
 
 * Be kind.
 * Be respectful and professional in your communications and behavior.
-* Interactions should be at all times respectful and communicated in a professional manner and tone with a view to being beneficial to the report validation process. Creating unnecessary noise, sending rude emails, or spamming for an update are some examples which can be considered unprofessional behavior. These actions decrease triage efficiency and are not beneficial to you as the vulnerability reporter or the program.
+* Interactions should be at all times respectful and communicated in a professional manner and tone with a view to being beneficial to the report validation process.
 * Hate speech, profanity, or any aggressive threats will not be tolerated in any form.
-* Only contact the jewl.app team through the email address mentioned above.
+* Only contact the jewl.app team through the [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new).
