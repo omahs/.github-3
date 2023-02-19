@@ -40,7 +40,7 @@ export const Footer = (): ReactElement => {
                 <span className="footer-left">© 2023 jewl.app</span>
                 <span className="footer-right" onClick={openContact}>Contact</span>
                 <span className="footer-right" onClick={openFaq}>FAQ</span>
-                <span className="footer-right" onClick={openTerms}>ToC</span>
+                <span className="footer-right" onClick={openTerms}>ToS</span>
                 <span className="footer-right" onClick={openPrivacy}>PP</span>
             </div>
             <div className="footer-legal-overlay" hidden={legalText == null} onClick={closeModal} />
