@@ -20,6 +20,15 @@ body {
     display: none !important;
 }
 
+a {
+    color: inherit;
+    text-transform: underline;
+}
+
+a:visited {
+    color: inherit;
+}
+
 button {
     background: none;
     border: none;

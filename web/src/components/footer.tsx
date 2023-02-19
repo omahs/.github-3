@@ -1,12 +1,21 @@
 import "../styles/footer.css";
 import type { ReactElement } from "react";
-import React, { useCallback, useRef, useState, useMemo } from "react";
+import React, { useCallback, useRef, useState, useMemo, useEffect } from "react";
 import { marked } from "marked";
-import { sanitize } from "dompurify";
+import { sanitize, addHook } from "dompurify";
 
 export const Footer = (): ReactElement => {
     const [legalText, setLegalText] = useState<string | null>(null);
     const legalDiv = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        addHook("afterSanitizeAttributes", (node: Element) => {
+            if ("target" in node) {
+                node.setAttribute("target", "_blank");
+                node.setAttribute("rel", "noopener");
+            }
+        });
+    }, []);
 
     const openPage = useMemo(() => {
         return (name: string): void => {
@@ -16,6 +25,24 @@ export const Footer = (): ReactElement => {
                 .catch(console.error);
         };
     }, []);
+
+    const markedRenderer = useMemo(() => {
+        const renderer = new marked.Renderer();
+        const linkRenderer = renderer.link.bind(renderer);
+        renderer.link = (href, title, text): string => {
+            const localLink = href?.startsWith(`${location.protocol}//${location.hostname}`) ?? false;
+            const link = linkRenderer.call(renderer, href, title, text);
+            return localLink ? link : link.replace(/^<a /u, "<a target=\"_blank\" rel=\"noreferrer noopener nofollow\" ");
+        };
+        return renderer;
+    }, []);
+
+    const html = useMemo(() => {
+        if (legalText == null) { return undefined; }
+        const parsed = marked.parse(legalText, { renderer: markedRenderer });
+        const sanitized = sanitize(parsed);
+        return { __html: sanitized };
+    }, [legalText]);
 
     const openContact = useCallback(() => openPage("contact"), [openPage]);
     const openTerms = useCallback(() => openPage("terms"), [openPage]);
@@ -45,7 +72,7 @@ export const Footer = (): ReactElement => {
             </div>
             <div className="footer-legal-overlay" hidden={legalText == null} onClick={closeModal} />
             <div className="footer-legal-popup" hidden={legalText == null} ref={legalDiv}>
-                <div dangerouslySetInnerHTML={{ __html: sanitize(marked.parse(legalText ?? "")) }} />
+                <div dangerouslySetInnerHTML={html} />
             </div>
         </div>
     );
