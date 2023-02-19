@@ -37,6 +37,7 @@ button:hover {
 }
 
 input {
+    min-width: 0;
     background: none;
     border: solid 1px #dbddd6;
     padding: 7px 14px;

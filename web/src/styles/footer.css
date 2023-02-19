@@ -32,13 +32,18 @@
 }
 
 .footer-left {
-    margin-left: 10px;
+    margin-left: 8px;
     flex: 1
 }
 
 .footer-right {
-    margin-right: 20px;
+    margin-right: 16px;
     cursor: pointer;
+}
+@media only screen and (max-width: 768px) {
+    .footer-right {
+        margin-right: 8px;
+    }
 }
 
 .footer-right:hover {
