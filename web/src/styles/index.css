@@ -22,7 +22,7 @@ body {
 
 a {
     color: inherit;
-    text-transform: underline;
+    text-decoration: underline;
 }
 
 a:visited {

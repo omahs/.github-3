@@ -136,10 +136,10 @@ export const App = (): ReactElement => {
                     Next
                 </button>
             </div>
-            <a className="app-status" onClick={statusClicked}>
+            <span className="app-status" onClick={statusClicked}>
                 <FontAwesomeIcon icon={statusIcon} />
                 <span>{statusMessage}</span>
-            </a>
+            </span>
         </div>
     );
 };

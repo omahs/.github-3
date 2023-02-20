@@ -52,12 +52,14 @@
 
 .app-footer-button {
     padding: 12px 24px;
+    margin: 4px;
 }
 
 .app-status {
     position: absolute;
-    top: calc(100% + 4px);
-    left: 24px;
+    top: calc(100%);
+    padding: 4px 12px;
+    margin: 2px 12px;
     cursor: pointer;
 }
 
