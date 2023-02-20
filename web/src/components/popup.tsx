@@ -14,7 +14,7 @@ export const Popup = (props: IProps): ReactElement => {
 
     useEffect(() => {
         ref.current?.scrollTo({ top: 0 });
-    }, [props.hidden, ref]);
+    }, [props.hidden]);
 
     const style = useMemo(() => {
         return {

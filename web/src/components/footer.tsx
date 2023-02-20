@@ -24,7 +24,7 @@ export const Footer = (): ReactElement => {
                 .then(setLegalText)
                 .catch(console.error);
         };
-    }, [setLegalText]);
+    }, []);
 
     const markedRenderer = useMemo(() => {
         const renderer = new marked.Renderer();
@@ -48,7 +48,8 @@ export const Footer = (): ReactElement => {
     const openTerms = useCallback(() => openPage("terms"), [openPage]);
     const openFaq = useCallback(() => openPage("faq"), [openPage]);
     const openPrivacy = useCallback(() => openPage("privacy"), [openPage]);
-    const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
+
+    const closeModal = useCallback(() => setLegalText(null), []);
 
     return (
         <div className="footer">

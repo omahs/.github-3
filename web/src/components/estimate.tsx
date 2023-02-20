@@ -47,7 +47,7 @@ export const Estimate = (props: IProps): ReactElement => {
         const isInputValid = isAmountValid(estimateRequest.input.currency, inputAmount);
         const isOutputValid = isAmountValid(estimateRequest.output[0].currency, outputAmount);
         props.setNextEnabled(isInputValid && isOutputValid && !isLoading);
-    }, [props.setNextEnabled, isAmountValid, estimateRequest, inputAmount, outputAmount, isLoading]);
+    }, [isAmountValid, estimateRequest, inputAmount, outputAmount, isLoading]);
 
     const reloadEstimate = useCallback(() => {
         setLoading(true);
@@ -55,7 +55,7 @@ export const Estimate = (props: IProps): ReactElement => {
             .then(props.setEstimate)
             .catch(console.log)
             .finally(() => setLoading(false));
-    }, [props.setEstimate, setLoading, estimateRequest]);
+    }, [estimateRequest]);
 
     useEffect(() => {
         setLoading(true);
@@ -68,7 +68,7 @@ export const Estimate = (props: IProps): ReactElement => {
             clearTimeout(timeout);
             if (interval != null) { clearInterval(interval); }
         };
-    }, [setLoading, reloadEstimate]);
+    }, [estimateRequest]);
 
     useEffect(() => {
         if (props.estimate == null) { return; }
@@ -87,7 +87,7 @@ export const Estimate = (props: IProps): ReactElement => {
                 : "0";
             setOutputAmount(amount);
         }
-    }, [props.estimate, props.currencies]); // Purposefully not including `estimateRequest`
+    }, [props.estimate, props.currencies]);
 
     const formattedInputNote = useMemo(() => {
         if (inputAmount === "") { return ""; }
@@ -102,7 +102,7 @@ export const Estimate = (props: IProps): ReactElement => {
         const usdEquivalent = props.estimate.input.usdEquivalent.toFixed(2);
         return `~ $${usdEquivalent}`;
 
-    }, [props.estimate, props.currencies, inputAmount, outputAmount, isAmountValid]);
+    }, [props.estimate, props.currencies, inputAmount, outputAmount]);
 
     const formattedOutputNote = useMemo(() => {
         if (outputAmount === "") { return ""; }
@@ -116,7 +116,7 @@ export const Estimate = (props: IProps): ReactElement => {
         if (inputAmount === "") { return ""; }
         const usdEquivalent = props.estimate.output[0].usdEquivalent.toFixed(2);
         return `~ $${usdEquivalent}`;
-    }, [props.estimate, props.currencies, inputAmount, outputAmount, isAmountValid]);
+    }, [props.estimate, props.currencies, inputAmount, outputAmount]);
 
     const inputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const newText = event.target.value.onlyNumber();
@@ -129,7 +129,7 @@ export const Estimate = (props: IProps): ReactElement => {
         } else {
             setOutputAmount("");
         }
-    }, [setInputAmount, isAmountValid, estimateRequest, setEstimateRequest, setOutputAmount]);
+    }, [isAmountValid, estimateRequest]);
 
     const outputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const newText = event.target.value.onlyNumber();
@@ -142,11 +142,11 @@ export const Estimate = (props: IProps): ReactElement => {
         } else {
             setInputAmount("");
         }
-    }, [setOutputAmount, isAmountValid, estimateRequest, setEstimateRequest, setInputAmount]);
+    }, [isAmountValid, estimateRequest]);
 
-    const inputClicked = useCallback(() => setSelectCurrency(CurrencyType.Input), [setSelectCurrency]);
-    const outputClicked = useCallback(() => setSelectCurrency(CurrencyType.Output), [setSelectCurrency]);
-    const closeModal = useCallback(() => setSelectCurrency(null), [setSelectCurrency]);
+    const inputClicked = useCallback(() => setSelectCurrency(CurrencyType.Input), []);
+    const outputClicked = useCallback(() => setSelectCurrency(CurrencyType.Output), []);
+    const closeModal = useCallback(() => setSelectCurrency(null), []);
 
     const currencySelected = useCallback((currency: string) => {
         const input = estimateRequest.input;
@@ -164,7 +164,7 @@ export const Estimate = (props: IProps): ReactElement => {
             });
         }
         setSelectCurrency(null);
-    }, [selectCurrency, estimateRequest, setEstimateRequest, setSelectCurrency]);
+    }, [selectCurrency, estimateRequest]);
 
     const inputCoin = useMemo(() => {
         const stringCurrency = estimateRequest.input.currency ?? "";

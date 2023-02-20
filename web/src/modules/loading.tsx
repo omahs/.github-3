@@ -21,12 +21,11 @@ const Context = createContext<IGlobalLoading>({
 export const useLoading = (): IUseLoading => {
     const { loadingMap, setGlobalLoading } = useContext(Context);
     const id = useMemo(nanoid, []);
-
     const setLoading = useMemo(() => {
         return (isLoading: boolean): void => {
             setGlobalLoading(id, isLoading);
         };
-    }, [id, setGlobalLoading]);
+    }, []);
 
     const isAnyLoading = useMemo(() => {
         return Object.values(loadingMap).some(x => x);
@@ -50,14 +49,14 @@ export const Loading = (props: PropsWithChildren): ReactElement => {
         return (key: string, isLoading: boolean): void => {
             setLoadingMap({ ...loadingMap, [key]: isLoading });
         };
-    }, [loadingMap, setLoadingMap]);
+    }, [loadingMap]);
 
     const context = useMemo(() => {
         return {
             loadingMap,
             setGlobalLoading
         };
-    }, [loadingMap, setGlobalLoading]);
+    }, [loadingMap]);
 
     return (
         <Context.Provider value={context}>
