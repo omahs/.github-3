@@ -24,7 +24,7 @@ export const Footer = (): ReactElement => {
                 .then(setLegalText)
                 .catch(console.error);
         };
-    }, []);
+    }, [setLegalText]);
 
     const markedRenderer = useMemo(() => {
         const renderer = new marked.Renderer();
@@ -48,8 +48,16 @@ export const Footer = (): ReactElement => {
     const openTerms = useCallback(() => openPage("terms"), [openPage]);
     const openFaq = useCallback(() => openPage("faq"), [openPage]);
     const openPrivacy = useCallback(() => openPage("privacy"), [openPage]);
+    const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
 
-    const closeModal = useCallback(() => setLegalText(null), []);
+    const popup = useMemo(() => {
+        if (legalText == null) { return null; }
+        return (
+            <Popup onClick={closeModal}>
+                <div className="footer-legal" dangerouslySetInnerHTML={html} />
+            </Popup>
+        );
+    }, [legalText, html]);
 
     return (
         <div className="footer">
@@ -67,9 +75,7 @@ export const Footer = (): ReactElement => {
                 <span className="footer-right" onClick={openTerms}>ToS</span>
                 <span className="footer-right" onClick={openPrivacy}>PP</span>
             </div>
-            <Popup hidden={legalText == null} onClick={closeModal}>
-                <div className="footer-legal" dangerouslySetInnerHTML={html} />
-            </Popup>
+            {popup}
         </div>
     );
 };

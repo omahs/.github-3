@@ -31,7 +31,7 @@ export const App = (): ReactElement => {
                 .finally(() => setLoading(false));
         }, 10000);
         return () => clearInterval(id);
-    }, []);
+    }, [setLoading, setServerStatus]);
 
     useEffect(() => {
         apiClient.getCurrencies()
@@ -39,7 +39,7 @@ export const App = (): ReactElement => {
             .then(x => new Map(x.map(y => [y.name, y])))
             .then(x => setCurrencies(x))
             .catch(console.log);
-    }, []);
+    }, [setCurrencies]);
 
     const statusClicked = useCallback(() => {
         window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
@@ -54,7 +54,7 @@ export const App = (): ReactElement => {
                 setNextEnabled: (enabled: boolean): void => setPageValidated(enabled ? page + 1 : page)
             };
         };
-    }, [currencies, estimate]);
+    }, [currencies, estimate, setEstimate, setPageValidated]);
 
     const contentPages = useMemo(() => {
         return [
@@ -95,7 +95,7 @@ export const App = (): ReactElement => {
         } else {
             setIndex(index + 1);
         }
-    }, [index, contentPages, nextEnabled]);
+    }, [index, contentPages, nextEnabled, setIndex]);
 
     const backPressed = useCallback(() => {
         if (index === 0) { return; }
@@ -103,26 +103,34 @@ export const App = (): ReactElement => {
             // TODO: clear the address again
         }
         setIndex(index - 1);
-    }, [index]);
+    }, [index, contentPages, setIndex]);
+
+    const backButton = useMemo(() => {
+        if (index === 0) { return null; }
+        return (
+            <button type="button" className="app-header-button" onClick={backPressed} >
+                <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+        );
+    }, [index, backPressed]);
+
+    const loader = useMemo(() => {
+        if (!isAnyLoading) { return null; }
+        return (
+            <span hidden={!isAnyLoading}>
+                <FontAwesomeIcon icon={faCircleNotch} className="app-header-loader" />
+            </span>
+        );
+    }, [isAnyLoading]);
 
     return (
         <div className="app">
             <div className="app-header">
-                <span className="app-header-side">
-                    <button type="button" hidden={index === 0} className="app-header-button" onClick={backPressed} >
-                        <FontAwesomeIcon icon={faChevronLeft} />
-                    </button>
-                </span>
+                <span className="app-header-side">{backButton}</span>
                 <span className="app-header-title">jewl.app</span>
-                <span className="app-header-side">
-                    <span hidden={!isAnyLoading}>
-                        <FontAwesomeIcon icon={faCircleNotch} className="app-header-loader" />
-                    </span>
-                </span>
+                <span className="app-header-side">{loader}</span>
             </div>
-            <div className="app-content">
-                {contentPages[index]}
-            </div>
+            <div className="app-content">{contentPages[index]}</div>
             <div className="app-footer">
                 <button type="button" className="app-footer-button" disabled={!nextEnabled} onClick={nextPressed}>
                     Next

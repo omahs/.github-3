@@ -21,11 +21,12 @@ const Context = createContext<IGlobalLoading>({
 export const useLoading = (): IUseLoading => {
     const { loadingMap, setGlobalLoading } = useContext(Context);
     const id = useMemo(nanoid, []);
+
     const setLoading = useMemo(() => {
         return (isLoading: boolean): void => {
             setGlobalLoading(id, isLoading);
         };
-    }, []);
+    }, [id]); // FIXME: `setGlobalLoading` seems to be changing on ever render.
 
     const isAnyLoading = useMemo(() => {
         return Object.values(loadingMap).some(x => x);
@@ -49,14 +50,14 @@ export const Loading = (props: PropsWithChildren): ReactElement => {
         return (key: string, isLoading: boolean): void => {
             setLoadingMap({ ...loadingMap, [key]: isLoading });
         };
-    }, [loadingMap]);
+    }, [loadingMap, setLoadingMap]);
 
     const context = useMemo(() => {
         return {
             loadingMap,
             setGlobalLoading
         };
-    }, [loadingMap]);
+    }, [loadingMap, setGlobalLoading]);
 
     return (
         <Context.Provider value={context}>
