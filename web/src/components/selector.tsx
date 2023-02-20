@@ -31,7 +31,7 @@ export const Selector = (props: IProps): ReactElement => {
     const searchTextChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
         ref.current?.scrollTo({ top: 0 });
-    }, []);
+    }, [ref, setSearchText]);
 
     const selectItem = useMemo(() => {
         return (item: string): (() => void) => {
@@ -41,13 +41,13 @@ export const Selector = (props: IProps): ReactElement => {
                 props.onSelect(item);
             };
         };
-    }, [props.onSelect]);
+    }, [setSearchText, props.onSelect]);
 
     const closeModal = useCallback(() => {
         setSearchText("");
         if (props.onCancel == null) { return; }
         props.onCancel();
-    }, [props.onCancel]);
+    }, [setSearchText, props.onCancel]);
 
     const highlighted = useMemo(() => {
         return highlightedCurrencies.map(x => {
@@ -62,8 +62,8 @@ export const Selector = (props: IProps): ReactElement => {
         });
     }, [props.currencies, selectItem]);
 
-    const items = useMemo(() => {
-        if (props.currencies == null) { return null; }
+    const filteredCurrencies = useMemo(() => {
+        if (props.currencies == null) { return []; }
         let currencies = Array.from(props.currencies.values());
         if (searchText !== "") {
             const search = searchText.toLowerCase();
@@ -72,7 +72,11 @@ export const Selector = (props: IProps): ReactElement => {
                     || x.coin.toLowerCase().includes(search);
             });
         }
-        return currencies.map(x => {
+        return currencies;
+    }, [props.currencies, searchText]);
+
+    const items = useMemo(() => {
+        return filteredCurrencies.map(x => {
             return (
                 <div className="selector-list-item" key={x.name} onClick={selectItem(x.name)}>
                     <img {...cryptoIcon(x.coin)} height="32px" width="32px" />
@@ -83,7 +87,7 @@ export const Selector = (props: IProps): ReactElement => {
                 </div>
             );
         });
-    }, [props.currencies, searchText, selectItem]);
+    }, [filteredCurrencies, selectItem]);
 
     return (
         <Popup hidden={props.hidden} onClick={closeModal} width="min(80vw, 418px)" height="65vh">

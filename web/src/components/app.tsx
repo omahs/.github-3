@@ -31,7 +31,7 @@ export const App = (): ReactElement => {
                 .finally(() => setLoading(false));
         }, 10000);
         return () => clearInterval(id);
-    }, []);
+    }, [setLoading, setServerStatus, setLoading]);
 
     useEffect(() => {
         apiClient.getCurrencies()
@@ -39,7 +39,7 @@ export const App = (): ReactElement => {
             .then(x => new Map(x.map(y => [y.name, y])))
             .then(x => setCurrencies(x))
             .catch(console.log);
-    }, []);
+    }, [setCurrencies]);
 
     const statusClicked = useCallback(() => {
         window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
@@ -54,7 +54,7 @@ export const App = (): ReactElement => {
                 setNextEnabled: (enabled: boolean): void => setPageValidated(enabled ? page + 1 : page)
             };
         };
-    }, [currencies, estimate]);
+    }, [currencies, estimate, setEstimate, setPageValidated]);
 
     const contentPages = useMemo(() => {
         return [
@@ -95,7 +95,7 @@ export const App = (): ReactElement => {
         } else {
             setIndex(index + 1);
         }
-    }, [index, contentPages, nextEnabled]);
+    }, [index, contentPages, nextEnabled, setIndex]);
 
     const backPressed = useCallback(() => {
         if (index === 0) { return; }
@@ -103,7 +103,7 @@ export const App = (): ReactElement => {
             // TODO: clear the address again
         }
         setIndex(index - 1);
-    }, [index]);
+    }, [index, contentPages, setIndex]);
 
     return (
         <div className="app">
