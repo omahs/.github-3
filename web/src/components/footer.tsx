@@ -1,12 +1,12 @@
 import "../styles/footer.css";
 import type { ReactElement } from "react";
-import React, { useCallback, useRef, useState, useMemo, useEffect } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { marked } from "marked";
 import { sanitize, addHook } from "dompurify";
+import { Popup } from "./popup";
 
 export const Footer = (): ReactElement => {
     const [legalText, setLegalText] = useState<string | null>(null);
-    const legalDiv = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         addHook("afterSanitizeAttributes", (node: Element) => {
@@ -49,10 +49,7 @@ export const Footer = (): ReactElement => {
     const openFaq = useCallback(() => openPage("faq"), [openPage]);
     const openPrivacy = useCallback(() => openPage("privacy"), [openPage]);
 
-    const closeModal = useCallback(() => {
-        legalDiv.current?.scrollTo({ top: 0 });
-        setLegalText(null);
-    }, []);
+    const closeModal = useCallback(() => setLegalText(null), []);
 
     return (
         <div className="footer">
@@ -70,10 +67,9 @@ export const Footer = (): ReactElement => {
                 <span className="footer-right" onClick={openTerms}>ToS</span>
                 <span className="footer-right" onClick={openPrivacy}>PP</span>
             </div>
-            <div className="footer-legal-overlay" hidden={legalText == null} onClick={closeModal} />
-            <div className="footer-legal-popup" hidden={legalText == null} ref={legalDiv}>
-                <div dangerouslySetInnerHTML={html} />
-            </div>
+            <Popup hidden={legalText == null} onClick={closeModal}>
+                <div className="footer-legal" dangerouslySetInnerHTML={html} />
+            </Popup>
         </div>
     );
 };

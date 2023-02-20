@@ -16,7 +16,7 @@ import { Complete } from "./complete";
 
 export const App = (): ReactElement => {
     const [serverStatus, setServerStatus] = useState(ServerStatus.up);
-    const { isLoading, setLoading } = useLoading();
+    const { isAnyLoading, setLoading } = useLoading();
     const [pageValidated, setPageValidated] = useState(0);
     const [currencies, setCurrencies] = useState<Map<string, ICurrencyResponseItem>>();
     const [estimate, setEstimate] = useState<IEstimateResponse>();
@@ -115,7 +115,7 @@ export const App = (): ReactElement => {
                 </span>
                 <span className="app-header-title">jewl.app</span>
                 <span className="app-header-side">
-                    <span hidden={!isLoading}>
+                    <span hidden={!isAnyLoading}>
                         <FontAwesomeIcon icon={faCircleNotch} className="app-header-loader" />
                     </span>
                 </span>

@@ -9,7 +9,7 @@
     text-align: left;
     width: 100vw;
     height: 24px;
-    color: #BDBDBD;
+    color: #bdbdbd;
     cursor: default;
 }
 
@@ -40,6 +40,7 @@
     margin-right: 16px;
     cursor: pointer;
 }
+
 @media only screen and (max-width: 768px) {
     .footer-right {
         margin-right: 8px;
@@ -50,28 +51,9 @@
     text-decoration: underline;
 }
 
-.footer-legal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #00000020;
-}
-
-.footer-legal-popup {
+.footer-legal {
+    height: calc(100% - 32px);
+    width: calc(100% - 64px);
     padding: 16px 32px;
-    position: fixed;
-    height: 75%;
-    width: 75%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #dbddd6;
-    color: #2f323a;
-    border-radius: 24px;
-    filter: drop-shadow(4px 4px 20px #00000020);
-    overflow-y: scroll;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
+    overflow-y: auto;
 }

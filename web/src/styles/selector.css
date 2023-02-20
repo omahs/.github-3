@@ -1,0 +1,94 @@
+.selector {
+    display: flex;
+    flex-direction: column;
+    width: min(80vw, 418px);
+    height: 65vh;
+}
+
+.selector-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+}
+
+.selector-title {
+    flex: 1;
+    font-weight: bold;
+}
+
+.selector-search {
+    display: flex;
+    align-items: center;
+    margin: 0 24px;
+    padding: 0 8px;
+    border-radius: 4px;
+    border: solid 1px #bdbdbd;
+}
+
+.selector-search-input {
+    flex: 1;
+    color: #2f323a;
+}
+
+.selector-highlighted {
+    padding: 8px 24px;
+    display: flex;
+    row-gap: 4px;
+    column-gap: 2px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.selector-highlighted-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 2px 4px;
+    padding: 4px;
+    height: 24px;
+    border-radius: 12px;
+    border: solid 1px #bdbdbd;
+    cursor: pointer;
+}
+
+.selector-highlighted-item:hover {
+    background-color: #bdbdbd;
+}
+
+.selector-separator {
+    background-color: #bdbdbd;
+    height: 1px;
+    width: 100%;
+}
+
+.selector-list {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.selector-list-item {
+    padding: 4px 24px;
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.selector-list-item:hover {
+    background-color: #bdbdbd;
+}
+
+.selector-list-item-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.selector-list-item-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.selector-list-item-subtitle {
+    font-size: 14px;
+}

@@ -20,4 +20,21 @@ String.prototype.onlyNumber = function(this: string): string {
     return result;
 };
 
-export { };
+interface IProps {
+    src: string;
+    onError?: (event: { target: IProps }) => void;
+}
+
+export const cryptoIcon = (coin: string, style = "black"): object => {
+    const src = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons/svg/${style}/${coin}.svg`
+        .toLowerCase();
+    const fallback = `https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons/svg/${style}/generic.svg`
+        .toLowerCase();
+    return {
+        src,
+        onError(event: { target: IProps }): void {
+            event.target.onError = undefined;
+            event.target.src = fallback;
+        }
+    };
+};

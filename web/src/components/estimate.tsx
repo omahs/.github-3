@@ -5,6 +5,7 @@ import type { ICurrencyResponseItem, IEstimateRequest, IEstimateResponse } from 
 import { PreciseNumber } from "jewl-core";
 import { useLoading } from "../modules/loading";
 import { apiClient } from "../modules/network";
+import { Selector } from "./selector";
 
 const initialEstimateRequest: IEstimateRequest = {
     input: { currency: "Ethereum", amount: new PreciseNumber(1) },
@@ -19,8 +20,14 @@ interface IProps {
     setNextEnabled?: (enabled: boolean) => void;
 }
 
+enum CurrencyType {
+    Input = 0,
+    Output = 1
+}
+
 export const Estimate = (props: IProps): ReactElement => {
-    const { setLoading } = useLoading();
+    const { isLoading, setLoading } = useLoading();
+    const [selectCurrency, setSelectCurrency] = useState<CurrencyType | null>(null);
     const [estimateRequest, setEstimateRequest] = useState(initialEstimateRequest);
     const [inputAmount, setInputAmount] = useState("1");
     const [outputAmount, setOutputAmount] = useState("");
@@ -39,8 +46,8 @@ export const Estimate = (props: IProps): ReactElement => {
         if (props.setNextEnabled == null) { return; }
         const isInputValid = isAmountValid(estimateRequest.input.currency, inputAmount);
         const isOutputValid = isAmountValid(estimateRequest.output[0].currency, outputAmount);
-        props.setNextEnabled(isInputValid && isOutputValid);
-    }, [isAmountValid, estimateRequest, inputAmount, outputAmount]);
+        props.setNextEnabled(isInputValid && isOutputValid && !isLoading);
+    }, [isAmountValid, estimateRequest, inputAmount, outputAmount, isLoading]);
 
     const reloadEstimate = useCallback(() => {
         setLoading(true);
@@ -68,13 +75,17 @@ export const Estimate = (props: IProps): ReactElement => {
         if (estimateRequest.input.amount == null) {
             const currency = props.currencies?.get(estimateRequest.input.currency);
             const numDecimals = currency?.multiple.dp() ?? 0;
-            const formatted = props.estimate.input.amount.dp(numDecimals).toString();
-            setInputAmount(formatted);
+            const amount = props.estimate.input.amount.isPositive()
+                ? props.estimate.input.amount.dp(numDecimals).toString()
+                : "0";
+            setInputAmount(amount);
         } else {
             const currency = props.currencies?.get(estimateRequest.output[0].currency);
             const numDecimals = currency?.multiple.dp() ?? 0;
-            const formatted = props.estimate.output[0].amount.dp(numDecimals).toString();
-            setOutputAmount(formatted);
+            const amount = props.estimate.output[0].amount.isPositive()
+                ? props.estimate.output[0].amount.dp(numDecimals).toString()
+                : "0";
+            setOutputAmount(amount);
         }
     }, [props.estimate, props.currencies]);
 
@@ -93,19 +104,6 @@ export const Estimate = (props: IProps): ReactElement => {
 
     }, [props.estimate, props.currencies, inputAmount, outputAmount]);
 
-    const inputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        const newText = event.target.value.onlyNumber();
-        setInputAmount(newText);
-        if (isAmountValid(estimateRequest.input.currency, newText)) {
-            setEstimateRequest({
-                input: { currency: estimateRequest.input.currency, amount: new PreciseNumber(newText) },
-                output: [{ currency: estimateRequest.output[0].currency, percentage: new PreciseNumber(1) }]
-            });
-        } else {
-            setOutputAmount("");
-        }
-    }, [isAmountValid, estimateRequest]);
-
     const formattedOutputNote = useMemo(() => {
         if (outputAmount === "") { return ""; }
         const outputCurrency = props.estimate?.output[0].currency ?? "";
@@ -120,6 +118,19 @@ export const Estimate = (props: IProps): ReactElement => {
         return `~ $${usdEquivalent}`;
     }, [props.estimate, props.currencies, inputAmount, outputAmount]);
 
+    const inputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const newText = event.target.value.onlyNumber();
+        setInputAmount(newText);
+        if (isAmountValid(estimateRequest.input.currency, newText)) {
+            setEstimateRequest({
+                input: { currency: estimateRequest.input.currency, amount: new PreciseNumber(newText) },
+                output: [{ currency: estimateRequest.output[0].currency, percentage: new PreciseNumber(1) }]
+            });
+        } else {
+            setOutputAmount("");
+        }
+    }, [isAmountValid, estimateRequest]);
+
     const outputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const newText = event.target.value.onlyNumber();
         setOutputAmount(newText);
@@ -132,6 +143,28 @@ export const Estimate = (props: IProps): ReactElement => {
             setInputAmount("");
         }
     }, [isAmountValid, estimateRequest]);
+
+    const inputClicked = useCallback(() => setSelectCurrency(CurrencyType.Input), []);
+    const outputClicked = useCallback(() => setSelectCurrency(CurrencyType.Output), []);
+    const closeModal = useCallback(() => setSelectCurrency(null), []);
+
+    const currencySelected = useCallback((currency: string) => {
+        const input = estimateRequest.input;
+        const output = estimateRequest.output[0];
+        if (selectCurrency === CurrencyType.Input) {
+            setEstimateRequest({
+                input: { ...input, currency },
+                output: [output]
+            });
+        }
+        if (selectCurrency === CurrencyType.Output) {
+            setEstimateRequest({
+                input,
+                output: [{ ...output, currency }]
+            });
+        }
+        setSelectCurrency(null);
+    }, [selectCurrency, estimateRequest]);
 
     const inputCoin = useMemo(() => {
         const stringCurrency = estimateRequest.input.currency ?? "";
@@ -150,16 +183,17 @@ export const Estimate = (props: IProps): ReactElement => {
             <div className="estimate-head">You send {estimateRequest.input.currency}</div>
             <div className="estimate-entry">
                 <input type="text" className="estimate-input" value={inputAmount} onChange={inputChanged} />
-                <button type="button" className="estimate-currency">{inputCoin}</button>
+                <button type="button" className="estimate-currency" onClick={inputClicked}>{inputCoin}</button>
             </div>
             <div className="estimate-note">{formattedInputNote}</div>
             <div className="estimate-head">You get {estimateRequest.output[0].currency}</div>
             <div className="estimate-entry">
                 <input type="text" className="estimate-input" value={outputAmount} onChange={outputChanged} />
-                <button type="button" className="estimate-currency">{outputCoin}</button>
+                <button type="button" className="estimate-currency" onClick={outputClicked}>{outputCoin}</button>
             </div>
             <div className="estimate-note">{formattedOutputNote}</div>
             <div className="estimate-fees">No hidden fees</div>
+            <Selector hidden={selectCurrency == null} currencies={props.currencies} onSelect={currencySelected} onCancel={closeModal} />
         </div>
     );
 };

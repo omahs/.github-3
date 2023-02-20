@@ -4,6 +4,7 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 
 interface IUseLoading {
     isLoading: boolean;
+    isAnyLoading: boolean;
     setLoading: (isLoading: boolean) => void;
 }
 
@@ -26,12 +27,17 @@ export const useLoading = (): IUseLoading => {
         };
     }, []);
 
-    const isLoading = useMemo(() => {
+    const isAnyLoading = useMemo(() => {
         return Object.values(loadingMap).some(x => x);
+    }, [loadingMap]);
+
+    const isLoading = useMemo(() => {
+        return loadingMap[id] ?? false;
     }, [loadingMap]);
 
     return {
         isLoading,
+        isAnyLoading,
         setLoading
     };
 };
