@@ -1,11 +1,12 @@
 import "../styles/footer.css";
 import type { ReactElement } from "react";
-import React, { useCallback, useState, useMemo, useEffect } from "react";
+import React, { useCallback, useState, useMemo, useEffect, lazy } from "react";
 import { marked } from "marked";
 import { sanitize, addHook } from "dompurify";
-import { Popup } from "./popup";
 
-export const Footer = (): ReactElement => {
+const Popup = lazy(async () => import("./popup"));
+
+const Footer = (): ReactElement => {
     const [legalText, setLegalText] = useState<string | null>(null);
 
     useEffect(() => {
@@ -79,3 +80,5 @@ export const Footer = (): ReactElement => {
         </div>
     );
 };
+
+export default Footer;

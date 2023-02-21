@@ -43,7 +43,7 @@ export const useLoading = (): IUseLoading => {
     };
 };
 
-export const Loading = (props: PropsWithChildren): ReactElement => {
+const Loading = (props: PropsWithChildren): ReactElement => {
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
 
     const setGlobalLoading = useMemo(() => {
@@ -65,3 +65,5 @@ export const Loading = (props: PropsWithChildren): ReactElement => {
         </Context.Provider>
     );
 };
+
+export default Loading;

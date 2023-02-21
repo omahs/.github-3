@@ -1,20 +1,28 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
 import { useCallback } from "react";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, lazy } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ICurrencyResponseItem, IEstimateResponse } from "jewl-core";
 import { ServerStatus } from "jewl-core";
 import { faCircleCheck, faCircleQuestion, faCircleDot, faCirclePause } from "@fortawesome/free-regular-svg-icons";
 import { faChevronLeft, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { Estimate } from "./estimate";
 import { useLoading } from "../modules/loading";
 import { apiClient } from "../modules/network";
-import { Confirm } from "./confirm";
-import { Address } from "./address";
-import { Complete } from "./complete";
 
-export const App = (): ReactElement => {
+const Estimate = lazy(async () => import("./estimate"));
+const Confirm = lazy(async () => import("./confirm"));
+const Address = lazy(async () => import("./address"));
+const Complete = lazy(async () => import("./complete"));
+
+const contentPages = [
+    Estimate,
+    Confirm,
+    Address,
+    Complete
+];
+
+const App = (): ReactElement => {
     const [serverStatus, setServerStatus] = useState(ServerStatus.up);
     const { isAnyLoading, setLoading } = useLoading();
     const [pageValidated, setPageValidated] = useState(0);
@@ -56,14 +64,10 @@ export const App = (): ReactElement => {
         };
     }, [currencies, estimate, setEstimate, setPageValidated]);
 
-    const contentPages = useMemo(() => {
-        return [
-            <Estimate key="estimate" {...pageProps(0)} />,
-            <Address key="address" {...pageProps(1)} />,
-            <Confirm key="confirm" {...pageProps(2)} />,
-            <Complete key="complete" {...pageProps(3)} />
-        ];
-    }, [pageProps]);
+    const contentPage = useMemo(() => {
+        const Tag = contentPages[index];
+        return <Tag {...pageProps(index)} />;
+    }, [index, pageProps]);
 
     const statusMessage = useMemo(() => {
         switch (serverStatus) {
@@ -95,7 +99,7 @@ export const App = (): ReactElement => {
         } else {
             setIndex(index + 1);
         }
-    }, [index, contentPages, nextEnabled, setIndex]);
+    }, [index, nextEnabled, setIndex]);
 
     const backPressed = useCallback(() => {
         if (index === 0) { return; }
@@ -103,7 +107,7 @@ export const App = (): ReactElement => {
             // TODO: clear the address again
         }
         setIndex(index - 1);
-    }, [index, contentPages, setIndex]);
+    }, [index, setIndex]);
 
     const backButton = useMemo(() => {
         if (index === 0) { return null; }
@@ -116,11 +120,7 @@ export const App = (): ReactElement => {
 
     const loader = useMemo(() => {
         if (!isAnyLoading) { return null; }
-        return (
-            <span hidden={!isAnyLoading}>
-                <FontAwesomeIcon icon={faCircleNotch} className="app-header-loader" />
-            </span>
-        );
+        return <FontAwesomeIcon icon={faCircleNotch} className="app-header-loader" />;
     }, [isAnyLoading]);
 
     return (
@@ -130,7 +130,7 @@ export const App = (): ReactElement => {
                 <span className="app-header-title">jewl.app</span>
                 <span className="app-header-side">{loader}</span>
             </div>
-            <div className="app-content">{contentPages[index]}</div>
+            <div className="app-content">{contentPage}</div>
             <div className="app-footer">
                 <button type="button" className="app-footer-button" disabled={!nextEnabled} onClick={nextPressed}>
                     Next
@@ -143,3 +143,5 @@ export const App = (): ReactElement => {
         </div>
     );
 };
+
+export default App;

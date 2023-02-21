@@ -8,7 +8,7 @@ interface IProps extends PropsWithChildren {
     onClick?: () => void;
 }
 
-export const Popup = (props: IProps): ReactElement | null => {
+const Popup = (props: IProps): ReactElement | null => {
     const ref = useRef<HTMLDivElement>(null);
 
     const style = useMemo(() => {
@@ -25,3 +25,5 @@ export const Popup = (props: IProps): ReactElement | null => {
         </div>
     );
 };
+
+export default Popup;

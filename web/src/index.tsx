@@ -1,12 +1,13 @@
 import "./styles/index.css";
 import type { ReactElement } from "react";
-import React, { StrictMode, useEffect, useMemo, useState } from "react";
+import React, { StrictMode, useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./components/app";
 import { Helmet } from "react-helmet";
-import { Header } from "./components/header";
-import { Footer } from "./components/footer";
-import { Loading } from "./modules/loading";
+
+const App = lazy(async () => import("./components/app"));
+const Header = lazy(async () => import("./components/header"));
+const Footer = lazy(async () => import("./components/footer"));
+const Loading = lazy(async () => import("./modules/loading"));
 
 const Root = (): ReactElement => {
     const [supportedOrientation, setSupportedOrientation] = useState(true);
@@ -31,7 +32,7 @@ const Root = (): ReactElement => {
     return (
         <StrictMode>
             <Helmet><meta name="robots" content={robots} /></Helmet>
-            {content}
+            <Suspense>{content}</Suspense>
         </StrictMode>
     );
 };

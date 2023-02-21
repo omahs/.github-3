@@ -1,11 +1,12 @@
 import "../styles/estimate.css";
 import type { ChangeEvent, ReactElement } from "react";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo, lazy } from "react";
 import type { ICurrencyResponseItem, IEstimateRequest, IEstimateResponse } from "jewl-core";
 import { PreciseNumber } from "jewl-core";
 import { useLoading } from "../modules/loading";
 import { apiClient } from "../modules/network";
-import { Selector } from "./selector";
+
+const Selector = lazy(async () => import("./selector"));
 
 const initialEstimateRequest: IEstimateRequest = {
     input: { currency: "Ethereum", amount: new PreciseNumber(1) },
@@ -25,7 +26,7 @@ enum CurrencyType {
     Output = 1
 }
 
-export const Estimate = (props: IProps): ReactElement => {
+const Estimate = (props: IProps): ReactElement => {
     const { isLoading, setLoading } = useLoading();
     const [selectCurrency, setSelectCurrency] = useState<CurrencyType | null>(null);
     const [estimateRequest, setEstimateRequest] = useState(initialEstimateRequest);
@@ -202,3 +203,5 @@ export const Estimate = (props: IProps): ReactElement => {
         </div>
     );
 };
+
+export default Estimate;
