@@ -2,7 +2,7 @@ import "../styles/app.css";
 import type { ReactElement } from "react";
 import React, { useEffect, useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { ICurrencyResponseItem, IEstimateResponse } from "jewl-core";
+import type { IEstimateResponse } from "jewl-core";
 import { ServerStatus } from "jewl-core";
 import { faCircleCheck, faCircleQuestion, faCircleDot, faCirclePause } from "@fortawesome/free-regular-svg-icons";
 import { faChevronLeft, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -10,22 +10,15 @@ import { useLoading } from "../modules/loading";
 import { apiClient } from "../modules/network";
 
 const Estimate = lazy(async () => import("./estimate"));
-const Confirm = lazy(async () => import("./confirm"));
 const Address = lazy(async () => import("./address"));
+const Confirm = lazy(async () => import("./confirm"));
 const Complete = lazy(async () => import("./complete"));
-
-const contentPages = [
-    Estimate,
-    Confirm,
-    Address,
-    Complete
-];
+const contentPages = [Estimate, Address, Confirm, Complete];
 
 const App = (): ReactElement => {
     const [serverStatus, setServerStatus] = useState(ServerStatus.up);
     const { isAnyLoading, setLoading } = useLoading();
     const [pageValidated, setPageValidated] = useState(0);
-    const [currencies, setCurrencies] = useState<Map<string, ICurrencyResponseItem>>();
     const [estimate, setEstimate] = useState<IEstimateResponse>();
     const [index, setIndex] = useState(0);
 
@@ -40,13 +33,6 @@ const App = (): ReactElement => {
         return () => clearInterval(id);
     }, [setLoading, setServerStatus]);
 
-    useEffect(() => {
-        apiClient.getCurrencies()
-            .then(x => x.currencies)
-            .then(x => new Map(x.map(y => [y.name, y])))
-            .then(x => setCurrencies(x))
-            .catch(console.log);
-    }, [setCurrencies]);
 
     const statusClicked = useCallback(() => {
         window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
@@ -55,13 +41,12 @@ const App = (): ReactElement => {
     const pageProps = useMemo(() => {
         return (page: number): Record<string, unknown> => {
             return {
-                currencies,
                 estimate,
                 setEstimate,
                 setNextEnabled: (enabled: boolean): void => setPageValidated(enabled ? page + 1 : page)
             };
         };
-    }, [currencies, estimate, setEstimate, setPageValidated]);
+    }, [estimate, setEstimate, setPageValidated]);
 
     const contentPage = useMemo(() => {
         const Tag = contentPages[index];

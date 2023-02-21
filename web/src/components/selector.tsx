@@ -1,42 +1,36 @@
 import "../styles/selector.css";
 import type { ReactElement, ChangeEvent } from "react";
-import React, { useState, useCallback, useMemo, lazy } from "react";
-import type { ICurrencyResponseItem } from "jewl-core";
+import React, { useState, useCallback, useMemo, useRef, lazy } from "react";
 import { cryptoIcon } from "jewl-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { useCurrencies } from "../modules/currency";
 
 const Popup = lazy(async () => import("./popup"));
 
 interface IProps {
-    currencies?: Map<string, ICurrencyResponseItem>;
-    onSelect?: (selected: string) => void;
+    onSelect?: (coin: string, network: string) => void;
     onCancel?: () => void;
 }
 
-const highlightedCurrencies = [
-    "Bitcoin",
-    "Ethereum",
-    "TetherUS on Ethereum (ERC20)",
-    "BNB",
-    "USD Coin on Ethereum (ERC20)",
-    "BUSD on Ethereum (ERC20)",
-    "Dai on Ethereum (ERC20)"
-];
+const highlightedCurrencies = ["BTC", "ETH", "USDT", "BNB", "USDC", "BUSD", "DAI"];
 
 const Selector = (props: IProps): ReactElement => {
+    const { allCurrencies, getCurrency } = useCurrencies();
     const [searchText, setSearchText] = useState("");
+    const ref = useRef<HTMLDivElement>(null);
 
     const searchTextChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
-    }, [setSearchText]);
+        ref.current?.scrollTo({ top: 0 });
+    }, [ref, setSearchText]);
 
     const selectItem = useMemo(() => {
-        return (item: string): (() => void) => {
+        return (coin: string, network: string): (() => void) => {
             return (): void => {
                 setSearchText("");
                 if (props.onSelect == null) { return; }
-                props.onSelect(item);
+                props.onSelect(coin, network);
             };
         };
     }, [setSearchText, props.onSelect]);
@@ -49,20 +43,19 @@ const Selector = (props: IProps): ReactElement => {
 
     const highlighted = useMemo(() => {
         return highlightedCurrencies.map(x => {
-            const currency = props.currencies?.get(x);
+            const currency = getCurrency(x);
             if (currency == null) { return <span key={x} />; }
             return (
-                <span className="selector-highlighted-item" key={x} onClick={selectItem(x)}>
+                <span className="selector-highlighted-item" key={x} onClick={selectItem(currency.coin, currency.network)}>
                     <img {...cryptoIcon(currency.coin)} height="16px" width="16px" loading="lazy" />
                     <span>{currency.coin}</span>
                 </span>
             );
         });
-    }, [props.currencies, selectItem]);
+    }, [getCurrency, selectItem]);
 
     const filteredCurrencies = useMemo(() => {
-        if (props.currencies == null) { return []; }
-        let currencies = Array.from(props.currencies.values());
+        let currencies = allCurrencies;
         if (searchText !== "") {
             const search = searchText.toLowerCase();
             currencies = currencies.filter(x => {
@@ -71,15 +64,16 @@ const Selector = (props: IProps): ReactElement => {
             });
         }
         return currencies;
-    }, [props.currencies, searchText]);
+    }, [allCurrencies, searchText]);
 
-    const items = useMemo(() => {
+    const currencyItems = useMemo(() => {
         return filteredCurrencies.map(x => {
+            const name = x.coin === x.network ? x.name : `${x.name} on ${x.networkName}`;
             return (
-                <div className="selector-list-item" key={x.name} onClick={selectItem(x.name)}>
+                <div className="selector-list-item" key={name + x.coin} onClick={selectItem(x.coin, x.network)}>
                     <img {...cryptoIcon(x.coin)} height="32px" width="32px" loading="lazy" />
                     <span className="selector-list-item-text">
-                        <span className="selector-list-item-title">{x.name}</span>
+                        <span className="selector-list-item-title">{name}</span>
                         <span className="selector-list-item-subtitle">{x.coin}</span>
                     </span>
                 </div>
@@ -93,16 +87,16 @@ const Selector = (props: IProps): ReactElement => {
                 <div className="selector-header">
                     <span className="selector-title">Select a token</span>
                     <button type="button" onClick={closeModal}>
-                        <FontAwesomeIcon icon={faClose} color="#e5e5e5" size="lg" />
+                        <FontAwesomeIcon icon={faClose} color="#d2d5db" size="lg" />
                     </button>
                 </div>
                 <div className="selector-search">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} color="#e5e5e5" />
+                    <FontAwesomeIcon icon={faMagnifyingGlass} color="#d2d5db" />
                     <input type="text" className="selector-search-input" placeholder="Search token" value={searchText} onChange={searchTextChanged} aria-label="Search" />
                 </div>
                 <div className="selector-highlighted">{highlighted}</div>
                 <div className="selector-separator" />
-                <div className="selector-list">{items}</div>
+                <div className="selector-list" ref={ref}>{currencyItems}</div>
             </div>
         </Popup>
     );

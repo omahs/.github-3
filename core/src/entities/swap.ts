@@ -6,6 +6,9 @@ import { PreciseNumberSchema } from "../utility/number.js";
 export interface ICurrencyResponseItem {
     name: string;
     coin: string;
+    network: string;
+    networkName: string;
+    isDefault: boolean;
     requiresMemo: boolean;
     addressRegex?: string;
     memoRegex?: string;
@@ -17,6 +20,9 @@ export interface ICurrencyResponseItem {
 export const CurrencyResponseItemSchema = new Schema<ICurrencyResponseItem>({
     name: { type: String, required: true },
     coin: { type: String, required: true },
+    network: { type: String, required: true },
+    networkName: { type: String, required: true },
+    isDefault: { type: Boolean, required: true },
     requiresMemo: { type: Boolean, required: true },
     addressRegex: { type: String },
     memoRegex: { type: String },
@@ -39,13 +45,15 @@ export const CurrencyResponse = createModel<ICurrencyResponse>(CurrencyResponseS
 
 
 export interface IEstimateRequestItem {
-    currency: string;
+    coin: string;
+    network?: string;
     percentage?: PreciseNumber;
     amount?: PreciseNumber;
 }
 
 export const EstimateRequestItemSchema = new Schema<IEstimateRequestItem>({
-    currency: { type: String, required: true },
+    coin: { type: String, required: true },
+    network: { type: String },
     percentage: { ...PreciseNumberSchema },
     amount: { ...PreciseNumberSchema }
 });
@@ -67,13 +75,15 @@ EstimateRequestSchema.pre("validate", estimateValidator);
 export const EstimateRequest = createModel<IEstimateRequest>(EstimateRequestSchema);
 
 export interface IEstimateResponseItem {
-    currency: string;
+    coin: string;
+    network: string;
     amount: PreciseNumber;
     usdEquivalent: PreciseNumber;
 }
 
 export const EstimateResponseItemSchema = new Schema<IEstimateResponseItem>({
-    currency: { type: String, required: true },
+    coin: { type: String, required: true },
+    network: { type: String, required: true },
     amount: { ...PreciseNumberSchema, required: true },
     usdEquivalent: { ...PreciseNumberSchema, required: true }
 });

@@ -10,6 +10,7 @@ export * from "./entities/uptime.js";
 
 export * from "./utility/date.js";
 export * from "./utility/env.js";
+export * from "./utility/estimator.js";
 export * from "./utility/client.js";
 export * from "./utility/mongo.js";
 export * from "./utility/number.js";

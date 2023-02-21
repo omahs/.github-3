@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { ServerStatus } from "jewl-core";
+import { DateTime, ServerStatus } from "jewl-core";
 import { apiClient } from "./network.js";
 
 const isInMaintainanceMode = async (): Promise<boolean> => {
@@ -45,18 +45,18 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
 export class Cron {
     private readonly tasks = new Map<string, () => Promise<void>>();
     private readonly isSecure = new Map<string, boolean>();
-    private readonly modulo = new Map<string, number>();
-    private iteration = 0;
+    private readonly minInterval = new Map<string, number>();
+    private readonly lastExecution = new Map<string, DateTime>();
     private started = false;
 
-    public constructor(minInterval = 60) {
+    public constructor(minInterval = 1) {
         const spacer = async (): Promise<void> => new Promise<void>(resolve => { setTimeout(resolve, minInterval * 1000); });
         this.tasks.set("", spacer);
     }
 
-    public addTask(key: string, task: () => Promise<void>, secure = false, modulo = 1): void {
+    public addTask(key: string, task: () => Promise<void>, secure = false, minInterval = 1): void {
         this.tasks.set(key, task);
-        this.modulo.set(key, modulo);
+        this.minInterval.set(key, minInterval);
         this.isSecure.set(key, secure);
     }
 
@@ -87,15 +87,15 @@ export class Cron {
         this.tasks.forEach((task, key) => {
             const isSecure = this.isSecure.get(key) ?? false;
             if (isSecure && isMaintainance) { return; }
-            const modulo = this.modulo.get(key) ?? 1;
-            if (this.iteration % modulo !== 0) { return; }
+            const lastExecution = this.lastExecution.get(key) ?? new DateTime(0);
+            const minInterval = this.minInterval.get(key) ?? 0;
+            if (lastExecution.addingSeconds(minInterval).gt(new DateTime())) { return; }
+            this.lastExecution.set(key, new DateTime());
             const promise = runTask(key, task);
             promises.push(promise);
         });
 
         await Promise.all(promises);
-
-        this.iteration += 1;
 
         if (this.started) {
             void this.runTasks();

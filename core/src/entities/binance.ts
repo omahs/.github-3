@@ -64,12 +64,14 @@ export const BinanceNetworkItem = createModel<IBinanceNetworkItem>(BinanceNetwor
 export interface IBinanceCoinItem {
     coin: string;
     name: string;
+    isLegalMoney: boolean;
     networkList: Array<IBinanceNetworkItem>;
 }
 
 export const BinanceCoinItemSchema = new Schema<IBinanceCoinItem>({
     coin: { type: String, required: true },
     name: { type: String, required: true },
+    isLegalMoney: { type: Boolean, required: true },
     networkList: { type: [BinanceNetworkItemSchema], required: true }
 });
 
@@ -87,12 +89,12 @@ export const BinanceCoin = createModel<IBinanceCoin>(BinanceCoinSchema);
 
 export interface IBinanceAddress {
     address: string;
-    tag: string;
+    tag?: string;
 }
 
 export const BinanceAddressSchema = new Schema<IBinanceAddress>({
     address: { type: String, required: true },
-    tag: { type: String, required: true }
+    tag: { type: String }
 });
 
 export const BinanceAddress = createModel<IBinanceAddress>(BinanceAddressSchema);
