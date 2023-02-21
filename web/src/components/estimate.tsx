@@ -188,13 +188,13 @@ const Estimate = (props: IProps): ReactElement => {
         <div className="estimate">
             <div className="estimate-head">You send {estimateRequest.input.currency}</div>
             <div className="estimate-entry">
-                <input type="text" className="estimate-input" value={inputAmount} onChange={inputChanged} />
+                <input type="text" className="estimate-input" value={inputAmount} onChange={inputChanged} aria-label="Input amount" placeholder="0.1" />
                 <button type="button" className="estimate-currency" onClick={inputClicked}>{inputCoin}</button>
             </div>
             <div className="estimate-note">{formattedInputNote}</div>
             <div className="estimate-head">You get {estimateRequest.output[0].currency}</div>
             <div className="estimate-entry">
-                <input type="text" className="estimate-input" value={outputAmount} onChange={outputChanged} />
+                <input type="text" className="estimate-input" value={outputAmount} onChange={outputChanged} aria-label="Output amount" placeholder="0.1" />
                 <button type="button" className="estimate-currency" onClick={outputClicked}>{outputCoin}</button>
             </div>
             <div className="estimate-note">{formattedOutputNote}</div>

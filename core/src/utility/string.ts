@@ -32,6 +32,7 @@ export const cryptoIcon = (coin: string, style = "black"): object => {
         .toLowerCase();
     return {
         src,
+        alt: `${coin} logo`,
         onError(event: { target: IProps }): void {
             event.target.onError = undefined;
             event.target.src = fallback;

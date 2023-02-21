@@ -8,7 +8,7 @@ body {
     background-size: 400% 400%;
     background-attachment: fixed;
     animation: gradient 60s ease-in-out infinite;
-    color: #dbddd6;
+    color: #f1f1ef;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
     overflow: hidden;
@@ -39,7 +39,7 @@ button {
     font-weight: bold;
     font-size: 14px;
     border-radius: 4px;
-    color: #dbddd6;
+    color: #f1f1ef;
 }
 
 button:hover {
@@ -49,18 +49,18 @@ button:hover {
 input {
     min-width: 0;
     background: none;
-    border: solid 1px #dbddd6;
+    border: solid 1px #f1f1ef;
     padding: 7px 14px;
     font: inherit;
     outline: inherit;
     font-weight: bold;
     font-size: 14px;
     border-radius: 4px;
-    color: #dbddd6;
+    color: #f1f1ef;
 }
 
 input::placeholder {
-    color: #bdbdbd
+    color: #e5e5e5
 }
 
 img, a {
@@ -88,7 +88,7 @@ img, a {
     transform: translate(-50%, -50%);
     text-align: center;
     font-size: 12px;
-    color: #bdbdbd;
+    color: #e5e5e5;
 }
 
 ::-webkit-scrollbar {

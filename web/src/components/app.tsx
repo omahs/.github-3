@@ -1,7 +1,6 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
-import { useCallback } from "react";
-import React, { useEffect, useState, useMemo, lazy } from "react";
+import React, { useEffect, useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ICurrencyResponseItem, IEstimateResponse } from "jewl-core";
 import { ServerStatus } from "jewl-core";
@@ -130,7 +129,9 @@ const App = (): ReactElement => {
                 <span className="app-header-title">jewl.app</span>
                 <span className="app-header-side">{loader}</span>
             </div>
-            <div className="app-content">{contentPage}</div>
+            <div className="app-content">
+                <Suspense>{contentPage}</Suspense>
+            </div>
             <div className="app-footer">
                 <button type="button" className="app-footer-button" disabled={!nextEnabled} onClick={nextPressed}>
                     Next

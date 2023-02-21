@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     width: min(512px, 80vw);
-    border: solid 1px #dbddd6;
+    border: solid 1px #f1f1ef;
     border-radius: 24px;
     top: 50%;
     left: 50%;
@@ -43,6 +43,7 @@
 
 .app-content {
     flex: 1;
+    min-height: 128px;
 }
 
 .app-footer {

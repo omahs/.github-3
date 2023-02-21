@@ -6,7 +6,7 @@ const Header = (): ReactElement => {
     return (
         <div className="header">
             <span className="header-spacer" />
-            <img src="/icon-outline.svg" className="header-logo" alt="jewl.app logo" loading="lazy" />
+            <img src="/icon-outline.svg" className="header-logo" alt="jewl.app logo" />
         </div>
     );
 };

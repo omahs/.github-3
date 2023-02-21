@@ -93,12 +93,12 @@ const Selector = (props: IProps): ReactElement => {
                 <div className="selector-header">
                     <span className="selector-title">Select a token</span>
                     <button type="button" onClick={closeModal}>
-                        <FontAwesomeIcon icon={faClose} color="#bdbdbd" size="lg" />
+                        <FontAwesomeIcon icon={faClose} color="#e5e5e5" size="lg" />
                     </button>
                 </div>
                 <div className="selector-search">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} color="#bdbdbd" />
-                    <input type="text" className="selector-search-input" placeholder="Search token" value={searchText} onChange={searchTextChanged} />
+                    <FontAwesomeIcon icon={faMagnifyingGlass} color="#e5e5e5" />
+                    <input type="text" className="selector-search-input" placeholder="Search token" value={searchText} onChange={searchTextChanged} aria-label="Search" />
                 </div>
                 <div className="selector-highlighted">{highlighted}</div>
                 <div className="selector-separator" />
