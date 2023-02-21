@@ -1,13 +1,13 @@
 import "../styles/app.css";
 import type { ReactElement } from "react";
-import React, { useEffect, useState, useMemo, useCallback, lazy, Suspense } from "react";
+import React, { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IEstimateResponse } from "jewl-core";
 import { ServerStatus } from "jewl-core";
 import { faCircleCheck, faCircleQuestion, faCircleDot, faCirclePause } from "@fortawesome/free-regular-svg-icons";
 import { faChevronLeft, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { useLoading } from "../modules/loading";
-import { apiClient } from "../modules/network";
+import { useStatus } from "../modules/status";
 
 const Estimate = lazy(async () => import("./estimate"));
 const Address = lazy(async () => import("./address"));
@@ -16,23 +16,11 @@ const Complete = lazy(async () => import("./complete"));
 const contentPages = [Estimate, Address, Confirm, Complete];
 
 const App = (): ReactElement => {
-    const [serverStatus, setServerStatus] = useState(ServerStatus.up);
-    const { isAnyLoading, setLoading } = useLoading();
+    const { isAnyLoading } = useLoading();
+    const { serverStatus } = useStatus();
     const [pageValidated, setPageValidated] = useState(0);
     const [estimate, setEstimate] = useState<IEstimateResponse>();
     const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-        const id = setInterval(() => {
-            setLoading(true);
-            apiClient.getStatus()
-                .then(x => setServerStatus(x.status))
-                .catch(() => setServerStatus(ServerStatus.down))
-                .finally(() => setLoading(false));
-        }, 10000);
-        return () => clearInterval(id);
-    }, [setLoading, setServerStatus]);
-
 
     const statusClicked = useCallback(() => {
         window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
