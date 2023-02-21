@@ -1,6 +1,7 @@
 import type { ICurrencyResponse, ICurrencyResponseItem } from "jewl-core";
 import type { PropsWithChildren, ReactElement } from "react";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useLoading } from "./loading";
 import { apiClient } from "./network";
 
 interface IUseCurrency {
@@ -37,6 +38,7 @@ export const useCurrencies = (): IUseCurrency => {
 };
 
 const CurrencyProvider = (props: PropsWithChildren): ReactElement => {
+    const { setLoading } = useLoading();
     const [currencyMap, setCurrencyMap] = useState(new Map<string, ICurrencyResponseItem>());
     const [currencyList, setCurrencyList] = useState(new Array<ICurrencyResponseItem>());
 
@@ -53,12 +55,15 @@ const CurrencyProvider = (props: PropsWithChildren): ReactElement => {
     }, [setCurrencyList]);
 
     const reloadCurrencies = useCallback(() => {
+        setLoading(true);
         apiClient.getCurrencies()
             .then(updateCurrencyMap)
-            .catch(console.log);
-    }, [updateCurrencyMap]);
+            .catch(console.log)
+            .finally(() => setLoading(false));
+    }, [setLoading, updateCurrencyMap]);
 
-    useEffect(reloadCurrencies, [reloadCurrencies]);
+    // Purposefully not including deps as this should only run once
+    useEffect(reloadCurrencies, []);
 
     const context = useMemo(() => {
         return {

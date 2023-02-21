@@ -1,10 +1,11 @@
 import type { PropsWithChildren, ReactElement } from "react";
 import React, { lazy, Suspense } from "react";
 
-const CurrencyProvider = lazy(async () => import("./currency"));
 const LoadingProvider = lazy(async () => import("./loading"));
+const CurrencyProvider = lazy(async () => import("./currency"));
+const EstimateProvider = lazy(async () => import("./estimate"));
 
-const providers = [Suspense, LoadingProvider, CurrencyProvider];
+const providers = [Suspense, LoadingProvider, CurrencyProvider, EstimateProvider];
 
 interface IProps extends PropsWithChildren {
     index?: number;
