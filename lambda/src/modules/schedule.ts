@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { DateTime, ServerStatus } from "jewl-core";
+import { nanoid } from "nanoid";
 import { apiClient } from "./network.js";
 
 const isInMaintainanceMode = async (): Promise<boolean> => {
@@ -9,6 +10,15 @@ const isInMaintainanceMode = async (): Promise<boolean> => {
         if (response.status === ServerStatus.up) { return false; }
     } catch { /* Empty */ }
     return true;
+};
+
+let lastStatus: [string, boolean] = ["", false];
+const lazyIsInMaintainanceMode = async (key: string): Promise<boolean> => {
+    if (lastStatus[0] === key) { return Promise.resolve(lastStatus[1]); }
+    const result = await isInMaintainanceMode();
+    // eslint-disable-next-line require-atomic-updates
+    lastStatus = [key, result];
+    return result;
 };
 
 const log = (message: string): void => {
@@ -81,19 +91,18 @@ export class Cron {
 
     private async runTasks(): Promise<void> {
         const promises: Array<Promise<void>> = [];
+        const maintainanceKey = nanoid();
 
-        const isMaintainance = await isInMaintainanceMode();
-
-        this.tasks.forEach((task, key) => {
-            const isSecure = this.isSecure.get(key) ?? false;
-            if (isSecure && isMaintainance) { return; }
+        for (const [key, task] of this.tasks) {
             const lastExecution = this.lastExecution.get(key) ?? new DateTime(0);
             const minInterval = this.minInterval.get(key) ?? 0;
-            if (lastExecution.addingSeconds(minInterval).gt(new DateTime())) { return; }
+            if (lastExecution.addingSeconds(minInterval).gt(new DateTime())) { continue; }
+            const isSecure = this.isSecure.get(key) ?? false;
+            if (isSecure && !await lazyIsInMaintainanceMode(maintainanceKey)) { continue; }
             this.lastExecution.set(key, new DateTime());
             const promise = runTask(key, task);
             promises.push(promise);
-        });
+        }
 
         await Promise.all(promises);
 

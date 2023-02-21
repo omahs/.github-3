@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "chalk": "^5.2.0",
-        "jewl-core": "*"
+        "jewl-core": "*",
+        "nanoid": "^4.0.1"
     }
 }
