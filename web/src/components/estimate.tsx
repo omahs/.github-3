@@ -201,6 +201,14 @@ const Estimate = (props: IProps): ReactElement => {
         return currency.coin === currency.network ? currency.name : `${currency.name} on ${currency.networkName}`;
     }, [getCurrency, estimateRequest]);
 
+    const arrivalTime = useMemo(() => {
+        const fees = "No hidden fees";
+        if (props.estimate == null) { return fees; }
+        const eta = props.estimate.deliveryTime;
+        const mins = eta === 1 ? "minute" : "minutes";
+        return `Should arrive within ${eta} ${mins} - ${fees}`;
+    }, [props.estimate]);
+
     const popup = useMemo(() => {
         if (selectCurrency == null) { return null; }
         return <Selector onSelect={currencySelected} onCancel={closeModal} />;
@@ -220,7 +228,7 @@ const Estimate = (props: IProps): ReactElement => {
                 <button type="button" className="estimate-currency" onClick={outputClicked}>{outputCoin}</button>
             </div>
             <div className="estimate-note">{formattedOutputNote}</div>
-            <div className="estimate-fees">No hidden fees</div>
+            <div className="estimate-fees">{arrivalTime}</div>
             {popup}
         </div>
     );

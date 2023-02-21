@@ -2,6 +2,8 @@
 
 <details><summary>How long does it take for my order to complete?</summary><p>jewl.app starts processing your order as soon as you have transferred the funds to jewl.app and the transaction is confirmed. How long a confirmation takes is dependant on the chain that you are transferring funds on. Some chains like bitcoin are notoriously slow (30+ minutes). Please have a look at the estimated delivery time when specifying your order. If you think something is wrong feel free to send us a message and we'll be happy to look into it</p></details>
 
+<details><summary>Why is the amout I received different from the estimate?</summary><p>jewl.app shows you the exact transfer price at the current time. When processing your order jewl.app will again take the exact price at the current time. Because there is a difference between the time of placing an order and processing your order the amounts will not exactly match. This difference in time can be explained by the confirmation that is needed to clear the funds. The time this confirmation takes depends on the chain.</p></details>
+
 <details><summary>Why do I need a non-custodial wallet?</summary><p>Custodial wallets might be convenient and you won't need to pay transfer fees, you are trusting someone else with complete control of your assets. With a non-custodial wallet you are in full control. Take a look at what happened to FTX or QuadrigaCX for an example of the risks. Not your keys, not your coins.</p></details>
 
 <details><summary>Can I transfer funds into my Coinbase or Binance account?</summary><p>Certainly! While it is possible to transfer funds into a custodial wallets we suggest opting for a non-custodial wallet.</p></details>
