@@ -4,70 +4,10 @@
     display: flex;
     flex-direction: column;
     width: min(512px, 80vw);
+    min-height: min(256px, 40vw);
     border: solid 1px #f1f1ef;
     border-radius: 24px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.app-header {
-    display: flex;
-    margin: 12px 24px;
-    align-items: center;
-    justify-content: center;
-}
-
-.app-header-title {
-    flex: 1;
-    font-size: 24px;
-    text-align: center;
-}
-
-.app-header-side {
-    padding: 4px;
-    width: 16px;
-}
-
-.app-header-button {
-    padding: 0;
-}
-
-.app-header-loader {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.app-content {
-    flex: 1;
-    min-height: 128px;
-}
-
-.app-footer {
-    display: flex;
-    justify-content: center;
-}
-
-.app-footer-button {
-    padding: 12px 24px;
-    margin: 4px;
-}
-
-.app-status {
-    position: absolute;
-    top: calc(100%);
-    padding: 4px 12px;
-    margin: 2px 12px;
-    cursor: pointer;
-}
-
-.app-status span {
-    padding-left: 4px;
-}
-
-.app-status:hover {
-    text-decoration: underline;
 }

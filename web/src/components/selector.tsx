@@ -1,24 +1,29 @@
 import "../styles/selector.css";
 import type { ReactElement, ChangeEvent } from "react";
-import React, { useState, useCallback, useMemo, useRef, lazy } from "react";
+import React, { useState, useCallback, useMemo, useRef } from "react";
 import { cryptoIcon } from "jewl-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useCurrencies } from "../modules/currency";
-
-const Popup = lazy(async () => import("./popup"));
-
-interface IProps {
-    onSelect?: (coin: string, network: string) => void;
-    onCancel?: () => void;
-}
+import { useNavigation } from "../modules/navigation";
+import { useInput, useOutput } from "../modules/estimate";
+import { CurrencyType } from "../modules/enum";
+import { useAddress } from "../modules/address";
 
 const highlightedCurrencies = ["BTC", "ETH", "USDT", "BNB", "USDC", "BUSD", "DAI"];
 
-const Selector = (props: IProps): ReactElement => {
+const Selector = (): ReactElement => {
+    const { selectCurrency, setSelectCurrency } = useNavigation();
     const { allCurrencies, getCurrency } = useCurrencies();
+    const { setAddress, setMemo } = useAddress();
     const [searchText, setSearchText] = useState("");
     const ref = useRef<HTMLDivElement>(null);
+    const input = useInput();
+    const output = useOutput();
+
+    const { setCurrency } = useMemo(() => {
+        return selectCurrency === CurrencyType.Input ? input : output;
+    }, [selectCurrency, input, output]);
 
     const searchTextChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setSearchText(event.target.value);
@@ -28,18 +33,19 @@ const Selector = (props: IProps): ReactElement => {
     const selectItem = useMemo(() => {
         return (coin: string, network: string): (() => void) => {
             return (): void => {
+                setCurrency(coin, network);
+                setSelectCurrency();
                 setSearchText("");
-                if (props.onSelect == null) { return; }
-                props.onSelect(coin, network);
+                setAddress();
+                setMemo();
             };
         };
-    }, [setSearchText, props.onSelect]);
+    }, [setCurrency, setSelectCurrency, setSearchText]);
 
     const closeModal = useCallback(() => {
         setSearchText("");
-        if (props.onCancel == null) { return; }
-        props.onCancel();
-    }, [setSearchText, props.onCancel]);
+        setSelectCurrency();
+    }, [setSearchText, setSelectCurrency]);
 
     const highlighted = useMemo(() => {
         return highlightedCurrencies.map(x => {
@@ -82,8 +88,9 @@ const Selector = (props: IProps): ReactElement => {
     }, [filteredCurrencies, selectItem]);
 
     return (
-        <Popup onClick={closeModal} width="min(80vw, 418px)" height="65vh">
-            <div className="selector">
+        <>
+            <div className="selector-overlay" onClick={closeModal} />
+            <div className="selector-popup">
                 <div className="selector-header">
                     <span className="selector-title">Select a token</span>
                     <button type="button" onClick={closeModal}>
@@ -98,8 +105,13 @@ const Selector = (props: IProps): ReactElement => {
                 <div className="selector-separator" />
                 <div className="selector-list" ref={ref}>{currencyItems}</div>
             </div>
-        </Popup>
+        </>
     );
 };
 
-export default Selector;
+const OptionalSelector = (): ReactElement | null => {
+    const { selectCurrency } = useNavigation();
+    return selectCurrency == null ? null : <Selector />;
+};
+
+export default OptionalSelector;

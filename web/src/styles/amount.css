@@ -1,13 +1,8 @@
-.estimate {
-    display: flex;
-    flex-direction: column;
-}
-
-.estimate-head {
+.amount-head {
     margin: 0 24px;
 }
 
-.estimate-entry {
+.amount-entry {
     display: flex;
     align-items: center;
     margin: 0 24px;
@@ -15,24 +10,18 @@
     border: solid 1px #f1f1ef;
 }
 
-.estimate-currency {
+.amount-currency {
     padding: 4px 12px;
 }
 
-.estimate-input {
+.amount-input {
     flex: 1;
     border: none;
 }
 
-.estimate-note {
+.amount-note {
     font-size: 12px;
     height: 24px;
     color: #e5e5e5;
     margin: 0 24px;
-}
-
-.estimate-fees {
-    margin: 0 24px;
-    color: #e5e5e5;
-    font-size: 12px;
 }

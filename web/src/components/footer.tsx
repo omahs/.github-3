@@ -1,22 +1,10 @@
 import "../styles/footer.css";
 import type { ReactElement } from "react";
-import React, { useCallback, useState, useMemo, useEffect, lazy } from "react";
-import { marked } from "marked";
-import { sanitize, addHook } from "dompurify";
-
-const Popup = lazy(async () => import("./popup"));
+import React, { useCallback, useMemo } from "react";
+import { useNavigation } from "../modules/navigation";
 
 const Footer = (): ReactElement => {
-    const [legalText, setLegalText] = useState<string | null>(null);
-
-    useEffect(() => {
-        addHook("afterSanitizeAttributes", (node: Element) => {
-            if ("target" in node) {
-                node.setAttribute("target", "_blank");
-                node.setAttribute("rel", "noopener");
-            }
-        });
-    }, []);
+    const { setLegalText } = useNavigation();
 
     const openPage = useMemo(() => {
         return (name: string): void => {
@@ -27,38 +15,10 @@ const Footer = (): ReactElement => {
         };
     }, [setLegalText]);
 
-    const markedRenderer = useMemo(() => {
-        const renderer = new marked.Renderer();
-        const linkRenderer = renderer.link.bind(renderer);
-        renderer.link = (href, title, text): string => {
-            const localLink = href?.startsWith(`${location.protocol}//${location.hostname}`) ?? false;
-            const link = linkRenderer.call(renderer, href, title, text);
-            return localLink ? link : link.replace(/^<a /u, "<a target=\"_blank\" rel=\"noreferrer noopener nofollow\" ");
-        };
-        return renderer;
-    }, []);
-
-    const html = useMemo(() => {
-        if (legalText == null) { return undefined; }
-        const parsed = marked.parse(legalText, { renderer: markedRenderer });
-        const sanitized = sanitize(parsed);
-        return { __html: sanitized };
-    }, [legalText]);
-
     const openContact = useCallback(() => openPage("contact"), [openPage]);
     const openTerms = useCallback(() => openPage("terms"), [openPage]);
     const openFaq = useCallback(() => openPage("faq"), [openPage]);
     const openPrivacy = useCallback(() => openPage("privacy"), [openPage]);
-    const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
-
-    const popup = useMemo(() => {
-        if (legalText == null) { return null; }
-        return (
-            <Popup onClick={closeModal}>
-                <div className="footer-legal" dangerouslySetInnerHTML={html} />
-            </Popup>
-        );
-    }, [legalText, html]);
 
     return (
         <div className="footer">
@@ -76,7 +36,6 @@ const Footer = (): ReactElement => {
                 <span className="footer-right" onClick={openTerms}>ToS</span>
                 <span className="footer-right" onClick={openPrivacy}>PP</span>
             </div>
-            {popup}
         </div>
     );
 };

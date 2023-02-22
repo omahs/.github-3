@@ -6,8 +6,6 @@ import { Helmet } from "react-helmet";
 import { Provider } from "./modules/provider";
 
 const App = lazy(async () => import("./components/app"));
-const Header = lazy(async () => import("./components/header"));
-const Footer = lazy(async () => import("./components/footer"));
 
 const Root = (): ReactElement => {
     const [supportedOrientation, setSupportedOrientation] = useState(true);
@@ -24,9 +22,9 @@ const Root = (): ReactElement => {
 
     const content = useMemo(() => {
         if (supportedOrientation) {
-            return <><Header /><App /><Footer /></>;
+            return <App />;
         }
-        return <div className="unsupported" hidden={supportedOrientation}>Please rotate your device to use jewl.app</div>;
+        return <div className="unsupported">Please rotate your device to use jewl.app</div>;
     }, [supportedOrientation]);
 
     return (

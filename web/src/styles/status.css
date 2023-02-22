@@ -1,0 +1,15 @@
+.status {
+    position: absolute;
+    top: calc(100%);
+    padding: 4px 12px;
+    margin: 2px 12px;
+    cursor: pointer;
+}
+
+.status span {
+    padding-left: 4px;
+}
+
+.status:hover {
+    text-decoration: underline;
+}

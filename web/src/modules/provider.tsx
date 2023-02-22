@@ -2,11 +2,15 @@ import type { PropsWithChildren, ReactElement } from "react";
 import React, { lazy, Suspense } from "react";
 
 const LoadingProvider = lazy(async () => import("./loading"));
+const NavigationProvider = lazy(async () => import("./navigation"));
 const StatusProvider = lazy(async () => import("./status"));
 const CurrencyProvider = lazy(async () => import("./currency"));
 const EstimateProvider = lazy(async () => import("./estimate"));
+const AddressProvider = lazy(async () => import("./address"));
 
-const providers = [Suspense, LoadingProvider, StatusProvider, CurrencyProvider, EstimateProvider];
+const providers = [Suspense, LoadingProvider, NavigationProvider,
+    StatusProvider, CurrencyProvider, EstimateProvider,
+    AddressProvider];
 
 interface IProps extends PropsWithChildren {
     index?: number;

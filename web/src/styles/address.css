@@ -1,0 +1,16 @@
+.address-head {
+    margin: 0 24px;
+}
+
+.address-input {
+    margin: 0 24px;
+    border-radius: 4px;
+    border: solid 1px #f1f1ef;
+}
+
+.address-note {
+    font-size: 12px;
+    height: 24px;
+    color: #e5e5e5;
+    margin: 0 24px;
+}

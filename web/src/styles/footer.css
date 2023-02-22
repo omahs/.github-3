@@ -50,10 +50,3 @@
 .footer-right:hover {
     text-decoration: underline;
 }
-
-.footer-legal {
-    height: calc(100% - 32px);
-    width: calc(100% - 64px);
-    padding: 16px 32px;
-    overflow-y: auto;
-}

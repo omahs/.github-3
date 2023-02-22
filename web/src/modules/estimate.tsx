@@ -2,32 +2,34 @@ import type { IEstimateResponse, IEstimateRequest } from "jewl-core";
 import { PreciseNumber } from "jewl-core";
 import type { PropsWithChildren, ReactElement } from "react";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { CurrencyType } from "./enum";
 import { useLoading } from "./loading";
 import { apiClient } from "./network";
 
 const initialEstimateRequest: IEstimateRequest = {
-    input: { coin: "ETH", amount: new PreciseNumber(1) },
-    output: [{ coin: "BTC", percentage: new PreciseNumber(1) }]
+    input: { coin: "BTC", amount: new PreciseNumber(0.01) },
+    output: [{ coin: "ETH", percentage: new PreciseNumber(1) }]
 };
 
 interface IUseEstimate {
-    inputCoin: string;
-    inputNetwork?: string;
-    inputAmount?: PreciseNumber;
-    inputUsd?: PreciseNumber;
-    outputCoin: string;
-    outputNetwork?: string;
-    outputAmount?: PreciseNumber;
-    outputUsd?: PreciseNumber;
+    editing: CurrencyType;
+    setEditing: (editing: CurrencyType) => void;
     deliveryTime?: number;
     isLoading: boolean;
-    setInputCurrency: (coin: string, network: string) => void;
-    setInputAmount: (amount: PreciseNumber) => void;
-    setOutputCurrency: (coin: string, network: string) => void;
-    setOutputAmount: (amount: PreciseNumber) => void;
+}
+
+interface IUseAmount {
+    coin: string;
+    network?: string;
+    amount?: PreciseNumber;
+    usdEquivalent?: PreciseNumber;
+    setCurrency: (coin: string, network: string) => void;
+    setAmount: (amount: PreciseNumber) => void;
 }
 
 interface IGlobalEstimate {
+    editing: CurrencyType;
+    setEditing: (editing: CurrencyType) => void;
     estimateRequest: IEstimateRequest;
     setEstimateRequest: (request: IEstimateRequest) => void;
     estimateResponse?: IEstimateResponse;
@@ -35,67 +37,78 @@ interface IGlobalEstimate {
 }
 
 const Context = createContext<IGlobalEstimate>({
+    editing: CurrencyType.Input,
+    setEditing: () => { /* Empty */ },
     estimateRequest: initialEstimateRequest,
     setEstimateRequest: () => { /* Empty */ },
     isLoading: false
 });
 
+export const useInput = (): IUseAmount => {
+    const { estimateRequest, setEstimateRequest, estimateResponse } = useContext(Context);
+    const coin = useMemo(() => estimateRequest.input.coin, [estimateRequest]);
+    const network = useMemo(() => estimateRequest.input.network, [estimateRequest]);
+    const amount = useMemo(() => estimateResponse?.input.amount, [estimateResponse]);
+    const usdEquivalent = useMemo(() => estimateResponse?.input.usdEquivalent, [estimateResponse]);
+
+    const setCurrency = useCallback((newCoin: string, newNetwork: string) => {
+        const input = estimateRequest.input;
+        const output = estimateRequest.output[0];
+        setEstimateRequest({
+            input: { ...input, coin: newCoin, network: newNetwork },
+            output: [output]
+        });
+    }, [estimateRequest, setEstimateRequest]);
+
+    const setAmount = useCallback((newAmount: PreciseNumber) => {
+        const input = estimateRequest.input;
+        const output = estimateRequest.output[0];
+        setEstimateRequest({
+            input: { ...input, amount: newAmount },
+            output: [output]
+        });
+    }, [estimateRequest, setEstimateRequest]);
+
+    return { coin, network, amount, usdEquivalent, setCurrency, setAmount };
+};
+
+export const useOutput = (): IUseAmount => {
+    const { estimateRequest, setEstimateRequest, estimateResponse } = useContext(Context);
+    const coin = useMemo(() => estimateRequest.output[0].coin, [estimateRequest]);
+    const network = useMemo(() => estimateRequest.output[0].network, [estimateRequest]);
+    const amount = useMemo(() => estimateResponse?.output[0].amount, [estimateResponse]);
+    const usdEquivalent = useMemo(() => estimateResponse?.output[0].usdEquivalent, [estimateResponse]);
+
+    const setCurrency = useCallback((newCoin: string, newNetwork: string) => {
+        const input = estimateRequest.input;
+        const output = estimateRequest.output[0];
+        setEstimateRequest({
+            input,
+            output: [{ ...output, coin: newCoin, network: newNetwork }]
+        });
+    }, [estimateRequest, setEstimateRequest]);
+
+    const setAmount = useCallback((newAmount: PreciseNumber) => {
+        const input = estimateRequest.input;
+        const output = estimateRequest.output[0];
+        setEstimateRequest({
+            input,
+            output: [{ ...output, amount: newAmount }]
+        });
+    }, [estimateRequest, setEstimateRequest]);
+
+    return { coin, network, amount, usdEquivalent, setCurrency, setAmount };
+};
+
 export const useEstimate = (): IUseEstimate => {
-    const { estimateRequest, setEstimateRequest, estimateResponse, isLoading } = useContext(Context);
-    const inputCoin = useMemo(() => estimateRequest.input.coin, [estimateRequest]);
-    const inputNetwork = useMemo(() => estimateRequest.input.network, [estimateRequest]);
-    const inputAmount = useMemo(() => estimateResponse?.input.amount, [estimateResponse]);
-    const inputUsd = useMemo(() => estimateResponse?.input.usdEquivalent, [estimateResponse]);
-
-    const setInputCurrency = useCallback((coin: string, network: string) => {
-        const input = estimateRequest.input;
-        const output = estimateRequest.output[0];
-        setEstimateRequest({
-            input: { ...input, coin, network },
-            output: [output]
-        });
-    }, [estimateRequest, setEstimateRequest]);
-
-    const setInputAmount = useCallback((amount: PreciseNumber) => {
-        const input = estimateRequest.input;
-        const output = estimateRequest.output[0];
-        setEstimateRequest({
-            input: { ...input, amount },
-            output: [output]
-        });
-    }, [estimateRequest, setEstimateRequest]);
-
-    const outputCoin = useMemo(() => estimateRequest.output[0].coin, [estimateRequest]);
-    const outputNetwork = useMemo(() => estimateRequest.output[0].network, [estimateRequest]);
-    const outputAmount = useMemo(() => estimateResponse?.output[0].amount, [estimateResponse]);
-    const outputUsd = useMemo(() => estimateResponse?.output[0].usdEquivalent, [estimateResponse]);
-
-    const setOutputCurrency = useCallback((coin: string, network: string) => {
-        const input = estimateRequest.input;
-        const output = estimateRequest.output[0];
-        setEstimateRequest({
-            input,
-            output: [{ ...output, coin, network }]
-        });
-    }, [estimateRequest, setEstimateRequest]);
-
-    const setOutputAmount = useCallback((amount: PreciseNumber) => {
-        const input = estimateRequest.input;
-        const output = estimateRequest.output[0];
-        setEstimateRequest({
-            input,
-            output: [{ ...output, amount }]
-        });
-    }, [estimateRequest, setEstimateRequest]);
-
+    const { editing, setEditing, estimateResponse, isLoading } = useContext(Context);
     const deliveryTime = useMemo(() => estimateResponse?.deliveryTime, [estimateResponse]);
 
-    return { inputCoin, inputNetwork, inputAmount, inputUsd, setInputCurrency, setInputAmount,
-        outputCoin, outputNetwork, outputAmount, outputUsd, setOutputCurrency, setOutputAmount,
-        deliveryTime, isLoading };
+    return { editing, setEditing, deliveryTime, isLoading };
 };
 
 const EstimateProvider = (props: PropsWithChildren): ReactElement => {
+    const [editing, setEditing] = useState(CurrencyType.Input);
     const [estimateResponse, setEstimateResponse] = useState<IEstimateResponse>();
     const [estimateRequest, setEstimateRequest] = useState(initialEstimateRequest);
     const { isLoading, setLoading } = useLoading();
@@ -128,12 +141,14 @@ const EstimateProvider = (props: PropsWithChildren): ReactElement => {
 
     const context = useMemo(() => {
         return {
+            editing,
+            setEditing,
             estimateRequest,
             setEstimateRequest,
             estimateResponse,
             isLoading
         };
-    }, [estimateResponse, estimateRequest, setEstimateRequest, isLoading]);
+    }, [editing, setEditing, estimateResponse, estimateRequest, setEstimateRequest, isLoading]);
 
     return <Context.Provider value={context}>{props.children}</Context.Provider>;
 };
