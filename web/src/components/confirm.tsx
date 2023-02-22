@@ -16,8 +16,6 @@ const Confirm = (): ReactElement => {
         return false;
     }, [deliveryTime, address]);
 
-    console.log(deliveryTime, address, buttonDisabled);
-
     const buttonClicked = useCallback(() => {
         if (buttonDisabled) { return; }
         setOpenComplete(true);
