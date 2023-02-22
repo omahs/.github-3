@@ -60,7 +60,7 @@ Bug reporters allow jewl.app the opportunity to diagnose and offer fully tested 
 
 Once the security issue is fixed or mitigated, the jewl.app team will contact you. Prior to any public announcement of a vulnerability, and to the extent permitted by the law, we will share the draft description of the vulnerability with you. In case of disagreement.
 
-# Reward
+## Reward
 You may be eligible to receive a reward if:
 
 * You are the first person to submit a given vulnerability.
