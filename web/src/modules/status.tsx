@@ -33,6 +33,7 @@ const StatusProvider = (props: PropsWithChildren): ReactElement => {
     const { setLoading } = useLoading();
 
     const reloadStatus = useCallback(() => {
+        if (document.hidden) { return; }
         setLoading(true);
         apiClient.getStatus()
             .then(x => setServerStatus(x.status))

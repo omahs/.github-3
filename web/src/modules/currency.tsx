@@ -55,6 +55,7 @@ const CurrencyProvider = (props: PropsWithChildren): ReactElement => {
     }, [setCurrencyList]);
 
     const reloadCurrencies = useCallback(() => {
+        if (document.hidden) { return; }
         setLoading(true);
         apiClient.getCurrencies()
             .then(updateCurrencyMap)

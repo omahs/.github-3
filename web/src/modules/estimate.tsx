@@ -101,6 +101,7 @@ const EstimateProvider = (props: PropsWithChildren): ReactElement => {
     const { isLoading, setLoading } = useLoading();
 
     const reloadEstimate = useCallback(() => {
+        if (document.hidden) { return; }
         setLoading(true);
         apiClient.getEstimate(estimateRequest)
             .then(setEstimateResponse)
