@@ -3,7 +3,7 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    width: min(512px, 80vw);
+    width: min(512px, 90vw);
     min-height: min(256px, 40vw);
     border: solid 1px #f1f1ef;
     border-radius: 24px;
