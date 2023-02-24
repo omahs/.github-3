@@ -1,16 +1,17 @@
 import type { Application } from "express";
 import cors from "cors";
-import slowDown from "express-slow-down";
+import rateLimit from "express-rate-limit";
 import { HttpError } from "./error.js";
 import { ServerStatus, DateTime } from "jewl-core";
 import { uptimeClient } from "./network.js";
 
 export const RegisterSecurityMiddleware = (app: Application): void => {
     app.use(cors());
-    app.use(slowDown({
-        windowMs: 60,
-        delayAfter: 100,
-        delayMs: 500
+    app.use(rateLimit({
+        windowMs: 60000,
+        max: 50,
+        legacyHeaders: false,
+        standardHeaders: true
     }));
 };
 

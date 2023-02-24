@@ -10,7 +10,7 @@
         "chalk": "^5.2.0",
         "cors": "^2.8.5",
         "express": "^4.18.2",
-        "express-slow-down": "^1.5.0",
+        "express-rate-limit": "^6.7.0",
         "jewl-core": "*",
         "on-finished": "^2.4.1",
         "swagger-ui-express": "^4.6.1",
