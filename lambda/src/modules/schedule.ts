@@ -1,25 +1,5 @@
 import chalk from "chalk";
-import { DateTime, ServerStatus } from "jewl-core";
-import { nanoid } from "nanoid";
-import { apiClient } from "./network.js";
-
-const isInMaintainanceMode = async (): Promise<boolean> => {
-    if (process.env.DEBUG === "true") { return false; }
-    try {
-        const response = await apiClient.getStatus();
-        if (response.status === ServerStatus.up) { return false; }
-    } catch { /* Empty */ }
-    return true;
-};
-
-let lastStatus: [string, boolean] = ["", false];
-const lazyIsInMaintainanceMode = async (key: string): Promise<boolean> => {
-    if (lastStatus[0] === key) { return Promise.resolve(lastStatus[1]); }
-    const result = await isInMaintainanceMode();
-    // eslint-disable-next-line require-atomic-updates
-    lastStatus = [key, result];
-    return result;
-};
+import { DateTime } from "jewl-core";
 
 const log = (message: string): void => {
     const date = new Date();
@@ -43,7 +23,7 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
         const name = err instanceof Error ? err.name : "Unknown Error";
         const message = err instanceof Error ? err.message : "";
         console.error(chalk.bgRed.bold(" ERRO "), name, message);
-        if (process.env.DEBUG === "true") {
+        if (process.env.VERBOSE === "true") {
             console.error(err);
         }
     }
@@ -54,7 +34,6 @@ const runTask = async (key: string, task: () => Promise<void>): Promise<void> =>
 
 export class Cron {
     private readonly tasks = new Map<string, () => Promise<void>>();
-    private readonly isSecure = new Map<string, boolean>();
     private readonly minInterval = new Map<string, number>();
     private readonly lastExecution = new Map<string, DateTime>();
     private started = false;
@@ -64,10 +43,9 @@ export class Cron {
         this.tasks.set("", spacer);
     }
 
-    public addTask(key: string, task: () => Promise<void>, secure = false, minInterval = 1): void {
+    public addTask(key: string, task: () => Promise<void>, minInterval = 60): void {
         this.tasks.set(key, task);
         this.minInterval.set(key, minInterval);
-        this.isSecure.set(key, secure);
     }
 
     public removeTask(key: string): void {
@@ -91,14 +69,11 @@ export class Cron {
 
     private async runTasks(): Promise<void> {
         const promises: Array<Promise<void>> = [];
-        const maintainanceKey = nanoid();
 
         for (const [key, task] of this.tasks) {
             const lastExecution = this.lastExecution.get(key) ?? new DateTime(0);
             const minInterval = this.minInterval.get(key) ?? 0;
             if (lastExecution.addingSeconds(minInterval).gt(new DateTime())) { continue; }
-            const isSecure = this.isSecure.get(key) ?? false;
-            if (isSecure && !await lazyIsInMaintainanceMode(maintainanceKey)) { continue; }
             this.lastExecution.set(key, new DateTime());
             const promise = runTask(key, task);
             promises.push(promise);

@@ -1,36 +1,54 @@
-import "./styles/index.css";
+import "./index.css";
 import type { ReactElement } from "react";
-import React, { StrictMode, useEffect, useMemo, useState, lazy } from "react";
+import React, { StrictMode, useMemo, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { Helmet } from "react-helmet";
-import { Provider } from "./modules/provider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import type { AuthorizationParams } from "@auth0/auth0-react";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
-const App = lazy(async () => import("./components/app"));
+const Header = lazy(async () => import("./components/header"));
+const Front = lazy(async () => import("./components/front"));
+const Back = lazy(async () => import("./components/back"));
+const Footer = lazy(async () => import("./components/footer"));
 
-const Root = (): ReactElement => {
-    const [supportedOrientation, setSupportedOrientation] = useState(true);
+const Spinner = (): ReactElement => {
+    return <FontAwesomeIcon className="spinner" icon={faCircleNotch} />;
+};
+
+const App = (): ReactElement => {
+    const { isLoading, isAuthenticated } = useAuth0();
+
     const robots = useMemo(() => window.location.hostname === "jewl.app" ? "index,follow" : "noindex,follow", []);
 
-    useEffect(() => {
-        const aspectChanged = (): void => {
-            setSupportedOrientation(window.innerHeight >= 512);
-        };
-        window.addEventListener("resize", aspectChanged);
-        aspectChanged();
-        return () => window.removeEventListener("resize", aspectChanged);
-    }, []);
-
     const content = useMemo(() => {
-        if (supportedOrientation) {
-            return <App />;
-        }
-        return <div className="unsupported">Please rotate your device to use jewl.app</div>;
-    }, [supportedOrientation]);
+        if (isLoading) { return <Spinner />; }
+        if (isAuthenticated) { return <Back />; }
+        return <Front />;
+    }, [isLoading, isAuthenticated]);
 
     return (
-        <StrictMode>
+        <>
             <Helmet><meta name="robots" content={robots} /></Helmet>
-            <Provider>{content}</Provider>
+            <Suspense fallback={<Spinner />}><Header />{content}<Footer /></Suspense>
+        </>
+    );
+};
+
+const authUrl = process.env.REACT_APP_AUTH0_URL ?? "";
+const authId = process.env.REACT_APP_AUTH0_ID ?? "";
+
+const authorizationParams: AuthorizationParams = {
+    audience: process.env.REACT_APP_SERVER_URL
+};
+
+const Root = (): ReactElement => {
+    return (
+        <StrictMode>
+            <Auth0Provider domain={authUrl} clientId={authId} authorizationParams={authorizationParams}>
+                <App />
+            </Auth0Provider>
         </StrictMode>
     );
 };

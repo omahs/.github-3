@@ -1,4 +1,3 @@
-
 import type { Model } from "mongoose";
 import isomorphic from "jewl-isomorphic";
 import { validate } from "./mongo.js";

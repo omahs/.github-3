@@ -19,7 +19,7 @@ export const RegisterErrorCatcher = (app: Application): void => {
         const isHandled = err instanceof HttpError;
         if (!isHandled) {
             console.error(chalk.bgRed.bold(" ERRO "), err.name, err.message);
-            if (process.env.DEBUG === "true") {
+            if (process.env.VERBOSE === "true") {
                 console.error(err);
             }
         }

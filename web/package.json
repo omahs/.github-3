@@ -7,6 +7,7 @@
         "start": "node -r dotenv/config ../node_modules/.bin/serve -l $PORT -s build -n"
     },
     "dependencies": {
+        "@auth0/auth0-react": "^2.0.0",
         "@fortawesome/fontawesome-svg-core": "^6.3.0",
         "@fortawesome/free-brands-svg-icons": "^6.3.0",
         "@fortawesome/free-regular-svg-icons": "^6.3.0",
@@ -15,7 +16,6 @@
         "dompurify": "^3.0.0",
         "jewl-core": "*",
         "marked": "^4.2.12",
-        "nanoid": "^4.0.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-helmet": "^6.1.0",

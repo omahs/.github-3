@@ -1,0 +1,23 @@
+.front {
+    flex: 1;
+    padding: 0 24px;
+}
+
+.front-dot {
+    color: #bcbfb2;
+    cursor: pointer;
+}
+
+.front-dot-selected {
+    color: #dbddd6;
+    user-select: none;
+}
+
+.front-dots {
+    position: absolute;
+    display: flex;
+    gap: 5px;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+}

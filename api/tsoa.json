@@ -10,7 +10,7 @@
     "routes": {
         "routesDir": "src/modules",
         "routesFileName": "routes.gen.ts",
-        "authenticationModule": "src/modules/security.ts",
+        "authenticationModule": "src/modules/auth.ts",
         "noWriteIfUnchanged": true,
         "useSuccessResponseCode": true,
         "esm": true
