@@ -32,7 +32,7 @@ export class ApiClient extends Client {
 
     public async getCurrencies(): Promise<ICurrencyResponse> {
         const request: IRequest = {
-            endpoint: "v1/swap/currency/all"
+            endpoint: "v1/currency/all"
         };
         return this.request(request, CurrencyResponse);
     }

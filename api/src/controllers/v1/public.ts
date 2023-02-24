@@ -2,9 +2,8 @@ import { Get, Route } from "tsoa";
 import type { IPingResponse, IStatusResponse } from "jewl-core";
 import { getServerStatus } from "../../modules/security.js";
 
-@Route("/v1/")
+@Route("/v1")
 export class PublicController {
-
 
     @Get("/ping")
     public getMessage(): IPingResponse {
