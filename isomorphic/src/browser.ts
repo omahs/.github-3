@@ -9,4 +9,9 @@ isomorphic.hmac = async (message, secret): Promise<Buffer> => {
     return Buffer.from(sig);
 };
 
+isomorphic.hash = async (message): Promise<Buffer> => {
+    const hash = await self.crypto.subtle.digest("SHA-256", message);
+    return Buffer.from(hash);
+};
+
 export default isomorphic;
