@@ -17,9 +17,10 @@ All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mo
 
 This repository uses a couple of third party services:
 * The deployments are hosted on [DigitalOcean](https://digitalocean.com).
+* Authentication and authorization are managed by [Auth0](https://auth0.com).
+* Secure financial payments are managed through [Stripe](https://stripe.com).
 * Logging and monitoring is done through [BetterStack](https://betterstack.com).
 * Domain management and registrar services are handled by [Namecheap](https://namecheap.com)
-* Crypto transactions and purchases are managed through [Binance](https://binance.com).
 
 ## Getting Started
 
@@ -30,6 +31,13 @@ Getting set up with this repository is very easy.
 * Create the `.env` files for each component that you want to run.
 * Install dependencies using npm using `npm install`.
 * Run one of the commands below like `npm run start`.
+
+### Testing Stripe webhooks locally
+
+To test the Stripe webhooks locally you can set webhooks up to be forwarded to your local machine. For this you will need to set up the Stripe cli.
+* Install the Stripe cli using `brew install stripe/stripe-cli/stripe`.
+* Log into the Stripe cli using `stripe login`
+* Start forwarding webhook evewnts using `stripe listen --forward-to localhost:4000/v1/stripe`.
 
 ## Commands
 

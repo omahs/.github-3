@@ -13,7 +13,7 @@ export const RegisterDocs = (app: Application): void => {
     ];
 
     const css = `
-        .topbar, .info, .servers, .servers-title, #operations-tag-default, .unlocked {
+        .topbar, .info, .servers, .servers-title, #operations-tag-default {
             display: none !important;
         }
         .auth-wrapper:before {

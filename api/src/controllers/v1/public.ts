@@ -1,4 +1,4 @@
-import { Get, Route } from "tsoa";
+import { Get, Hidden, Route } from "tsoa";
 import type { IPingResponse, IStatusResponse } from "jewl-core";
 import { DateTime, ServerStatus } from "jewl-core";
 import { uptimeClient } from "../../modules/network.js";
@@ -33,13 +33,22 @@ const getServerStatus = async (): Promise<ServerStatus> => {
 
 
 @Route("/v1")
+@Hidden()
 export class PublicController {
 
+    /**
+        Endpoint for testing the connection to the server. This endpoing
+        will always respond with `pong` and does nothing else.
+    **/
     @Get("/ping")
     public getMessage(): IPingResponse {
         return { message: "pong" };
     }
 
+    /**
+        Get the status of all jewl.app services. This includes the api, web and
+        lambda processor.
+    **/
     @Get("/status")
     public async getStatus(): Promise<IStatusResponse> {
         const status = await getServerStatus();

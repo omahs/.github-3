@@ -7,10 +7,13 @@ import type { WithAuthentication } from "../../modules/auth.js";
 import { authClient, stripeClient } from "../../modules/network.js";
 
 @Route("/v1/payment")
-@Hidden()
 @Security("token")
+@Hidden()
 export class PaymentController {
 
+    /**
+        Get the currently logged in user's connected payment method.
+    **/
     @Get("/")
     public async getPaymentMethod(@Request() req: WithAuthentication): Promise<IPaymentMethodResponse> {
         const stripe = await PaymentMethod.findOne({ userId: req.user.userId });
@@ -22,6 +25,9 @@ export class PaymentController {
         };
     }
 
+    /**
+        Get an url for setting up a stripe payment method.
+    **/
     @Post("/")
     public async setupPaymentMethod(@Request() req: WithAuthentication, @Body() body: IPaymentMethodSetupRequest): Promise<IPaymentMethodSetupResponse> {
         const validatedBody = await validateBody(PaymentMethodSetupRequest, body);
@@ -33,6 +39,9 @@ export class PaymentController {
         return { redirect: redirect.url };
     }
 
+    /**
+        Delete the currently logged in user's payment method.
+    **/
     @Delete("/")
     @SuccessResponse(204)
     public async deletePaymentMethod(@Request() req: WithAuthentication): Promise<void> {

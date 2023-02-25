@@ -3,7 +3,7 @@ import { HttpError } from "./error.js";
 import { createHmac, timingSafeEqual } from "crypto";
 import type { JWTVerifyOptions } from "jose";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { DateTime, queryToObject } from "jewl-core";
+import { DateTime, Key, queryToObject } from "jewl-core";
 
 const auth0Domain = process.env.AUTH0_URL ?? "";
 const auth0Audience = process.env.AUTH0_AUDIENCE ?? "";
@@ -22,6 +22,17 @@ const getUserId: Record<string, (req: Request) => Promise<string>> = {
         };
         const authorizationClaim = await jwtVerify(authorizationToken, jwks, options);
         return authorizationClaim.payload.sub ?? "";
+    },
+    key: async (req: Request): Promise<string> => {
+        const authorization = req.header("Authorization");
+        if (authorization == null) {
+            throw new Error("no authorization header");
+        }
+        const key = await Key.findOne({ key: authorization });
+        if (key == null) {
+            throw new Error("invalid authorization token");
+        }
+        return key.userId;
     },
     stripe: async (req: Request): Promise<string> => {
         const signatureHeader = req.header("Stripe-Signature") ?? "";

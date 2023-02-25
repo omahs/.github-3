@@ -35,10 +35,15 @@ const handlers: Record<string, (data: object) => Promise<void>> = {
 };
 
 @Route("/v1/stripe")
+@Security("stripe")
 @Hidden()
 export class StripeController {
+
+    /**
+        Endpoint for handling stripe webhooks. This endpoint can and should only be called
+        by Stripe. Any other call to this endoint will be rejected.
+    **/
     @Post("/")
-    @Security("stripe")
     @SuccessResponse("204")
     public async receivedStripeWebhook(@Body() body: IStripeEvent): Promise<void> {
         await validate(StripeEvent, body);
