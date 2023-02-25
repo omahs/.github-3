@@ -3,6 +3,11 @@ import type { ReactElement } from "react";
 import React, { useCallback } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
+/**
+    The header component. This component managed logging the user in and
+    out through Auth0. If the user is currently logged in the user can
+    log out and vice versa.
+**/
 const Header = (): ReactElement => {
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
 

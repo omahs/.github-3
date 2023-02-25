@@ -3,6 +3,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import type { ReactElement } from "react";
 import React, { useMemo } from "react";
 
+/**
+    The Greeting component that gets a virtual username
+    from the user's email and renders that in the component.
+**/
 const Greeting = (): ReactElement => {
     const { user } = useAuth0();
 

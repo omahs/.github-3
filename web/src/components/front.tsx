@@ -4,10 +4,17 @@ import React, { useMemo, useState, useCallback, useEffect, Suspense } from "reac
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
+/**
+    Just a placeholder that will be replaced by actual pages.
+**/
 const Placeholder = (): ReactElement => {
     return <div />;
 };
 
+/**
+    The names (so not rendered components) of the different slides.
+    Thse slides will be lazily loaded into the page.
+**/
 const slides = [
     Placeholder,
     Placeholder,
@@ -15,6 +22,10 @@ const slides = [
     Placeholder
 ];
 
+/**
+    The front component. This component shows infromation about jewl.app
+    and encourages users to create an account and try out jewl.app.
+**/
 const Front = (): ReactElement => {
     const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -3,6 +3,7 @@
     "compilerOptions": {
        "rootDir": "./src",
        "outDir": "./build",
+       "removeComments": false,
        "declaration": true,
        "sourceMap": true
     },

@@ -13,10 +13,18 @@ const Front = lazy(async () => import("./components/front"));
 const Back = lazy(async () => import("./components/back"));
 const Footer = lazy(async () => import("./components/footer"));
 
+/**
+    A simple spinner that can be shown during loading of the page.
+**/
 const Spinner = (): ReactElement => {
     return <FontAwesomeIcon className="spinner" icon={faCircleNotch} />;
 };
 
+/**
+    The app component that will either show the frontpage or the
+    authenticated backpage. This component also handles the robots
+    meta tag by disabling indexing on any page that is not `jewl.app`.
+**/
 const App = (): ReactElement => {
     const { isLoading, isAuthenticated } = useAuth0();
 
@@ -36,22 +44,35 @@ const App = (): ReactElement => {
     );
 };
 
+/**
+    The Auth0 login url that the user can be navigated to for
+    logging into jewl.app. This property is fetched from
+    the env variables.
+**/
 const authUrl = process.env.REACT_APP_AUTH0_URL ?? "";
+
+/**
+    The Auth0 client id that is needed for logging into
+    jewl.app. This property is fetched from the env variables.
+**/
 const authId = process.env.REACT_APP_AUTH0_ID ?? "";
 
+/**
+    The Auth0 audience for which this application
+    requests a login. This property is fetched from the
+    env variables.
+**/
 const authorizationParams: AuthorizationParams = {
     audience: process.env.REACT_APP_SERVER_URL
 };
 
-const Root = (): ReactElement => {
-    return (
-        <StrictMode>
-            <Auth0Provider domain={authUrl} clientId={authId} authorizationParams={authorizationParams}>
-                <App />
-            </Auth0Provider>
-        </StrictMode>
-    );
-};
-
-const root = document.getElementById("root") ?? new HTMLElement();
-createRoot(root).render(<Root />);
+/**
+    Render the the root component into the `index.html` page.
+**/
+createRoot(document.getElementById("root") ?? new HTMLElement()).render(
+    <StrictMode>
+        <Auth0Provider domain={authUrl} clientId={authId} authorizationParams={authorizationParams}>
+            <App />
+        </Auth0Provider>
+    </StrictMode>
+);

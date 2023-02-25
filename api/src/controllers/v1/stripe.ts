@@ -1,43 +1,53 @@
-import type { IStripeEvent, IStripePaymentMethodDetail } from "jewl-core";
-import { StripeEvent, StripeCompletedSession, validate, StripePayment, PaymentMethod } from "jewl-core";
-import { Body, Hidden, Post, Route, Security, SuccessResponse } from "tsoa";
+import type { IStripeEvent } from "jewl-core";
+import { StripeEvent } from "jewl-core";
+import { Body, Controller, Hidden, Post, Route, Security, SuccessResponse, Response } from "tsoa";
 import { validateBody } from "../../modules/mongo.js";
-import { stripeClient } from "../../modules/network.js";
 
-const handlers: Record<string, (data: object) => Promise<void>> = {
-    handleCheckoutSessionCompleted: async (data: object): Promise<void> => {
-        const body = await validateBody(StripeCompletedSession, data);
-        const paymentMethod = await stripeClient.getPaymentMethod(body.customer);
-        const details = (paymentMethod as unknown as Record<string, IStripePaymentMethodDetail>)[paymentMethod.type];
-        const stripe = new PaymentMethod({
-            userId: body.client_reference_id,
-            customerId: body.customer,
-            paymentId: paymentMethod.id,
-            type: paymentMethod.type,
-            subtype: details?.brand ?? details?.bank_name ?? details?.bank_name ?? details?.bank,
-            last4: details?.last4
-        });
-        await stripe.save();
-    },
-
-    handlePaymentintentSucceeded: async (data: object): Promise<void> => {
-        const _ = data;
-        // TODO: <-
-        return Promise.resolve();
-    },
-
-    handlePaymentintentPaymentfailed: async (data: object): Promise<void> => {
-        const _ = await validateBody(StripePayment, data);
-        // TODO: <- block access to user
-        return Promise.resolve();
-    }
-
+/**
+    Handle a checkout-session-completed Stripe webhook.
+**/
+const onCheckoutSessionCompleted = async (data: object): Promise<void> => {
+    const _ = data;
+    // TODO: <-
+    return Promise.resolve();
 };
 
+/**
+    Handle a payment-intent-succeeded Stripe webhook.
+**/
+const onPaymentintentSucceeded = async (data: object): Promise<void> => {
+    const _ = data;
+    // TODO: <-
+    return Promise.resolve();
+};
+
+/**
+    Handle a payment-intent-payment-failed Stripe webhook.
+**/
+const onPaymentintentPaymentfailed = async (data: object): Promise<void> => {
+    const _ = data;
+    // TODO: <- block access to user
+    return Promise.resolve();
+};
+
+/**
+    An object containing all the webhook handlers.
+**/
+const handlers: Record<string, (data: object) => Promise<void>> = {
+    onCheckoutSessionCompleted,
+    onPaymentintentSucceeded,
+    onPaymentintentPaymentfailed
+};
+
+/**
+    A controller for handling stripe webhook notifications.
+**/
 @Route("/v1/stripe")
 @Security("stripe")
 @Hidden()
-export class StripeController {
+@Response<string>(401, "Unauthorized")
+@Response<string>(429, "Too many requests")
+export class StripeController extends Controller {
 
     /**
         Endpoint for handling stripe webhooks. This endpoint can and should only be called
@@ -46,15 +56,15 @@ export class StripeController {
     @Post("/")
     @SuccessResponse("204")
     public async receivedStripeWebhook(@Body() body: IStripeEvent): Promise<void> {
-        await validate(StripeEvent, body);
-        const eventType = body.type
+        const validatedBody = await validateBody(StripeEvent, body);
+        const eventType = validatedBody.type
             .split(".")
             .map(x => x.charAt(0).toUpperCase() + x.slice(1))
             .join("")
             .replace(/[^A-Za-z]/ug, "");
 
-        const handler = handlers[`handle${eventType}`];
-        if (handler == null) { return; }
-        await handler(body.data.object as object);
+        const key = `on${eventType}`;
+        if (!Object.hasOwn(handlers, key)) { return; }
+        await handlers[key](validatedBody.data.object as object);
     }
 }

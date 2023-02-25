@@ -9,6 +9,12 @@ import { marked } from "marked";
 import { apiClient } from "../modules/network";
 import { useWindowSize } from "../modules/size";
 
+/**
+    The footer component that contains a couple of links and
+    the server status. This status is fetched on load from
+    the api. The links open a popup that renders some markdown
+    text.
+**/
 const Footer = (): ReactElement => {
     const { width } = useWindowSize();
     const [legalText, setLegalText] = useState<string | null>(null);
@@ -24,12 +30,9 @@ const Footer = (): ReactElement => {
     }, []);
 
     useEffect(() => {
-        const id = setInterval(() => {
-            apiClient.getStatus()
-                .then(x => setServerStatus(x.status))
-                .catch(() => setServerStatus(ServerStatus.down));
-        }, 10000);
-        return () => clearInterval(id);
+        apiClient.getStatus()
+            .then(x => setServerStatus(x.status))
+            .catch(() => setServerStatus(ServerStatus.down));
     }, []);
 
     const statusClicked = useCallback(() => {

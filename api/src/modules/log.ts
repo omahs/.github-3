@@ -3,6 +3,11 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import chalk from "chalk";
 import onFinished from "on-finished";
 
+/**
+    Middleware that handles logging requests and errors. If
+    the `VERBOSE` environment variable is turned on full errors
+    (including stack traces) will be logged.
+**/
 export const RegisterLogger = (app: Application): void => {
     app.use((req: IncomingMessage, partial: ServerResponse, next: NextFunction) => {
         const requestTime = new Date();

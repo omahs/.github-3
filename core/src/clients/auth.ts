@@ -4,6 +4,9 @@ import { AuthUser, AuthToken } from "../entities/auth.js";
 import type { IRequest } from "../utility/client.js";
 import { Client } from "../utility/client.js";
 
+/**
+    A client for talking to the Auth0 Management api.
+**/
 export class AuthClient extends Client {
     private readonly clientId: string;
     private readonly clientSecret: string;
@@ -19,6 +22,9 @@ export class AuthClient extends Client {
         this.clientSecret = secret;
     }
 
+    /**
+        Calls the `v2/users/{id}` endpoint and returns the result.
+    **/
     public async getUser(userId: string): Promise<IAuthUser> {
         const request: IRequest = {
             endpoint: `api/v2/users/${encodeURIComponent(userId)}`
@@ -26,6 +32,9 @@ export class AuthClient extends Client {
         return this.request(request, AuthUser);
     }
 
+    /**
+        Private method for fetching an ephemeral OAuth token.
+    **/
     private async getAccessToken(): Promise<string> {
         const data = {
             client_id: this.clientId,
@@ -42,6 +51,10 @@ export class AuthClient extends Client {
         return response.access_token;
     }
 
+    /**
+        Make a request to the Auth0 api. This method adds OAuth authentication to
+        the request.
+    **/
     public override async request<T>(req: IRequest, schema: Model<T>): Promise<T> {
         const token = await this.getAccessToken();
 

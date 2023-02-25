@@ -1,4 +1,10 @@
 
+/**
+    A class for handling Dates and times. Underwater this
+    class holds an unix seconds timestamp. This class
+    can be constructed with either another timestamp (number
+    or string) or a Date.
+**/
 export class DateTime {
     private readonly timestamp: number;
 
@@ -17,6 +23,13 @@ export class DateTime {
         }
     }
 
+    /**
+        A method for determining if a specific DateTime is
+        now. The tolerance parameter can be specified to
+        increase or decrease the allowed deviation from the
+        current time. This method returns true if `now - tolerance
+        < this < now + tolerance` and returns false otherwise.
+    **/
     public isNow(tolerance = 300): boolean {
         const now = new DateTime();
         if (this.timestamp < now.timestamp - tolerance) {
@@ -28,68 +41,106 @@ export class DateTime {
         return true;
     }
 
-    public relativeTo(other = new DateTime()): string {
-        const thisBegin = this.timestamp - this.timestamp % 8.64e4;
-        const otherBegin = other.timestamp - other.timestamp % 8.64e4;
-        const isAfter = thisBegin > otherBegin;
-        const diff = Math.abs(thisBegin - otherBegin);
-        const days = Math.floor(diff / 8.64e4);
-        if (days === 0) { return "today"; }
-        const denotion = days === 1 ? " day" : " days";
-        const prefix = isAfter ? "in " : "";
-        const suffix = isAfter ? "" : " ago";
-        return `${prefix}${Math.abs(days)}${denotion}${suffix}`;
-    }
-
+    /**
+        Return a new DateTime object that is the current
+        DateTime object plus the specified number of seconds.
+    **/
     public addingSeconds(seconds: number): DateTime {
         return new DateTime(this.timestamp + seconds);
     }
 
+    /**
+        Return a new DateTime object that is the current
+        DateTime object plus the specified number of minutes.
+    **/
     public addingMinutes(minutes: number): DateTime {
         return this.addingSeconds(minutes * 60);
     }
 
+    /**
+        Return a new DateTime object that is the current
+        DateTime object plus the specified number of hours.
+    **/
     public addingHours(hours: number): DateTime {
         return this.addingMinutes(hours * 60);
     }
 
+    /**
+        Return a new DateTime object that is the current
+        DateTime object plus the specified number of days.
+    **/
     public addingDays(days: number): DateTime {
         return this.addingHours(days * 24);
     }
 
+    /**
+        Returns true if the other DateTime is after
+        the current DateTime.
+    **/
     public gt(other: DateTime): boolean {
         return this.timestamp > other.timestamp;
     }
 
+    /**
+        Returns true if the other DateTime is after
+        or equal to the current DateTime.
+    **/
     public gte(other: DateTime): boolean {
         return this.timestamp >= other.timestamp;
     }
 
+    /**
+        Returns true if the other DateTime is before
+        the current DateTime.
+    **/
     public lt(other: DateTime): boolean {
         return this.timestamp < other.timestamp;
     }
 
+    /**
+        Returns true if the other DateTime is before
+        or equal to the current DateTime.
+    **/
     public lte(other: DateTime): boolean {
         return this.timestamp <= other.timestamp;
     }
 
+    /**
+        Returns true if the other DateTime is equal
+        to the current DateTime.
+    **/
     public eq(other: DateTime): boolean {
         return this.timestamp === other.timestamp;
     }
 
+    /**
+        Turn this DateTime into its raw type (number)
+        for storage.
+    **/
     public valueOf(): number {
         return this.timestamp;
     }
 
+    /**
+        Turn this DateTime into a string.
+    **/
     public toString(): string {
         return this.timestamp.toString();
     }
 
+    /**
+        Turn this DateTime into a json object.
+    **/
     public toJSON(): number {
         return this.timestamp;
     }
 }
 
+/**
+    A custom Mongoose schema for the DateTime object. This schema can
+    be use like `date: DateTimeSchema` or `date: { ...DateTimeSchema,
+    otherProperties: true }`.
+**/
 export const DateTimeSchema = {
     type: Number,
     get: (x?: string): DateTime | undefined => x == null ? undefined : new DateTime(x),

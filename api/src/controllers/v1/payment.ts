@@ -1,52 +1,45 @@
-import { Body, Delete, Get, Hidden, Post, Route, Security, Request, SuccessResponse } from "tsoa";
-import type { IPaymentMethodResponse, IPaymentMethodSetupRequest, IPaymentMethodSetupResponse } from "jewl-core";
-import { PaymentMethod, PaymentMethodSetupRequest } from "jewl-core";
-import { HttpError } from "../../modules/error.js";
-import { validateBody } from "../../modules/mongo.js";
+import { Body, Delete, Get, Hidden, Post, Route, Security, Request, SuccessResponse, Controller, Response } from "tsoa";
 import type { WithAuthentication } from "../../modules/auth.js";
-import { authClient, stripeClient } from "../../modules/network.js";
 
+/**
+    A controller for managing payment methods.
+**/
 @Route("/v1/payment")
 @Security("token")
 @Hidden()
-export class PaymentController {
+@Response<string>(401, "Unauthorized")
+@Response<string>(429, "Too many requests")
+export class PaymentController extends Controller {
 
     /**
         Get the currently logged in user's connected payment method.
     **/
     @Get("/")
-    public async getPaymentMethod(@Request() req: WithAuthentication): Promise<IPaymentMethodResponse> {
-        const stripe = await PaymentMethod.findOne({ userId: req.user.userId });
-        if (stripe == null) { throw new HttpError(404, "no payment method found"); }
-        return {
-            type: stripe.type,
-            subtype: stripe.subtype,
-            last4: stripe.last4
-        };
+    @SuccessResponse(200, "Success")
+    @Response<string>(401, "Unauthorized")
+    @Response<string>(404, "Not found")
+    public async getPaymentMethod(@Request() _: WithAuthentication): Promise<void> {
+        return Promise.resolve();
     }
 
     /**
         Get an url for setting up a stripe payment method.
     **/
     @Post("/")
-    public async setupPaymentMethod(@Request() req: WithAuthentication, @Body() body: IPaymentMethodSetupRequest): Promise<IPaymentMethodSetupResponse> {
-        const validatedBody = await validateBody(PaymentMethodSetupRequest, body);
-        const authUser = await authClient.getUser(req.user.userId);
-        if (!authUser.email_verified) { throw new HttpError(400, "email address not verified"); }
-        const stripe = await PaymentMethod.findOne({ userId: req.user.userId });
-        if (stripe != null) { throw new HttpError(400, "a payment method already exists"); }
-        const redirect = await stripeClient.createSetupSession(validatedBody.callback, req.user.userId, authUser.email);
-        return { redirect: redirect.url };
+    @SuccessResponse(200, "Success")
+    @Response<string>(400, "Bad request")
+    @Response<string>(403, "Forbidden")
+    public async setupPaymentMethod(@Request() _0: WithAuthentication, @Body() _1: object): Promise<void> {
+        return Promise.resolve();
     }
 
     /**
         Delete the currently logged in user's payment method.
     **/
     @Delete("/")
-    @SuccessResponse(204)
-    public async deletePaymentMethod(@Request() req: WithAuthentication): Promise<void> {
-        const stripe = await PaymentMethod.findOneAndDelete({ userId: req.user.userId });
-        if (stripe == null) { throw new HttpError(404, "no payment method found"); }
-        await stripeClient.deleteCustomer(stripe.customerId);
+    @SuccessResponse(204, "No content")
+    @Response<string>(404, "Not found")
+    public async deletePaymentMethod(@Request() _: WithAuthentication): Promise<void> {
+        return Promise.resolve();
     }
 }

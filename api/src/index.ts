@@ -9,25 +9,49 @@ import { RegisterDocs } from "./modules/docs.js";
 import { RegisterSecurityMiddleware } from "./modules/security.js";
 import { mongoConnect, mongoDisconnect } from "jewl-core";
 
+/**
+    Connect to the MongoDB instance using the url fetched from the
+    env variables.
+**/
 await mongoConnect(process.env.MONGO_URL ?? "");
 
+/**
+    Create the express application
+**/
 const app: Application = express();
-const middlewares = [
+
+/**
+    Createa a list of middlewares and register them into the
+    express application. Please keep in mind the sorting of
+    this array matters as middlewares will be resolved in this
+    order.
+**/
+[
     RegisterLogger,
     RegisterRequestParser,
     RegisterSecurityMiddleware,
     RegisterRoutes,
     RegisterDocs,
     RegisterErrorCatcher
-];
-middlewares.forEach(x => x(app));
+].forEach(x => x(app));
+
+/**
+    Start listening on the port specified in the env variables.
+**/
 const server = app.listen(process.env.PORT);
 
+/**
+    Log the express application start to the console.
+**/
 console.info(
     chalk.bgMagenta.bold(" INFO "),
     `Accepting connections at http://localhost:${process.env.PORT}`
 );
 
+/**
+    Helper function which closes the server and disconnects from
+    the MongoDB instance.
+**/
 const onExit = (): void => {
     server.close();
     void mongoDisconnect();
@@ -37,6 +61,9 @@ const onExit = (): void => {
     );
 };
 
+/**
+    Call the onExit method on various termination signals.
+**/
 process.on("SIGINT", onExit);
 process.on("SIGQUIT", onExit);
 process.on("SIGTERM", onExit);

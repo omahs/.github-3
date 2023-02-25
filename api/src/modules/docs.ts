@@ -2,6 +2,11 @@ import type { Application, Request, Response } from "express";
 import type { SwaggerUiOptions } from "swagger-ui-express";
 import { serve, generateHTML } from "swagger-ui-express";
 
+/**
+    Middleware to handle the landing page of the api which
+    contains the swagger docs. This function edits the default
+    swagger doc and hides some elements that are not needed.
+**/
 export const RegisterDocs = (app: Application): void => {
     const domainPlaceholder = "<DOMAIN />";
     const redirectScript = "if (!window.location.pathname.endsWith(\"/\")) { window.location.pathname = window.location.pathname + \"/\"; }";
@@ -13,7 +18,7 @@ export const RegisterDocs = (app: Application): void => {
     ];
 
     const css = `
-        .topbar, .info, .servers, .servers-title, #operations-tag-default {
+        .topbar, .info, .servers, .servers-title, #operations-tag-default, .wrapper:has(.models) {
             display: none !important;
         }
         .auth-wrapper:before {
