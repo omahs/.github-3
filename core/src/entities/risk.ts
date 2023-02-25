@@ -9,7 +9,7 @@ export enum RiskType {
     /**
         No information known.
     **/
-    Unkown = 0
+    Unkown = "unknown"
 }
 
 /**
@@ -33,7 +33,7 @@ export interface IRiskSource {
 **/
 export const RiskSource = createModel<IRiskSource>(
     new Schema<IRiskSource>({
-        type: { type: Number, enum: RiskType, required: true },
+        type: { type: String, enum: RiskType, required: true },
         percentage: { type: Number, required: true }
     })
 );

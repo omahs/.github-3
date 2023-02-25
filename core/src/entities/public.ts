@@ -29,17 +29,17 @@ export enum ServerStatus {
     /**
         Server is functioning normally.
     **/
-    up = 0,
+    Up = "up",
 
     /**
         One or more of the services are down.
     **/
-    down = 1,
+    Down = "down",
 
     /**
         The server is currently in maintainance mode.
     **/
-    maintainance = 2
+    Maintainance = "maintainance"
 }
 
 /**
@@ -58,6 +58,6 @@ export interface IStatusResponse {
 **/
 export const StatusResponse = createModel<IStatusResponse>(
     new Schema<IStatusResponse>({
-        status: { type: Number, enum: ServerStatus, required: true }
+        status: { type: String, enum: ServerStatus, required: true }
     })
 );

@@ -18,7 +18,7 @@ import { useWindowSize } from "../modules/size";
 const Footer = (): ReactElement => {
     const { width } = useWindowSize();
     const [legalText, setLegalText] = useState<string | null>(null);
-    const [serverStatus, setServerStatus] = useState(ServerStatus.up);
+    const [serverStatus, setServerStatus] = useState(ServerStatus.Up);
 
     useEffect(() => {
         addHook("afterSanitizeAttributes", (node: Element) => {
@@ -32,7 +32,7 @@ const Footer = (): ReactElement => {
     useEffect(() => {
         apiClient.getStatus()
             .then(x => setServerStatus(x.status))
-            .catch(() => setServerStatus(ServerStatus.down));
+            .catch(() => setServerStatus(ServerStatus.Down));
     }, []);
 
     const statusClicked = useCallback(() => {
@@ -58,18 +58,18 @@ const Footer = (): ReactElement => {
     const statusMessage = useMemo(() => {
         if (isPhone) { return null; }
         switch (serverStatus) {
-            case ServerStatus.up: return <span>All systems operational</span>;
-            case ServerStatus.maintainance: return <span>Down for maintainance</span>;
-            case ServerStatus.down: return <span>Partially degraded service</span>;
+            case ServerStatus.Up: return <span>All systems operational</span>;
+            case ServerStatus.Maintainance: return <span>Down for maintainance</span>;
+            case ServerStatus.Down: return <span>Partially degraded service</span>;
             default: return null;
         }
     }, [serverStatus, isPhone]);
 
     const statusIcon = useMemo(() => {
         switch (serverStatus) {
-            case ServerStatus.up: return <FontAwesomeIcon icon={faCircleCheck} />;
-            case ServerStatus.maintainance: return <FontAwesomeIcon icon={faCirclePause} />;
-            case ServerStatus.down: return <FontAwesomeIcon icon={faCircleQuestion} />;
+            case ServerStatus.Up: return <FontAwesomeIcon icon={faCircleCheck} />;
+            case ServerStatus.Maintainance: return <FontAwesomeIcon icon={faCirclePause} />;
+            case ServerStatus.Down: return <FontAwesomeIcon icon={faCircleQuestion} />;
             default: return null;
         }
     }, [serverStatus]);

@@ -2,6 +2,45 @@ import { Schema } from "mongoose";
 import { createModel } from "../utility/mongo.js";
 
 /**
+    An enum explaining the status of a BetterUptime item.
+**/
+export enum UptimeStatus {
+
+    /**
+        The BetterUptime item is paused.
+    **/
+    Paused = "paused",
+
+    /**
+        The BetterUptime is just created and waiting for the
+        first check.
+    **/
+    Pending = "pending",
+
+    /**
+        The BetterUptime item is paused because it is currently
+        in its maintenance period.
+    **/
+    Maintainance = "maintenance",
+
+    /**
+        The BetterUptime item is passing all checks.
+    **/
+    Up = "up",
+
+    /**
+        The BetterUptime item seems to be back up, but the
+        recovery_period since the last failed check hasn't passed.
+    **/
+    Validating = "validating",
+
+    /**
+        The BetterUptime item is failing one or more checks.
+    **/
+    Down = "down"
+}
+
+/**
     The attributes for a BetterUptime monitor or heartbeat.
 **/
 export interface IUptimeAttributes {
@@ -9,7 +48,7 @@ export interface IUptimeAttributes {
     /**
         The status of the BetterUptime monitor or heartbeat.
     **/
-    status: string;
+    status: UptimeStatus;
 }
 
 /**
@@ -17,7 +56,7 @@ export interface IUptimeAttributes {
 **/
 export const UptimeAttributes = createModel<IUptimeAttributes>(
     new Schema<IUptimeAttributes>({
-        status: { type: String, required: true }
+        status: { type: String, enum: UptimeStatus, required: true }
     })
 );
 

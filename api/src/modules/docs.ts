@@ -18,7 +18,7 @@ export const RegisterDocs = (app: Application): void => {
     ];
 
     const css = `
-        .topbar, .info, .servers, .servers-title, #operations-tag-default, .wrapper:has(.models) {
+        .topbar, .info, .servers, .servers-title, #operations-tag-default, .wrapper:has(.models), .response-col_links {
             display: none !important;
         }
         .auth-wrapper:before {

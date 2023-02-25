@@ -1,13 +1,13 @@
 import { Controller, Get, Route, SuccessResponse, Response } from "tsoa";
 import type { IPingResponse, IStatusResponse } from "jewl-core";
-import { DateTime, ServerStatus } from "jewl-core";
+import { DateTime, ServerStatus, UptimeStatus } from "jewl-core";
 import { uptimeClient } from "../../modules/network.js";
 
 /**
     The previously returned status. This is cached for
     up to three minutes.
 **/
-let previousStatus = ServerStatus.up;
+let previousStatus = ServerStatus.Up;
 
 /**
     The previous status's expiry date. If this date is in the
@@ -33,16 +33,16 @@ const getServerStatus = async (): Promise<ServerStatus> => {
         const monitors = await uptimeClient.getMonitors();
         const heartbeats = await uptimeClient.getHeartbeats();
         const statuses = [...monitors.data, ...heartbeats.data];
-        const isMaintainance = statuses.some(x => x.attributes.status === "maintainance");
-        const isDown = statuses.some(x => x.attributes.status === "down");
+        const isMaintainance = statuses.some(x => x.attributes.status === UptimeStatus.Maintainance);
+        const isDown = statuses.some(x => x.attributes.status === UptimeStatus.Down);
 
         if (isMaintainance) {
-            previousStatus = ServerStatus.maintainance;
+            previousStatus = ServerStatus.Maintainance;
         } else {
-            previousStatus = isDown ? ServerStatus.down : ServerStatus.up;
+            previousStatus = isDown ? ServerStatus.Down : ServerStatus.Up;
         }
     } catch {
-        previousStatus = ServerStatus.down;
+        previousStatus = ServerStatus.Down;
     }
 
     return previousStatus;
