@@ -6,10 +6,10 @@ export * from "./clients/uptime.js";
 export * from "./entities/auth.js";
 export * from "./entities/key.js";
 export * from "./entities/log.js";
-export * from "./entities/payment.js";
 export * from "./entities/public.js";
 export * from "./entities/risk.js";
 export * from "./entities/stripe.js";
+export * from "./entities/subscription.js";
 export * from "./entities/uptime.js";
 
 export * from "./utility/client.js";

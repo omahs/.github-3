@@ -32,7 +32,12 @@ export const mongoDisconnect = async (): Promise<void> => {
     the model will become ephemeral and should only be used for validation.
 **/
 export const createModel = <T>(schema: Schema, name?: string): Model<T> => {
-    return model(name ?? "ephemeral", schema, undefined, { overwriteModels: name == null }) as Model<T>;
+    const definition = model(name ?? "ephemeral", schema, undefined, { overwriteModels: name == null }) as Model<T>;
+    if (typeof window !== "undefined") {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        definition.schema = schema;
+    }
+    return definition;
 };
 
 /**
