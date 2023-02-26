@@ -107,4 +107,19 @@ export const StripeDelete = createModel<IStripeDelete>(
     })
 );
 
+export interface IStripeSubscriptionDeleted {
 
+    /**
+        The stripe customer identifier.
+    **/
+    customer: string;
+}
+
+/**
+    A Model for validating the `IStripeSubscriptionDeleted` interface.
+**/
+export const StripeSubscriptionDeleted = createModel<IStripeSubscriptionDeleted>(
+    new Schema<IStripeSubscriptionDeleted>({
+        customer: { type: String, required: true }
+    })
+);

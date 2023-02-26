@@ -1,5 +1,5 @@
 import type { IStripeEvent } from "jewl-core";
-import { StripeEvent, StripeSessionCompleted, Subscription } from "jewl-core";
+import { StripeEvent, StripeSessionCompleted, Subscription, StripeSubscriptionDeleted } from "jewl-core";
 import { Body, Controller, Hidden, Post, Route, Security, SuccessResponse, Response } from "tsoa";
 import { validateBody } from "../../modules/mongo.js";
 
@@ -18,11 +18,9 @@ const onCheckoutSessionCompleted = async (data: object): Promise<void> => {
 /**
     Generic wehbook for when subscription status changes.
 **/
-const onCustomerSubscriptionChanged = async (data: object): Promise<void> => {
-    const _ = data;
-    // TODO: <-
-    // Actually only have to listen to subscriptions that failed or payments failed.
-    return Promise.resolve();
+const onCustomerSubscriptionDeleted = async (data: object): Promise<void> => {
+    const body = await validateBody(StripeSubscriptionDeleted, data);
+    await Subscription.deleteOne({ stripeId: body.customer });
 };
 
 /**
@@ -30,14 +28,7 @@ const onCustomerSubscriptionChanged = async (data: object): Promise<void> => {
 **/
 const handlers: Record<string, (data: object) => Promise<void>> = {
     onCheckoutSessionCompleted,
-    onCustomerSubscriptionDeleted: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionCreated: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionUpdated: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionPaused: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionResumed: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionTrialWillEnd: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionPendingUpdateExpired: onCustomerSubscriptionChanged,
-    onCustomerSubscriptionPendingUpdateApplied: onCustomerSubscriptionChanged
+    onCustomerSubscriptionDeleted
 };
 
 /**
