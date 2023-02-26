@@ -17,7 +17,11 @@ const Footer = lazy(async () => import("./components/footer"));
     A simple spinner that can be shown during loading of the page.
 **/
 const Spinner = (): ReactElement => {
-    return <FontAwesomeIcon className="spinner" icon={faCircleNotch} />;
+    return (
+        <div className="spinner">
+            <FontAwesomeIcon className="spinner-icon" icon={faCircleNotch} />
+        </div>
+    );
 };
 
 /**
@@ -39,7 +43,7 @@ const App = (): ReactElement => {
     return (
         <>
             <Helmet><meta name="robots" content={robots} /></Helmet>
-            <Suspense fallback={<Spinner />}><Header />{content}<Footer /></Suspense>
+            <Header /><Suspense fallback={<Spinner />}>{content}<Footer /></Suspense>
         </>
     );
 };

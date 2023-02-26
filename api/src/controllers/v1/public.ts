@@ -30,11 +30,10 @@ const getServerStatus = async (): Promise<ServerStatus> => {
     previousStatusExpires = new DateTime().addingMinutes(3);
 
     try {
-        const monitors = await uptimeClient.getMonitors();
-        const heartbeats = await uptimeClient.getHeartbeats();
-        const statuses = [...monitors.data, ...heartbeats.data];
-        const isMaintainance = statuses.some(x => x.attributes.status === UptimeStatus.Maintainance);
-        const isDown = statuses.some(x => x.attributes.status === UptimeStatus.Down);
+        const statusMap = await uptimeClient.getStatus(155611);
+        const statuses = Array.from(statusMap.values());
+        const isMaintainance = statuses.some(x => x === UptimeStatus.Maintainance);
+        const isDown = statuses.some(x => x === UptimeStatus.Down);
 
         if (isMaintainance) {
             previousStatus = ServerStatus.Maintainance;

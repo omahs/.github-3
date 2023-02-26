@@ -4,17 +4,17 @@
     display: flex;
     align-items: center;
     color: #e5e5e5;
-    height: 24px;
 }
 
 .footer-left {
-    margin-left: 8px;
+    padding: 6px;
     flex: 1
 }
 
 .footer-middle {
-    margin: 2px 12px;
+    padding: 6px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .footer-middle:hover {
@@ -32,15 +32,18 @@
     justify-content: flex-end;
 }
 
-.footer-right span {
-    margin-right: 8px;
+.footer-right button {
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.footer-right span:hover {
+.footer-right button:hover {
+    color: #e5e5e5;
     text-decoration: underline;
 }
 
-.footer-legal-overlay {
+.footer-overlay {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -50,19 +53,27 @@
     background-color: #00000020;
 }
 
-.footer-legal-popup {
+.footer-legal-popup, .footer-status-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #f1f1ef;
     color: #2f323a;
     border-radius: 24px;
     filter: drop-shadow(4px 4px 20px #00000020);
     height: 70vh;
     width: 70vw;
+}
+
+.footer-legal-popup {
+    background-color: #f1f1ef;
     padding: 16px 32px;
     overflow-y: auto;
+}
+
+.footer-status-popup {
+    background-color: white;
+    border: 0;
 }
 
 

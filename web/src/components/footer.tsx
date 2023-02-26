@@ -24,7 +24,7 @@ const Footer = (): ReactElement => {
         addHook("afterSanitizeAttributes", (node: Element) => {
             if ("target" in node) {
                 node.setAttribute("target", "_blank");
-                node.setAttribute("rel", "noopener");
+                node.setAttribute("rel", "noopener noreferrer");
             }
         });
     }, []);
@@ -35,10 +35,6 @@ const Footer = (): ReactElement => {
             .catch(() => setServerStatus(ServerStatus.Down));
     }, []);
 
-    const statusClicked = useCallback(() => {
-        window.open("https://status.jewl.app/", "_blank", "noopener,noreferrer");
-    }, []);
-
     const openPage = useCallback((name: string) => {
         window.fetch(`./${name}.md`)
             .then(async x => x.text())
@@ -47,9 +43,9 @@ const Footer = (): ReactElement => {
     }, [setLegalText]);
 
     const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
-    const openContact = useCallback(() => openPage("contact"), [openPage]);
-    const openTerms = useCallback(() => openPage("terms"), [openPage]);
-    const openPrivacy = useCallback(() => openPage("privacy"), [openPage]);
+    const contactClicked = useCallback(() => openPage("contact"), [openPage]);
+    const termsClicked = useCallback(() => openPage("terms"), [openPage]);
+    const privacyClicked = useCallback(() => openPage("privacy"), [openPage]);
 
     const isPhone = useMemo(() => {
         return width < 768;
@@ -80,7 +76,7 @@ const Footer = (): ReactElement => {
         renderer.link = (href, title, text): string => {
             const localLink = href?.startsWith(`${location.protocol}//${location.hostname}`) ?? false;
             const link = linkRenderer.call(renderer, href, title, text);
-            return localLink ? link : link.replace(/^<a /u, "<a target=\"_blank\" rel=\"noreferrer noopener nofollow\" ");
+            return localLink ? link : link.replace(/^<a /u, "<a target=\"_blank\"");
         };
         return renderer;
     }, []);
@@ -91,7 +87,7 @@ const Footer = (): ReactElement => {
         const sanitized = sanitize(parsed);
         return (
             <>
-                <div className="footer-legal-overlay" onClick={closeModal} />
+                <div className="footer-overlay" onClick={closeModal} />
                 <div className="footer-legal-popup" dangerouslySetInnerHTML={{ __html: sanitized }} />
             </>
         );
@@ -100,11 +96,11 @@ const Footer = (): ReactElement => {
     return (
         <div className="footer">
             <span className="footer-left">{isPhone ? "© 2023" : "Copyright © 2023 jewl.app" }</span>
-            <span className="footer-middle" onClick={statusClicked}>{statusIcon}{statusMessage}</span>
+            <a href="https://status.jewl.app/" target="_blank" rel="noreferrer noopener" className="footer-middle">{statusIcon}{statusMessage}</a>
             <div className="footer-right">
-                <span onClick={openContact}>{isPhone ? "Contact" : "Contact"}</span>
-                <span onClick={openTerms}>{isPhone ? "ToS" : "Terms of Service"}</span>
-                <span onClick={openPrivacy}>{isPhone ? "PP" : "Privacy Policy"}</span>
+                <button type="button" onClick={contactClicked}>{isPhone ? "Contact" : "Contact"}</button>
+                <button type="button" onClick={termsClicked}>{isPhone ? "ToS" : "Terms of Service"}</button>
+                <button type="button" onClick={privacyClicked}>{isPhone ? "PP" : "Privacy Policy"}</button>
             </div>
             {popup}
         </div>

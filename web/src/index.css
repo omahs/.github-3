@@ -82,6 +82,14 @@ summary {
 
 .spinner {
     flex: 1;
+}
+
+.spinner-icon {
+    position: absolute;
+    left: calc(50% - 8px);
+    top: calc(50% - 8px);
+    width: 16px;
+    height: 16px;
     animation: spin 1s linear infinite;
 }
 

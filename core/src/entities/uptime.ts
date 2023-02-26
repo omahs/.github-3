@@ -48,7 +48,12 @@ export interface IUptimeAttributes {
     /**
         The status of the BetterUptime monitor or heartbeat.
     **/
-    status: UptimeStatus;
+    status?: UptimeStatus;
+
+    /**
+        The id of the BetterUptime associated resource.
+    **/
+    resource_id?: number;
 }
 
 /**
@@ -56,7 +61,8 @@ export interface IUptimeAttributes {
 **/
 export const UptimeAttributes = createModel<IUptimeAttributes>(
     new Schema<IUptimeAttributes>({
-        status: { type: String, enum: UptimeStatus, required: true }
+        status: { type: String, enum: UptimeStatus },
+        resource_id: { type: Number }
     })
 );
 
@@ -64,6 +70,11 @@ export const UptimeAttributes = createModel<IUptimeAttributes>(
     An BetterUptime item such as a monitor or heartbeat.
 **/
 export interface IUptimeItem {
+
+    /**
+        The id of the BetterUptime item.
+    **/
+    id: number;
 
     /**
         The attributes of the BetterUptime item.
@@ -76,6 +87,7 @@ export interface IUptimeItem {
 **/
 export const UptimeItem = createModel<IUptimeItem>(
     new Schema<IUptimeItem>({
+        id: { type: Number, required: true },
         attributes: { type: UptimeAttributes.schema, required: true }
     })
 );
