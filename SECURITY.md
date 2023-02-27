@@ -1,6 +1,6 @@
 # Security Bounty Program
 
-**The security bounty is currently paused while jewl.app is still in Beta!**
+**The security bounty is currently paused while jewl.app is still in alpha**
 
 jewl.app believes in better security through openness. We welcome and value technical reports of vulnerabilities that could substantially affect the confidentiality or integrity of our services. If you believe that you have discovered such a vulnerability, please report it through a [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new). The jewl.app team will work with you to investigate and resolve the issue. The first reporter of a security vulnerability is elligable to receive a monetary reward.
 
