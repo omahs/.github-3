@@ -5,18 +5,18 @@
 jewl.app believes in better security through openness. We welcome and value technical reports of vulnerabilities that could substantially affect the confidentiality or integrity of our services. If you believe that you have discovered such a vulnerability, please report it through a [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new). The jewl.app team will work with you to investigate and resolve the issue. The first reporter of a security vulnerability is elligable to receive a monetary reward.
 
 ## Eligibility
-The jewl.app Security Bounty Program covers our main website and service hosted at `https://jewl.app` and `https://jewl.app/api` respectively. Development environments and third-party services are not included int he security bounty program. We are mainly interested in vulnerabilities that would allow attackers to extract private information or steal funds. We are interested in real vulnerabilites, not in output of automated scanners or tools. We require all vulnerability reports to be accompanied by a proof-of-concept that demonstrates the vulnerabilty and the implications.
+The jewl.app Security Bounty Program covers our main website and service hosted at `https://jewl.app` and `https://jewl.app/api` respectively. Development environments and third-party services are not included int he security bounty program. We are mainly interested in vulnerabilities that would allow attackers to extract private information or degrade the experience for genuine users. We are interested in real vulnerabilites, not in output of automated scanners or tools. We require all vulnerability reports to be accompanied by a proof-of-concept that demonstrates the vulnerabilty and the implications.
 
 ### Examples
 Below are some examples of in-scope vulnerabilities.
-* Hijacking a user transaction
-* Loss of (user) funds through theft, freezing, burning, etc.
+* User impersonation
 * Extraction of keys, secrets or tokens
 * Sensitive information leaks
+* Degradation of service
 * Remote code execution
 
 ### Out-of-scope examples
-Below are some examples of out-of-scope vulnerabilities. If you feel any for the follow items pose a real threat to jewl.app feel free to send us a report accompanied with a proof-of-concept that demonstrates the vulnerability.
+Below are some examples of out-of-scope vulnerabilities. If you feel any for the following items pose a real threat to jewl.app feel free to send us a report accompanied with a proof-of-concept that demonstrates the vulnerability.
 * Lack of CSRF tokens
 * Clickjacking and tabnagging issues
 * Missing security headers
@@ -69,7 +69,7 @@ You may be eligible to receive a reward if:
 
 The decision to grant a reward for the discovery of a valid security issue is at jewl.app's sole discretion. The amount of each bounty is based on the classification and sensitivity of the data impacted, the completeness of your Submission report, ease of exploit and overall risk for jewl.app's users and brand.
 
-Bounties will be paid directly to the researcher using one of jewl.app's supported cryptocurrencies.
+Bounties will be paid directly to the researcher using either BTC, ETH or USDT.
 
 You will be responsible for any tax implications related to bounty payments you receive, as determined by the laws of your jurisdiction of residence or citizenship.
 
@@ -89,3 +89,5 @@ Violations of this terms can result in a warning and/or ban of this Security Bou
 * Interactions should be at all times respectful and communicated in a professional manner and tone with a view to being beneficial to the report validation process.
 * Hate speech, profanity, or any aggressive threats will not be tolerated in any form.
 * Only contact the jewl.app team through the [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new).
+
+*jewl.app reserves the right to amend these provisions at its sole discression. Any amendment takes effect immediately. Participants of the security bounty program are advised to regulary check this page.*
