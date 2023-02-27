@@ -4,7 +4,9 @@ import { Body, Controller, Hidden, Post, Route, Security, SuccessResponse, Respo
 import { validateBody } from "../../modules/mongo.js";
 
 /**
-    Handle a checkout-session-completed Stripe webhook.
+    Handle a checkout-session-completed Stripe event. This event is triggered
+    when a user completes a checkout session (subscribe to jewl.app). This method
+    Adds the subscription to the DB and activates the user.
 **/
 const onCheckoutSessionCompleted = async (data: object): Promise<void> => {
     const body = await validateBody(StripeSessionCompleted, data);
@@ -16,7 +18,10 @@ const onCheckoutSessionCompleted = async (data: object): Promise<void> => {
 };
 
 /**
-    Generic wehbook for when subscription status changes.
+    Handle a customer-subscription-deleted Stripe event. This event is
+    triggered when a subscription is deleted (either manually or because
+    of a failed payment or dispute). This method removes the subscription
+    from the DB (if it exists).
 **/
 const onCustomerSubscriptionDeleted = async (data: object): Promise<void> => {
     const body = await validateBody(StripeSubscriptionDeleted, data);

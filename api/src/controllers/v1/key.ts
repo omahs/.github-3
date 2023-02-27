@@ -21,7 +21,7 @@ export class KeyController extends Controller {
         returns 201 in that case.
     **/
     @Get("/")
-    @SuccessResponse(200, "Uuccess")
+    @SuccessResponse(200, "Success")
     @Response<IKeyResponse>(201, "Created")
     public async getKey(@Request() req: WithAuthentication): Promise<IKeyResponse> {
         let key = await Key.findOne({ userId: req.user.userId });
