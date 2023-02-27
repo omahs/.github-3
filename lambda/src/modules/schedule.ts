@@ -59,12 +59,14 @@ export class Lambda {
 
     /**
         Add a task to the Lambda worker. You can specify the minimum interval
-        which should be elapsed before running the task again. If no minimum
-        interval is specified it defaults to 60 seconds. Specifying a minimum
-        interval does not mean that this task will be run ever x seconds.
-        This method can safely be called while the Lambda worker is running.
+        which should be elapsed before running the task again. If the minimum
+        interval is negative this task will only be run once during the lifetime
+        of the Labda class. If no minimum interval is specified it defaults to -1.
+        Specifying a minimum interval does not mean that this task will be run
+        ever x seconds. This method can safely be called while the Lambda worker
+        is running.
     **/
-    public addTask(key: string, task: () => Promise<void>, minInterval = 60): void {
+    public addTask(key: string, task: () => Promise<void>, minInterval = -1): void {
         this.tasks.set(key, task);
         this.minInterval.set(key, minInterval);
     }
@@ -113,6 +115,7 @@ export class Lambda {
         for (const [key, task] of this.tasks) {
             const lastExecution = this.lastExecution.get(key) ?? new DateTime(0);
             const minInterval = this.minInterval.get(key) ?? 0;
+            if (minInterval < 0) { continue; }
             if (lastExecution.addingSeconds(minInterval).gt(new DateTime())) { continue; }
             this.lastExecution.set(key, new DateTime());
             const promise = runTask(key, task);
