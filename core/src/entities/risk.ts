@@ -1,5 +1,6 @@
 import { Schema } from "mongoose";
 import { createModel } from "../utility/mongo.js";
+import { SanctionType } from "./sanction.js";
 
 /**
     An enum explaining the risk type.
@@ -52,6 +53,13 @@ export interface IRiskResponse {
         The individual components that make up the risk score.
     **/
     source: Array<IRiskSource>;
+
+    /**
+        A list of sanction lists this address appears on. If this is an
+        empty array that means this address does not appear on the searched
+        sanction lists.
+    **/
+    sanctions: Array<SanctionType>;
 }
 
 /**
@@ -60,6 +68,7 @@ export interface IRiskResponse {
 export const RiskResponse = createModel<IRiskResponse>(
     new Schema<IRiskResponse>({
         risk: { type: Number, required: true },
-        source: { type: [RiskSource.schema], required: true }
+        source: { type: [RiskSource.schema], required: true },
+        sanctions: { type: [String], enum: SanctionType, required: true }
     })
 );
