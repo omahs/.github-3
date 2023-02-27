@@ -53,7 +53,7 @@
     background-color: #00000020;
 }
 
-.footer-legal-popup, .footer-status-popup {
+.footer-legal-popup {
     position: fixed;
     top: 50%;
     left: 50%;
