@@ -63,17 +63,9 @@
     filter: drop-shadow(4px 4px 20px #00000020);
     height: 70vh;
     width: 70vw;
-}
-
-.footer-legal-popup {
+    user-select: text;
+    cursor: auto;
     background-color: #f1f1ef;
     padding: 16px 32px;
     overflow-y: auto;
 }
-
-.footer-status-popup {
-    background-color: white;
-    border: 0;
-}
-
-
