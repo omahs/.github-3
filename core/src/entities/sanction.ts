@@ -6,8 +6,26 @@ import { Chain } from "./chain.js";
     An enum that explains the source of a sanction.
 **/
 export enum SanctionType {
-    OFAC = "Office of Foreign Assets Control (OFAC) Specially Designated Nationals List",
-    BitcoinAbuse = "Bitcoin Abuse Database"
+
+    /**
+        The Office of Foreign Assets Control (OFAC) Specially Designated Nationals (SDN) List.
+    **/
+    OFAC = "ofac",
+
+    /**
+        The International Trade Administration (ITA) Consolidated Screening List (CSL).
+    **/
+    ITA = "ita",
+
+    /**
+        The Bitcoin Abuse Database.
+    **/
+    BitcoinAbuse = "btcabuse",
+
+    /**
+        The ransomwhe.re Database.
+    **/
+    Randomwhe = "ransomwhe"
 }
 
 /**

@@ -3,7 +3,8 @@ import chalk from "chalk";
 import { Lambda } from "./modules/schedule.js";
 import { heartbeat } from "./jobs/heartbeat.js";
 import { btcabuse } from "./jobs/btcabuse.js";
-import { ofac } from "./jobs/ofac.js";
+import { ita, ofac } from "./jobs/us.js";
+import { ransomwhe } from "./jobs/ransomwhe.js";
 
 /**
     Connect to the MongoDB instance using the url fetched from the
@@ -30,6 +31,8 @@ const lambda = new Lambda();
 lambda.addTask("heartbeat", heartbeat, 60);
 lambda.addTask("btcabuse", btcabuse, 86400);
 lambda.addTask("ofac", ofac, 86400);
+lambda.addTask("ita", ita, 86400);
+lambda.addTask("ransomwhe", ransomwhe, 86400);
 
 /**
     Start the lambda worker which will continue until stopped.
