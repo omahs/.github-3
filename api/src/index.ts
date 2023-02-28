@@ -5,7 +5,6 @@ import { RegisterRoutes } from "./modules/routes.gen.js";
 import { RegisterLogger } from "./modules/log.js";
 import { RegisterRequestParser } from "./modules/request.js";
 import { RegisterErrorCatcher } from "./modules/error.js";
-import { RegisterDocs } from "./modules/docs.js";
 import { RegisterSecurityMiddleware } from "./modules/security.js";
 import { mongoConnect, mongoDisconnect } from "jewl-core";
 
@@ -31,7 +30,6 @@ const app: Application = express();
     RegisterRequestParser,
     RegisterSecurityMiddleware,
     RegisterRoutes,
-    RegisterDocs,
     RegisterErrorCatcher
 ].forEach(x => x(app));
 
