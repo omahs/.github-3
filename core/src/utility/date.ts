@@ -8,7 +8,7 @@
 export class DateTime {
     private readonly timestamp: number;
 
-    public constructor(timestamp?: number | string | Date) {
+    public constructor(timestamp?: number | string | Date | DateTime) {
         if (timestamp == null) {
             const date = new Date();
             this.timestamp = Math.floor(date.getTime() / 1000);
@@ -18,6 +18,8 @@ export class DateTime {
             this.timestamp = parseInt(timestamp, 10);
         } else if (timestamp instanceof Date) {
             this.timestamp = timestamp.getTime() / 1000;
+        } else if (timestamp instanceof DateTime) {
+            this.timestamp = timestamp.timestamp;
         } else {
             throw new Error("invalid input to DateTime constructor");
         }
@@ -137,6 +139,21 @@ export class DateTime {
 }
 
 /**
+    A custom Mongoose validator that checks if the supplied datetime is a valid url.
+**/
+const validator = {
+    validator: (date: DateTime): boolean => {
+        try {
+            const _ = new DateTime(date);
+            return true;
+        } catch {
+            return false;
+        }
+    },
+    message: (props: { value: string }): string => `${props.value} is not a valid url`
+};
+
+/**
     A custom Mongoose schema for the DateTime object. This schema can
     be use like `date: DateTimeSchema` or `date: { ...DateTimeSchema,
     otherProperties: true }`.
@@ -144,5 +161,6 @@ export class DateTime {
 export const DateTimeSchema = {
     type: Number,
     get: (x?: string): DateTime | undefined => x == null ? undefined : new DateTime(x),
-    set: (x: DateTime): number => x.valueOf()
+    set: (x: DateTime): number => x.valueOf(),
+    validate: validator
 };
