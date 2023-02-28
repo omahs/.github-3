@@ -9,6 +9,6 @@
     },
     "dependencies": {
         "jewl-isomorphic": "*",
-        "mongoose": "^6.10.0"
+        "mongoose": "^7.0.0"
     }
 }

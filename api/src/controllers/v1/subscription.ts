@@ -48,9 +48,8 @@ export class SubscriptionController extends Controller {
     @SuccessResponse(204, "Success")
     @Response<string>(404, "Not found")
     public async deleteSubscriptionMethod(@Request() req: WithAuthentication): Promise<void> {
-        const subscription = await Subscription.findOne({ userId: req.user.userId });
+        const subscription = await Subscription.findOneAndDelete({ userId: req.user.userId });
         if (subscription == null) { throw new HttpError(404, "no subscription found"); }
         await stripeClient.deleteCustomer(subscription.stripeId);
-        await subscription.delete();
     }
 }
