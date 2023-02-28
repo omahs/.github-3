@@ -5,11 +5,11 @@
 ## The app
 
 This repository consists of several components:
-* `Isomorphic` - platform-specific code.
-* `Core` - shared logic and models.
-* `Web` - a [React](https://reactjs.org) static site.
-* `API` - an [Express](https://expressjs.com) backend application interface.
-* `Lambda` - a [Node](https://nodejs.org) worker program.
+* `isomorphic` - platform-specific code.
+* `core` - shared logic and models.
+* `web` - a [React](https://reactjs.org) static site.
+* `api` - an [Express](https://expressjs.com) backend application interface.
+* `lambda` - a [Node](https://nodejs.org) worker program.
 
 All components are tied together using [Nx](https://nx.dev). jewl.app uses a [Mongo](https://www.mongodb.com) NoSQL database.
 
