@@ -36,7 +36,7 @@ Getting set up with this repository is very easy.
 
 To test the Stripe webhooks locally you can set webhooks up to be forwarded to your local machine. For this you will need to set up the Stripe cli.
 * Install the Stripe cli using `brew install stripe/stripe-cli/stripe`.
-* Log into the Stripe cli using `stripe login`
+* Log into the Stripe cli using `stripe login`.
 * Start forwarding webhook evewnts using `stripe listen --forward-to localhost:4000/v1/stripe`.
 
 ## Commands
