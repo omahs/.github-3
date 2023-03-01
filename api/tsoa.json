@@ -3,6 +3,8 @@
     "noImplicitAdditionalProperties": "silently-remove-extras",
     "controllerPathGlobs": ["src/controllers/**/*.ts"],
     "spec": {
+        "name": "jewl-api",
+        "version": "docs",
         "outputDirectory": "public",
         "specFileBaseName": "swagger.gen",
         "specVersion": 3,
