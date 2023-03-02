@@ -17,6 +17,8 @@ export class RiskController extends SanctionController {
         all the assets currently in the address's wallet. The address is also checked against sanction
         lists. No validation is done on whether the address provided
         is valid or not.
+
+        Each call to this endpoint uses 1 credit.
     **/
     @Get("/address/{chain}/{id}")
     @SuccessResponse(200, "Success")
@@ -31,6 +33,8 @@ export class RiskController extends SanctionController {
         all the funds included in the transaction. The address is also checked against sanction
         lists. No validation is done on whether the address provided
         is valid or not.
+
+        Each call to this endpoint uses 1 credit.
     **/
     @Get("/transaction/{chain}/{id}")
     @SuccessResponse(200, "Success")

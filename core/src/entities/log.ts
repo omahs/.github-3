@@ -124,7 +124,7 @@ export interface ILogsResponse {
     /**
         A cursor for getting the next page of log items.
     **/
-    next: number;
+    next: DateTime;
 }
 
 /**
@@ -133,6 +133,6 @@ export interface ILogsResponse {
 export const LogsResponse = createModel<ILogsResponse>(
     new Schema<ILogsResponse>({
         items: { type: [LogResponse.schema], required: true },
-        next: { type: Number, required: true }
+        next: { ...DateTimeSchema, required: true }
     })
 );
