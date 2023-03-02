@@ -17,6 +17,8 @@ export class SanctionController extends Controller {
         the source of funds and is therefore not a replacement for AML compliance. No
         validation is done on whether the address provided is valid or not. Address
         collisions across multiple chains are not taken into account.
+
+        This endpoint does not use up any credits.
     **/
     @Get("/{id}")
     @SuccessResponse(200, "Success")
