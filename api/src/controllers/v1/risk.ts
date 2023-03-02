@@ -6,8 +6,8 @@ import { SanctionController } from "./sanction.js";
     A controller for creating risk profiles.
 **/
 @Route("/v1/risk")
-@Security("token")
-@Security("key")
+@Security("token", ["metered"])
+@Security("key", ["metered"])
 @Response<string>(401, "Unauthorized")
 @Response<string>(429, "Too many requests")
 export class RiskController extends SanctionController {
@@ -22,12 +22,7 @@ export class RiskController extends SanctionController {
     @SuccessResponse(200, "Success")
     public async getRiskProfileForAddress(@Path() chain: string, @Path() id: string): Promise<IRiskResponse> {
         const sanctions = await this.getSanctionForAddress(id);
-
-        // AI Model to estimate source of funds.
-
-
-        // TODO: increase usage by one
-        const _ = [chain, id];
+        // TODO: AI Model to estimate source of funds.
         return { risk: 0, source: [], ...sanctions };
     }
 

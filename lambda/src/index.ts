@@ -5,6 +5,7 @@ import { heartbeat } from "./jobs/heartbeat.js";
 import { btcabuse } from "./jobs/btcabuse.js";
 import { ita, ofac } from "./jobs/us.js";
 import { ransomwhe } from "./jobs/ransomwhe.js";
+import { updateUsageToStripe } from "./jobs/usage.js";
 
 /**
     Connect to the MongoDB instance using the url fetched from the
@@ -29,6 +30,7 @@ const lambda = new Lambda();
     Register all the tasks into the lambda worker.
 **/
 lambda.addTask("heartbeat", heartbeat, 60);
+lambda.addTask("uploadUsage", updateUsageToStripe, 3600);
 lambda.addTask("btcabuse", btcabuse, 86400);
 lambda.addTask("ofac", ofac, 86400);
 lambda.addTask("ita", ita, 86400);

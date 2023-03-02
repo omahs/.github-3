@@ -47,7 +47,6 @@ export const createModel = <T>(schema: Schema, name?: string): Model<T> => {
 **/
 export const validate = async <T>(Schema: Model<T>, json: object): Promise<T> => {
     const schema = new Schema(json);
-    console.log(json);
     await schema.validate();
     return schema;
 };

@@ -3,7 +3,8 @@ import { HttpError } from "./error.js";
 import { createHmac, timingSafeEqual } from "crypto";
 import type { JWTVerifyOptions } from "jose";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { DateTime, Key, queryToObject } from "jewl-core";
+import { Cached, DateTime, Key, Log, Subscription } from "jewl-core";
+import { onSend } from "./hooks.js";
 
 /**
     The Auth0 OAuth authentication domain.
@@ -71,13 +72,13 @@ const keyAuthentication = async (req: Request): Promise<string> => {
 **/
 const stripeAuthentication = async (req: Request): Promise<string> => {
     const signatureHeader = req.header("Stripe-Signature") ?? "";
-    const signatureClaim = queryToObject(signatureHeader);
-    const timestamp = new DateTime(signatureClaim.t);
+    const signatureClaim = new URLSearchParams(signatureHeader.replaceAll(",", "&"));
+    const timestamp = new DateTime(signatureClaim.get("t") ?? 0);
     if (!timestamp.isNow()) {
         throw new Error("request has expired");
     }
 
-    const signature = Buffer.from(signatureClaim.v1, "hex");
+    const signature = Buffer.from(signatureClaim.get("v1") ?? "", "hex");
     const preimage = `${timestamp}.${req.rawBody.toString()}`;
     const secret = process.env.STRIPE_SECRET ?? "";
 
@@ -94,7 +95,7 @@ const stripeAuthentication = async (req: Request): Promise<string> => {
 /**
     An object that holds all the supported authentication methods.
 **/
-const getUserId: Record<string, (req: Request) => Promise<string>> = {
+const authenticationMap: Record<string, (req: Request) => Promise<string>> = {
     tokenAuthentication,
     keyAuthentication,
     stripeAuthentication
@@ -110,25 +111,99 @@ export interface Authentication {
 }
 
 /**
-    A subsitute for epxress's `Request` if you only require
-    the authentication info from the request.
+    A subsitute for epxress's `Request` if that includes information
+    about the logged in user.
 **/
-export interface WithAuthentication {
+export interface WithAuthentication extends Request {
     user: Authentication;
 }
 
 /**
-    Middleware to handle authentication through tsoa. This method
+    Middleware to handle authentication. This method
     finds the acoompanying authentication method and calls that.
     This method returns a 401 error if authentication fails.
 **/
-export const expressAuthentication = async (req: Request, securityName: string, scopes: Array<string>): Promise<Authentication> => {
+const authentication = async (req: Request, securityName: string, scopes: Array<string>): Promise<Authentication> => {
     try {
         const key = `${securityName}Authentication`;
-        if (!Object.hasOwn(getUserId, key)) { throw new Error("invalid authentication method"); }
-        const userId = await getUserId[key](req);
+        if (!Object.hasOwn(authenticationMap, key)) { throw new Error("invalid authentication method"); }
+        const userId = await authenticationMap[key](req);
         return { userId, scopes };
     } catch {
         throw new HttpError(401, "invalid or missing authorization.");
     }
+};
+
+
+/**
+    Whether or not a user has an active subscription or not. This is cached
+    for 60 seconds.
+**/
+const hasSubscription = new Cached<boolean>();
+
+/**
+    A method for validating metered scope. This method will do two things.
+    First this method checks if the currently logged in user is subscribed
+    and when the requests completes (or fails) the result log is stored in
+    the DB.
+**/
+const meteredValidation = (credits: number): (req: Request, auth: Authentication) => Promise<void> => {
+    return async (req: Request, auth: Authentication): Promise<void> => {
+        let isSubscribed = hasSubscription.get(auth.userId);
+        if (isSubscribed == null) {
+            const subscrption = await Subscription.findOne({ userId: auth.userId });
+            isSubscribed = subscrption != null;
+            hasSubscription.set(isSubscribed, auth.userId);
+        }
+
+        if (!isSubscribed) { throw new Error("user does not have an active subscription."); }
+
+        onSend(req, (body: unknown) => {
+            const log = new Log({
+                userId: auth.userId,
+                endpoint: req.path,
+                status: req.res?.statusCode,
+                response: JSON.stringify(body),
+                timestamp: new DateTime(),
+                credits
+            });
+            void log.save();
+        });
+        return Promise.resolve();
+    };
+};
+
+/**
+    An object that holds all the supported validation methods.
+**/
+const validationMap: Record<string, (req: Request, auth: Authentication) => Promise<void>> = {
+    meteredValidation: meteredValidation(1),
+    loggedValidation: meteredValidation(0)
+};
+
+/**
+    Middleware to handle validation of scopes. This method
+    finds the acoompanying validation method and calls that.
+    This method returns a 403 error if validation fails.
+**/
+const validation = async (req: Request, validationName: string, auth: Authentication): Promise<void> => {
+    try {
+        const key = `${validationName}Validation`;
+        if (!Object.hasOwn(validationMap, key)) { throw new Error("invalid scope authentication method"); }
+        await validationMap[key](req, auth);
+    } catch {
+        throw new HttpError(403, `scope validation for ${validationName} failed.`);
+    }
+};
+
+/**
+    Middleware to handle authentication through tsoa. This method does two things.
+    (1) it runs the specified authentication method and (2) runs validation on the
+    scopes that are supplied in the `@Security()` decorator.
+**/
+export const expressAuthentication = async (req: Request, securityName: string, scopes: Array<string>): Promise<Authentication> => {
+    const auth = await authentication(req, securityName, scopes);
+    const promises = scopes.map(async x => validation(req, x, auth));
+    await Promise.all(promises);
+    return auth;
 };

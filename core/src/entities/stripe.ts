@@ -107,6 +107,9 @@ export const StripeDelete = createModel<IStripeDelete>(
     })
 );
 
+/**
+    An interface for the StripeSubscriptionDeleted event.
+**/
 export interface IStripeSubscriptionDeleted {
 
     /**
@@ -121,5 +124,111 @@ export interface IStripeSubscriptionDeleted {
 export const StripeSubscriptionDeleted = createModel<IStripeSubscriptionDeleted>(
     new Schema<IStripeSubscriptionDeleted>({
         customer: { type: String, required: true }
+    })
+);
+
+/**
+    An interface for the a Stripe subscription items response.
+**/
+export interface IStripeSubscriptionItem {
+
+    /**
+        The id of the subscription item.
+    **/
+    id: string;
+}
+
+/**
+    A Model for validating the `IStripeSubscriptionItem` interface.
+**/
+export const StripeSubscriptionItem = createModel<IStripeSubscriptionItem>(
+    new Schema<IStripeSubscriptionItem>({
+        id: { type: String, required: true }
+    })
+);
+
+/**
+    An interface for the a Stripe subscription items response.
+**/
+export interface IStripeSubscriptionItems {
+
+    /**
+        The list of subscription items.
+    **/
+    data: Array<IStripeSubscriptionItem>;
+}
+
+/**
+    A Model for validating the `IStripeSubscriptionItems` interface.
+**/
+export const StripeSubscriptionItems = createModel<IStripeSubscriptionItems>(
+    new Schema<IStripeSubscriptionItems>({
+        data: { type: [StripeSubscriptionItem.schema], required: true }
+    })
+);
+
+/**
+    An interface for the a Stripe subscription.
+**/
+export interface IStripeSubscription {
+
+    /**
+        The id of the subscription.
+    **/
+    id: string;
+
+    /**
+        An object that contains the list of subscription items.
+    **/
+    items: IStripeSubscriptionItems;
+}
+
+/**
+    A Model for validating the `IStripeSubscription` interface.
+**/
+export const StripeSubscription = createModel<IStripeSubscription>(
+    new Schema<IStripeSubscription>({
+        id: { type: String, required: true },
+        items: { type: StripeSubscriptionItems.schema, required: true }
+    })
+);
+
+/**
+    An interface for the a Stripe subscriptions response.
+**/
+export interface IStripeSubscriptions {
+
+    /**
+        The list of subscriptions.
+    **/
+    data: Array<IStripeSubscription>;
+}
+
+/**
+    A Model for validating the `IStripeSubscriptions` interface.
+**/
+export const StripeSubscriptions = createModel<IStripeSubscriptions>(
+    new Schema<IStripeSubscriptions>({
+        data: { type: [StripeSubscription.schema], required: true }
+    })
+);
+
+/**
+    An interface for the a Stripe usage report update response.
+**/
+export interface IStripeUpdateUsage {
+
+    /**
+        The id of the update.
+    **/
+    id: string;
+}
+
+/**
+    A Model for validating the `IStripeUpdateUsage` interface.
+**/
+export const StripeUpdateUsage = createModel<IStripeUpdateUsage>(
+    new Schema<IStripeUpdateUsage>({
+        id: { type: String, required: true }
     })
 );

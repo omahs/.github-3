@@ -1,6 +1,5 @@
-import type { IStripeSession } from "../entities/stripe.js";
-import { StripeDelete } from "../entities/stripe.js";
-import { StripeSession } from "../entities/stripe.js";
+import type { IStripeSession, IStripeUpdateUsage, IStripeSubscriptions } from "../entities/stripe.js";
+import { StripeDelete, StripeUpdateUsage, StripeSession, StripeSubscriptions } from "../entities/stripe.js";
 import { Client } from "../utility/client.js";
 
 /**
@@ -52,5 +51,39 @@ export class StripeClient extends Client {
         if (!(response?.deleted ?? true)) { throw new Error("user not deleted"); }
     }
 
+    /**
+        Get the active subscriptions for a given user. In jewl.app's case there
+        should only ever be one active.
+    **/
+    public async getSubscriptions(customerId: string): Promise<IStripeSubscriptions> {
+        const data = new URLSearchParams({
+            customer: customerId,
+            status: "active"
+        });
+        const request = {
+            endpoint: "v1/subscriptions",
+            method: "POST",
+            body: data.toString()
+        };
+        return this.request(request, StripeSubscriptions);
+    }
+
+    /**
+        Update metered usage for a Stripe customer. This endpoint uses a unique id
+        so that usages are not reported to Stripe multiple times
+    **/
+    public async updateUsage(subscriptionId: string, quantity: number, idempotencyId: string): Promise<IStripeUpdateUsage> {
+        const data = new URLSearchParams({
+            quantity: quantity.toString(),
+            action: "update"
+        });
+        const request = {
+            endpoint: `v1/subscription_items/${subscriptionId}/usage_records`,
+            method: "POST",
+            body: data.toString(),
+            headers: { "Idempotency-Key": idempotencyId }
+        };
+        return this.request(request, StripeUpdateUsage);
+    }
 
 }

@@ -1,20 +1,13 @@
 import { Controller, Get, Route, SuccessResponse, Response } from "tsoa";
 import type { IPingResponse, IStatusResponse } from "jewl-core";
-import { DateTime, ServerStatus, UptimeStatus } from "jewl-core";
+import { ServerStatus, UptimeStatus, Cached } from "jewl-core";
 import { uptimeClient } from "../../modules/network.js";
 
 /**
     The previously returned status. This is cached for
     up to three minutes.
 **/
-let previousStatus = ServerStatus.Up;
-
-/**
-    The previous status's expiry date. If this date is in the
-    past that means that `previousStatus` is expired and a
-    new status should be fetched.
-**/
-let previousStatusExpires = new DateTime(0);
+const cachedStatus = new Cached(ServerStatus.Up, 300);
 
 /**
     This method returns the server status and caches it for three
@@ -23,25 +16,23 @@ let previousStatusExpires = new DateTime(0);
     BetterUptime api.
 **/
 const getServerStatus = async (): Promise<ServerStatus> => {
-    if (previousStatusExpires.gt(new DateTime())) {
-        return previousStatus;
-    }
+    let previousStatus = cachedStatus.get();
+    if (previousStatus == null) {
+        try {
+            const statusMap = await uptimeClient.getStatus(155611);
+            const statuses = Array.from(statusMap.values());
+            const isMaintainance = statuses.some(x => x === UptimeStatus.Maintainance);
+            const isDown = statuses.some(x => x === UptimeStatus.Down);
 
-    previousStatusExpires = new DateTime().addingMinutes(3);
-
-    try {
-        const statusMap = await uptimeClient.getStatus(155611);
-        const statuses = Array.from(statusMap.values());
-        const isMaintainance = statuses.some(x => x === UptimeStatus.Maintainance);
-        const isDown = statuses.some(x => x === UptimeStatus.Down);
-
-        if (isMaintainance) {
-            previousStatus = ServerStatus.Maintainance;
-        } else {
-            previousStatus = isDown ? ServerStatus.Down : ServerStatus.Up;
+            if (isMaintainance) {
+                previousStatus = ServerStatus.Maintainance;
+            } else {
+                previousStatus = isDown ? ServerStatus.Down : ServerStatus.Up;
+            }
+        } catch {
+            previousStatus = ServerStatus.Down;
         }
-    } catch {
-        previousStatus = ServerStatus.Down;
+        cachedStatus.set(previousStatus);
     }
 
     return previousStatus;

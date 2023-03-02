@@ -1,7 +1,6 @@
-import type { Application, NextFunction } from "express";
-import type { IncomingMessage, ServerResponse } from "node:http";
+import type { Application, NextFunction, Request, Response } from "express";
 import chalk from "chalk";
-import onFinished from "on-finished";
+import { onSend } from "./hooks.js";
 
 /**
     Middleware that handles logging requests and errors. If
@@ -9,7 +8,7 @@ import onFinished from "on-finished";
     (including stack traces) will be logged.
 **/
 export const RegisterLogger = (app: Application): void => {
-    app.use((req: IncomingMessage, partial: ServerResponse, next: NextFunction) => {
+    app.use((req: Request, _: Response, next: NextFunction) => {
         const requestTime = new Date();
         const formattedTime = `${requestTime.toLocaleDateString()} ${requestTime.toLocaleTimeString()}`;
         const ipAddress = req.socket.remoteAddress?.replace("::ffff:", "") ?? "unknown";
@@ -22,7 +21,8 @@ export const RegisterLogger = (app: Application): void => {
             chalk.cyan(requestUrl)
         );
 
-        onFinished(partial, (_: Error | null, res: ServerResponse) => {
+        onSend(req, () => {
+            const status = req.res?.statusCode ?? 500;
             const responseTime = new Date();
             const duration = responseTime.getTime() - requestTime.getTime();
             const formattedResponseTime = `${responseTime.toLocaleDateString()} ${responseTime.toLocaleTimeString()}`;
@@ -30,7 +30,7 @@ export const RegisterLogger = (app: Application): void => {
                 chalk.bgBlue.bold(" HTTP "),
                 chalk.dim(formattedResponseTime),
                 chalk.yellow(ipAddress),
-                chalk[res.statusCode < 400 ? "green" : "red"](`Returned ${res.statusCode} in ${duration} ms`)
+                chalk[status < 400 ? "green" : "red"](`Returned ${status} in ${duration} ms`)
             );
         });
 

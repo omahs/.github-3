@@ -14,8 +14,8 @@ export * from "./entities/stripe.js";
 export * from "./entities/subscription.js";
 export * from "./entities/uptime.js";
 
+export * from "./utility/cache.js";
 export * from "./utility/client.js";
 export * from "./utility/date.js";
 export * from "./utility/mongo.js";
-export * from "./utility/string.js";
 export * from "./utility/url.js";
