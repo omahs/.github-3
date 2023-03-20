@@ -57,3 +57,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.footer-popup::-webkit-scrollbar-track {
+    margin: 16px 0;
+}
