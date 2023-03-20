@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactElement } from "react";
 import React, { useMemo } from "react";
-import type { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { clusterApiUrl } from "@solana/web3.js";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
@@ -13,10 +13,12 @@ import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { SolongWalletAdapter } from "@solana/wallet-adapter-solong";
 import { MathWalletAdapter } from "@solana/wallet-adapter-mathwallet";
 
-const network = (process.env.SOLANA_NETWORK ?? "devnet") as
-    WalletAdapterNetwork.Mainnet | WalletAdapterNetwork.Devnet;
-
 export const SolanaProvider = (props: PropsWithChildren): ReactElement => {
+    const network = useMemo(() => {
+        return window.location.hostname === "jewl.app"
+            ? WalletAdapterNetwork.Mainnet
+            : WalletAdapterNetwork.Devnet;
+    }, []);
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
     const wallets = useMemo(() => {

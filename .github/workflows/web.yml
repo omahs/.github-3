@@ -55,7 +55,7 @@ jobs:
       url: https://jewl.app/
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build build
         run: |
           npm ci

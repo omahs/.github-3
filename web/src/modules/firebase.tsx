@@ -3,13 +3,13 @@ import { getAnalytics } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY ?? "",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? "",
-    projectId: process.env.FIREBASE_PROJECT_ID ?? "",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? "",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? "",
-    appId: process.env.FIREBASE_APP_ID ?? "",
-    measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? ""
+    apiKey: "AIzaSyA-Dn62_MuHbc45yzak4S9ao3NXHw07HkY",
+    authDomain: "jewl-app.firebaseapp.com",
+    projectId: "jewl-app",
+    storageBucket: "jewl-app.appspot.com",
+    messagingSenderId: "550370238764",
+    appId: "1:550370238764:web:fa3937801fc783c7264c89",
+    measurementId: "G-FNCKMNE7CB"
 };
 
 const app = initializeApp(firebaseConfig);
