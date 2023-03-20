@@ -1,3 +1,3 @@
-jewl.app is an end-to-end SaaS platform for making the Anti-Money Laundering/Combating the Financing of Terrorism (AML/CFT) compliance of blockchain transactions easy.
+## Solana Securities Tokenization
 
-Risk-based transaction monitoring (KYT) while maintaining privacy
+Whether you're a financial institution looking to tokenize your assets, an investor looking for new opportunities, or a developer interested in building on Solana, jewl.app provides a powerful set of tools for creating and managing on-chain securities.

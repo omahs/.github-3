@@ -1,33 +1,55 @@
-import "./header.css";
+import "../styles/header.css";
+import Icon from "url:../assets/icon-outline.svg";
 import type { ReactElement } from "react";
-import React, { useCallback } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import Connect from "./connect";
 
-/**
-    The header component. This component managed logging the user in and
-    out through Auth0. If the user is currently logged in the user can
-    log out and vice versa.
-**/
 const Header = (): ReactElement => {
-    const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    const { select, disconnect, publicKey } = useWallet();
+    const [showModal, setShowModal] = useState(false);
+    const isConnected = useMemo(() => publicKey != null, [publicKey]);
+
+    useEffect(() => {
+        setShowModal(false);
+    }, [isConnected]);
 
     const loginPressed = useCallback(() => {
-        if (isAuthenticated) {
-            logout({ logoutParams: { returnTo: window.location.origin } });
+        if (isConnected) {
+            select(null);
+            setTimeout(() => {
+                disconnect().catch(() => { /* Ignore error */ });
+            }, 200);
         } else {
-            void loginWithRedirect({ authorizationParams: { redirect_uri: window.location.origin } });
+            setShowModal(true);
         }
-    }, [isAuthenticated]);
+    }, [isConnected, select, disconnect, setShowModal]);
+
+    const closeModal = useCallback(() => {
+        setShowModal(false);
+    }, [setShowModal]);
+
+    const popup = useMemo(() => {
+        if (!showModal) { return null; }
+        return (
+            <>
+                <div className="header-overlay" onClick={closeModal} />
+                <Connect />
+            </>
+        );
+    }, [showModal]);
 
     return (
         <div className="header">
             <span className="header-spacer" />
-            <img src="/icon-outline.svg" className="header-logo" alt="jewl.app logo" />
+            <img src={Icon} className="header-logo" alt="jewl.app logo" />
             <span className="header-spacer">
                 <button type="button" onClick={loginPressed} className="header-login">
-                    {isAuthenticated ? "Logout" : "Login"}
+                    {isConnected ? "Disconnect" : "Connect"}
                 </button>
             </span>
+            {popup}
         </div>
     );
 };

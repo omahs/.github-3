@@ -1,24 +1,16 @@
-import "./footer.css";
+import "../styles/footer.css";
+import contact from "bundle-text:../assets/contact.md";
+import terms from "bundle-text:../assets/terms.md";
+import privacy from "bundle-text:../assets/privacy.md";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-import { ServerStatus } from "jewl-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCirclePause, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { addHook, sanitize } from "dompurify";
 import { marked } from "marked";
-import { apiClient } from "../modules/network";
 import { useWindowSize } from "../modules/size";
 
-/**
-    The footer component that contains a couple of links and
-    the server status. This status is fetched on load from
-    the api. The links open a popup that renders some markdown
-    text.
-**/
 const Footer = (): ReactElement => {
     const { width } = useWindowSize();
     const [legalText, setLegalText] = useState<string | null>(null);
-    const [serverStatus, setServerStatus] = useState(ServerStatus.Up);
 
     useEffect(() => {
         addHook("afterSanitizeAttributes", (node: Element) => {
@@ -29,46 +21,15 @@ const Footer = (): ReactElement => {
         });
     }, []);
 
-    useEffect(() => {
-        apiClient.getStatus()
-            .then(x => setServerStatus(x.status))
-            .catch(() => setServerStatus(ServerStatus.Down));
-    }, []);
-
-    const openPage = useCallback((name: string) => {
-        window.fetch(`./${name}.md`)
-            .then(async x => x.text())
-            .then(setLegalText)
-            .catch(console.error);
-    }, [setLegalText]);
-
     const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
-    const contactClicked = useCallback(() => openPage("contact"), [openPage]);
-    const termsClicked = useCallback(() => openPage("terms"), [openPage]);
-    const privacyClicked = useCallback(() => openPage("privacy"), [openPage]);
+    const contactClicked = useCallback(() => setLegalText(contact), []);
+    const termsClicked = useCallback(() => setLegalText(terms), []);
+    const privacyClicked = useCallback(() => setLegalText(privacy), []);
+    // TODO: Lazy load /\
 
     const isPhone = useMemo(() => {
         return width < 768;
     }, [width]);
-
-    const statusMessage = useMemo(() => {
-        if (isPhone) { return null; }
-        switch (serverStatus) {
-            case ServerStatus.Up: return <span>All systems operational</span>;
-            case ServerStatus.Maintainance: return <span>Down for maintainance</span>;
-            case ServerStatus.Down: return <span>Partially degraded service</span>;
-            default: return null;
-        }
-    }, [serverStatus, isPhone]);
-
-    const statusIcon = useMemo(() => {
-        switch (serverStatus) {
-            case ServerStatus.Up: return <FontAwesomeIcon icon={faCircleCheck} />;
-            case ServerStatus.Maintainance: return <FontAwesomeIcon icon={faCirclePause} />;
-            case ServerStatus.Down: return <FontAwesomeIcon icon={faCircleQuestion} />;
-            default: return null;
-        }
-    }, [serverStatus]);
 
     const markedRenderer = useMemo(() => {
         const renderer = new marked.Renderer();
@@ -88,7 +49,7 @@ const Footer = (): ReactElement => {
         return (
             <>
                 <div className="footer-overlay" onClick={closeModal} />
-                <div className="footer-legal-popup" dangerouslySetInnerHTML={{ __html: sanitized }} />
+                <div className="footer-popup" dangerouslySetInnerHTML={{ __html: sanitized }} />
             </>
         );
     }, [legalText]);
@@ -96,7 +57,6 @@ const Footer = (): ReactElement => {
     return (
         <div className="footer">
             <span className="footer-left">{isPhone ? "© 2023" : "Copyright © 2023 jewl.app" }</span>
-            <a href="https://status.jewl.app/" target="_blank" rel="noreferrer noopener" className="footer-middle">{statusIcon}{statusMessage}</a>
             <div className="footer-right">
                 <button type="button" onClick={contactClicked}>{isPhone ? "Contact" : "Contact"}</button>
                 <button type="button" onClick={termsClicked}>{isPhone ? "ToS" : "Terms of Service"}</button>

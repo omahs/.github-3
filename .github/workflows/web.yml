@@ -1,0 +1,72 @@
+name: checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run Lint
+      run: |
+        npm ci
+        npm run lint
+      working-directory: web
+
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: javascript
+    - name: Analyze CodeQL
+      uses: github/codeql-action/analyze@v2
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run Tests
+      run: |
+        npm ci
+        npm run test
+      working-directory: web
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [lint, analyze, test]
+    permissions:
+      checks: write
+      pull-requests: write
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'jewl.app' || '' }}
+      url: https://jewl.app/
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build build
+        run: |
+          npm ci
+          npm run build
+        working-directory: web
+      - name: Deploy to firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_DEPLOY_KEY }}'
+          channelId: ${{ github.ref == 'refs/heads/main' && 'live' || '' }}
+          expires: ${{ github.ref == 'refs/heads/main' && '' || '30d' }}
+          projectId: jewl-app
+          entryPoint: web
