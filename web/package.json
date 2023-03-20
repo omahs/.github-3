@@ -1,7 +1,7 @@
 {
     "name": "jewl.app",
     "type": "module",
-    "source": "src/index.html",
+    "source": "public/index.html",
     "scripts": {
         "build": "parcel build --no-cache --no-autoinstall",
         "start": "parcel serve --no-autoinstall",

@@ -1,5 +1,5 @@
 import "../styles/header.css";
-import Icon from "url:../assets/icon-outline.svg";
+import Icon from "url:../../public/icon-outline.svg";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";

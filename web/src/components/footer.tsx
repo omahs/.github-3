@@ -1,7 +1,7 @@
 import "../styles/footer.css";
-import contact from "bundle-text:../assets/contact.md";
-import terms from "bundle-text:../assets/terms.md";
-import privacy from "bundle-text:../assets/privacy.md";
+import contact from "bundle-text:../../public/contact.md";
+import terms from "bundle-text:../../public/terms.md";
+import privacy from "bundle-text:../../public/privacy.md";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { addHook, sanitize } from "dompurify";
