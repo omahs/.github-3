@@ -9,7 +9,7 @@ The jewl.app Security Bounty Program covers our main website and service hosted 
 
 ### Examples
 Below are some examples of in-scope vulnerabilities.
-* User impersonation
+* Theft or freezing of user funds
 * Extraction of keys, secrets or tokens
 * Sensitive information leaks
 * Degradation of service
