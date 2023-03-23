@@ -1,10 +1,10 @@
-import "../styles/footer.css";
-import contact from "bundle-text:../../public/contact.md";
-import terms from "bundle-text:../../public/terms.md";
-import privacy from "bundle-text:../../public/privacy.md";
+import "css:../styles/footer.css";
+import contact from "url:../../public/contact.md";
+import terms from "url:../../public/terms.md";
+import privacy from "url:../../public/privacy.md";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-import { addHook, sanitize } from "dompurify";
+import dompurify from "dompurify";
 import { marked } from "marked";
 import { useWindowSize } from "../modules/size";
 
@@ -13,7 +13,7 @@ const Footer = (): ReactElement => {
     const [legalText, setLegalText] = useState<string | null>(null);
 
     useEffect(() => {
-        addHook("afterSanitizeAttributes", (node: Element) => {
+        dompurify.addHook("afterSanitizeAttributes", (node: Element) => {
             if ("target" in node) {
                 node.setAttribute("target", "_blank");
                 node.setAttribute("rel", "noopener noreferrer");
@@ -21,11 +21,17 @@ const Footer = (): ReactElement => {
         });
     }, []);
 
+    const openModal = useCallback((url: string) => {
+        window.fetch(url)
+            .then(async x => x.text())
+            .then(setLegalText)
+            .catch(() => { /* Empty */ });
+    }, [setLegalText]);
+
     const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
-    const contactClicked = useCallback(() => setLegalText(contact), []);
-    const termsClicked = useCallback(() => setLegalText(terms), []);
-    const privacyClicked = useCallback(() => setLegalText(privacy), []);
-    // TODO: Lazy load /\
+    const contactClicked = useCallback(() => openModal(contact), [openModal]);
+    const termsClicked = useCallback(() => openModal(terms), [openModal]);
+    const privacyClicked = useCallback(() => openModal(privacy), [openModal]);
 
     const isPhone = useMemo(() => {
         return width < 768;
@@ -45,7 +51,7 @@ const Footer = (): ReactElement => {
     const popup = useMemo(() => {
         if (legalText == null) { return null; }
         const parsed = marked.parse(legalText, { renderer: markedRenderer });
-        const sanitized = sanitize(parsed);
+        const sanitized = dompurify.sanitize(parsed);
         return (
             <>
                 <div className="footer-overlay" onClick={closeModal} />

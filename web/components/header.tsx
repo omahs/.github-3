@@ -1,5 +1,5 @@
-import "../styles/header.css";
-import Icon from "url:../../public/icon-outline.svg";
+import "css:../styles/header.css";
+import icon from "url:../../public/icon-outline.svg";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -19,7 +19,7 @@ const Header = (): ReactElement => {
         if (isConnected) {
             select(null);
             setTimeout(() => {
-                disconnect().catch(() => { /* Ignore error */ });
+                disconnect().catch(() => { /* Empty */ });
             }, 200);
         } else {
             setShowModal(true);
@@ -43,7 +43,7 @@ const Header = (): ReactElement => {
     return (
         <div className="header">
             <span className="header-spacer" />
-            <img src={Icon} className="header-logo" alt="jewl.app logo" />
+            <img src={icon} className="header-logo" alt="jewl.app logo" />
             <span className="header-spacer">
                 <button type="button" onClick={loginPressed} className="header-login">
                     {isConnected ? "Disconnect" : "Connect"}

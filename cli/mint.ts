@@ -1,0 +1,4 @@
+
+console.log("Mint");
+
+export { };

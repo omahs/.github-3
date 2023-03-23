@@ -1,4 +1,4 @@
-import "../styles/connect.css";
+import "css:../styles/connect.css";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo } from "react";
 import type { Wallet } from "@solana/wallet-adapter-react";

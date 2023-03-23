@@ -42,3 +42,4 @@ build/Release
 *.tgzle
 .yarn-integrity
 .env
+test-ledger
