@@ -69,5 +69,4 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_DEPLOY_KEY }}'
           channelId: ${{ github.ref == 'refs/heads/main' && 'live' || '' }}
-          expires: ${{ github.ref == 'refs/heads/main' && '' || '30d' }}
           projectId: jewl-app
