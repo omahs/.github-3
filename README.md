@@ -40,7 +40,7 @@ This repository contains a CLI for convenience. The CLI can be used deploy the p
 
 This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The web app can be started using the `npm run web:start` command. A production version can be built using the `npm run web:build` command.
 
-### Miscelanious
+### Miscellaneous
 
 There are a couple other commands related to running checks and tests. The following is a list of the commands and their purpose.
 
