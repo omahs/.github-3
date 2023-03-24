@@ -1,6 +1,9 @@
-import { Connection } from "@solana/web3.js";
+import { Connection, Keypair } from "@solana/web3.js";
 import { spawn } from "child_process";
 import { clearLine, cursorTo } from "readline";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import { readFileSync } from "fs";
 
 const port = "8899";
 export const connection = new Connection(`http://127.0.0.1:${port}`);
@@ -20,7 +23,7 @@ const waitForRPC = async (): Promise<void> => {
         try {
             genesis = await connection.getGenesisHash();
         } catch { /* Empty */ }
-        await new Promise<void>(resolve => { setTimeout(resolve, 3000); });
+        await new Promise<void>(x => { setTimeout(x, 3000); });
         counter += 1;
     }
     logger("");
@@ -29,8 +32,18 @@ const waitForRPC = async (): Promise<void> => {
     }
 };
 
+const programId = (): string => {
+    const currentFile = fileURLToPath(import.meta.url);
+    const currentDir = dirname(currentFile);
+    const keyPath = resolve(currentDir, "../dist/deploy/jewl-keypair.json");
+    const secretKeyString = readFileSync(keyPath, { encoding: "utf8" });
+    const secertKeyJson = JSON.parse(secretKeyString) as Array<number>;
+    const secretKey = Uint8Array.from(secertKeyJson);
+    return Keypair.fromSecretKey(secretKey).publicKey.toBase58();
+};
+
 export const spawnTestValidator = async (): Promise<void> => {
-    const args = ["--bpf-program", "Bnmcdu74FKGReWt9149UC9QxfkLQpf4tGZdoYzzGM83H", "dist/jewl.so", "--rpc-port", port, "--reset"];
+    const args = ["--bpf-program", programId(), "dist/deploy/jewl.so", "--rpc-port", port, "--reset"];
     const validator = spawn("solana-test-validator", args);
     killTestValidator = validator.kill.bind(validator);
 

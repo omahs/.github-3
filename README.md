@@ -5,7 +5,8 @@
 ## Getting Started
 
 * Install NodeJS using `brew install node`.
-* Install the Solana SDK using `curl -sSfL https://release.solana.com/stable/install | sh`
+* Install the Rust language using `curl -sSfL https://sh.rustup.rs | sh`.
+* Install the Solana SDK using `curl -sSfL https://release.solana.com/edge/install | sh`.
 * Clone this repository using `git clone https://github.com/jewl-app/.github`.
 * Set up a Solana wallet if you don't have one already (see below).
 

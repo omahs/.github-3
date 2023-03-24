@@ -5,11 +5,11 @@
 jewl.app believes in better security through openness. We welcome and value technical reports of vulnerabilities that could substantially affect the confidentiality or integrity of our services. If you believe that you have discovered such a vulnerability, please report it through a [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new). The jewl.app team will work with you to investigate and resolve the issue. The first reporter of a security vulnerability is elligable to receive a monetary reward.
 
 ## Eligibility
-The jewl.app Security Bounty Program covers our main website and service hosted at `https://jewl.app` and `https://jewl.app/api` respectively. Development environments and third-party services are not included int he security bounty program. We are mainly interested in vulnerabilities that would allow attackers to extract private information or degrade the experience for genuine users. We are interested in real vulnerabilites, not in output of automated scanners or tools. We require all vulnerability reports to be accompanied by a proof-of-concept that demonstrates the vulnerabilty and the implications.
+The jewl.app Security Bounty Program covers our main website hosted at `https://jewl.app` and the jewl.app Solana programs. Development environments and third-party services are not included in the security bounty program. We are mainly interested in vulnerabilities that would allow attackers to steal or freeze user funds, extract private information. or degrade the experience for genuine users. We are interested in real vulnerabilites, not in output of automated scanners or tools. We require all vulnerability reports to be accompanied by a proof-of-concept that demonstrates the vulnerabilty and the implications.
 
 ### Examples
 Below are some examples of in-scope vulnerabilities.
-* Theft or freezing of user funds
+* Theft or freezing of funds
 * Extraction of keys, secrets or tokens
 * Sensitive information leaks
 * Degradation of service
@@ -58,18 +58,17 @@ After triage, we will send a quick acknowledgement and commit to being as transp
 
 Bug reporters allow jewl.app the opportunity to diagnose and offer fully tested updates, workarounds, or other corrective measures before any party discloses detailed vulnerability or exploit information to the public.
 
-Once the security issue is fixed or mitigated, the jewl.app team will contact you. Prior to any public announcement of a vulnerability, and to the extent permitted by the law, we will share the draft description of the vulnerability with you. In case of disagreement.
+Once the security issue is fixed or mitigated, the jewl.app team will contact you. Prior to any public announcement of a vulnerability, and to the extent permitted by the law, we will share the draft description of the vulnerability with you. jewl.app will also provide you with a reasonable amount of time to prepare a public disclosure of the vulnerability, if you so choose.
 
 ## Reward
 You may be eligible to receive a reward if:
-
 * You are the first person to submit a given vulnerability.
 * The vulnerability is determined to be a valid security issue by the jewl.app.
 * You have complied with the jewl.app Security Bounty Program policy and guidelines.
 
 The decision to grant a reward for the discovery of a valid security issue is at jewl.app's sole discretion. The amount of each bounty is based on the classification and sensitivity of the data impacted, the completeness of your Submission report, ease of exploit and overall risk for jewl.app's users and brand.
 
-Bounties will be paid directly to the researcher using either BTC, ETH or USDT.
+Bounties will be paid directly to the researcher in SOL.
 
 You will be responsible for any tax implications related to bounty payments you receive, as determined by the laws of your jurisdiction of residence or citizenship.
 
@@ -86,7 +85,6 @@ Violations of this terms can result in a warning and/or ban of this Security Bou
 
 * Be kind.
 * Be respectful and professional in your communications and behavior.
-* Interactions should be at all times respectful and communicated in a professional manner and tone with a view to being beneficial to the report validation process.
 * Hate speech, profanity, or any aggressive threats will not be tolerated in any form.
 * Only contact the jewl.app team through the [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new).
 

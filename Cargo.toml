@@ -1,0 +1,18 @@
+[package]
+name = "jewl"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+solana-program = { version = "1.15.2" }
+solana-security-txt = { version = "1.1.0" }
+spl-token = { version = "3.5.0", features = ["no-entrypoint"] }
+thiserror = "1.0.40"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+path = "sol/lib.rs"
