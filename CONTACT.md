@@ -19,3 +19,5 @@ You can submit your feature requests through [GitHub](https://github.com/jewl-ap
 ## Reporting security vulnerabilities
 
 If you think you have found a security vulnerability you can report it to us (annonymously). For instructions please refer to our [GitHub](https://github.com/jewl-app/.github/security/policy) page. We have a bounty program for reporting security vulnerabilities which can be paid out in a variety of cryptocurrencies.
+
+*Copyright © 2023 jewl.app*

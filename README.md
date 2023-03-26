@@ -26,10 +26,11 @@ This repository consists of the a couple of different components that can be run
 
 This part of the repository contains the [Solana](https://solana.com) program for jewl.app. There are various accounts that play a part in jewl.app's program. The following is a list of the accounts and their purpose.
 
-* **jewl program**: This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenzied securities and equities for SOL minus a small fee.
-* **jewl state**: The jewl account owns a single data account which stores the addresses of all the tokens that are supported by jewl.app.
-* **token mints**: The jewl account owns an SPL token mint account for each token that is supported by jewl.app. These token mints are used to mint tokens that are being exchanged for SOL.
-* **token accounts**: The jewl account owns an SPL token account for each token that is supported by jewl.app. These token accounts are used to hold the tokens reserves that can be exchanged for SOL.
+This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenzied securities and equities for SOL minus a small fee.
+
+Since program accounts are stateless, they cannot hold any data. Fortunately, the jewl.app program does not need to hold any data, it only needs to know which different tokens can be issued by jewl.app. This is done by the existance of SPL token mint accounts of which the jewl program account is the Owner.
+
+The jewl program account also needs to know which SPL token accounts hold the reserves of the tokens that can be exchanged for SOL. This is done by the existance of SPL token accounts of which the jewl program account is the Owner.
 
 You can build the program using the `npm run sol:build` command. You can deploy the program using the `npm run sol:deploy` command.
 
@@ -45,9 +46,9 @@ This part of the repository contains the [React](https://reactjs.org) static sit
 
 There are a couple other commands related to running checks and tests. The following is a list of the commands and their purpose.
 
-* `npm run test` - run the unit test suite.
-* `npm run lint` - run the [ESLint](https://eslint.org) linter and prettier.
-* `npm run clean` - cleanup any built artifacts and caches.
+* `npm run test` - run the unit test suite which tests web using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html) and the Solana program using a [solana-test-validator](https://docs.solana.com/developing/test-validator).
+* `npm run lint` - run the [ESLint](https://eslint.org) linter and prettier. You can automatically fix any linting errors by appending `-- --fix` to the command.
+* `npm run clean` - cleanup any built artifacts and caches. This is useful if you are having issues with the build.
 
 
 *Copyright © 2023 jewl.app*

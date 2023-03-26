@@ -89,3 +89,5 @@ Violations of this terms can result in a warning and/or ban of this Security Bou
 * Only contact the jewl.app team through the [GitHub Security Advisory](https://github.com/jewl-app/.github/security/advisories/new).
 
 *jewl.app reserves the right to amend these provisions at its sole discression. Any amendment takes effect immediately. Participants of the security bounty program are advised to regulary check this page.*
+
+*Copyright © 2023 jewl.app*

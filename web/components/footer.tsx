@@ -1,7 +1,8 @@
 import "css:../styles/footer.css";
-import contact from "url:../../public/contact.md";
-import terms from "url:../../public/terms.md";
-import privacy from "url:../../public/privacy.md";
+import contact from "url:../../CONTACT.md";
+import terms from "url:../../TERMS.md";
+import privacy from "url:../../PRIVACY.md";
+import faq from "url:../../FAQ.md";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useEffect, useState } from "react";
 import dompurify from "dompurify";
@@ -30,6 +31,7 @@ const Footer = (): ReactElement => {
 
     const closeModal = useCallback(() => setLegalText(null), [setLegalText]);
     const contactClicked = useCallback(() => openModal(contact), [openModal]);
+    const faqClicked = useCallback(() => openModal(faq), [openModal]);
     const termsClicked = useCallback(() => openModal(terms), [openModal]);
     const privacyClicked = useCallback(() => openModal(privacy), [openModal]);
 
@@ -65,6 +67,7 @@ const Footer = (): ReactElement => {
             <span className="footer-left">{isPhone ? "© 2023" : "Copyright © 2023 jewl.app" }</span>
             <div className="footer-right">
                 <button type="button" onClick={contactClicked}>{isPhone ? "Contact" : "Contact"}</button>
+                <button type="button" onClick={faqClicked}>{isPhone ? "FAQ" : "Frequently Asked Questions"}</button>
                 <button type="button" onClick={termsClicked}>{isPhone ? "ToS" : "Terms of Service"}</button>
                 <button type="button" onClick={privacyClicked}>{isPhone ? "PP" : "Privacy Policy"}</button>
             </div>
