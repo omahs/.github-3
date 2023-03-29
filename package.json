@@ -6,10 +6,8 @@
     "scripts": {
         "web:build": "parcel build --no-cache --no-autoinstall",
         "web:start": "parcel serve --no-autoinstall",
-        "web:deploy": "firebase deploy --only hosting:jewl-app",
         "sol:build": "CARGO_TARGET_DIR=dist cargo build-sbf",
-        "sol:deploy": "solana program deploy dist/deploy/jewl.so",
-        "cli:start": "node --no-warnings --loader ./mock/loader.js cli/index.ts",
+        "sol:start": "node --no-warnings --loader ./mock/loader.js cli/index.ts",
         "clean": "shx rm -r .parcel-cache dist",
         "test": "node --no-warnings --loader ./mock/loader.js test/index.ts",
         "lint": "eslint ."

@@ -32,11 +32,7 @@ Since program accounts are stateless, they cannot hold any data. Fortunately, th
 
 The jewl program account also needs to know which SPL token accounts hold the reserves of the tokens that can be exchanged for SOL. This is done by the existance of SPL token accounts of which the jewl program account is the Owner.
 
-You can build the program using the `npm run sol:build` command. You can deploy the program using the `npm run sol:deploy` command.
-
-### Command Line Interface
-
-This repository contains a CLI for convenience. The CLI can be used deploy the programs and to interact with the deployed programs. The cli can be called through the `npm run cli:start` command.
+You can build the program using the `npm run sol:build` command. There is also a CLI to interract with the program. You can start the CLI using the `npm run sol:start` command.
 
 ### Web App
 

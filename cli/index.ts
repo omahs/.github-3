@@ -1,16 +1,14 @@
 import prompt from "prompts";
 
 const commands = [
-    { title: "mint", description: "Increase the supply of a specific jewl token in the reserves.", value: async (): Promise<unknown> => import("./instructions/mint") },
-    { title: "burn", description: "Decrease the supply of a specific jewl token out of the reserves.", value: async (): Promise<unknown> => import("./instructions/burn") },
-    { title: "create", description: "Create a new jewl token.", value: async (): Promise<unknown> => import("./instructions/create") },
-    { title: "destroy", description: "Destroy an existing jewl token.", value: async (): Promise<unknown> => import("./instructions/destroy") },
-    { title: "buy", description: "Buy a specific amount of a specific jewl token from the reserves.", value: async (): Promise<unknown> => import("./instructions/buy") },
-    { title: "sell", description: "Sell a specific amount of a specific jewl token to the reserves.", value: async (): Promise<unknown> => import("./instructions/sell") },
-    { title: "deposit", description: "Deposit SOL into the reserves.", value: async (): Promise<unknown> => import("./instructions/deposit") },
-    { title: "withdraw", description: "Withdraw SOL from the reserves.", value: async (): Promise<unknown> => import("./instructions/withdraw") },
-    { title: "reserves", description: "Get the amount in reserves for a specific jewl token.", value: async (): Promise<unknown> => import("./instructions/reserves") },
-    { title: "quote", description: "Get a quote for a specific jewl token conversion.", value: async (): Promise<unknown> => import("./instructions/quote") }
+    { title: "deploy", description: "Deploy the jewl.app program to the blockchain.", value: async (): Promise<unknown> => import("./instructions/deploy") },
+    { title: "mint", description: "Mint a specific amount of a jewl token in exchange for SOL.", value: async (): Promise<unknown> => import("./instructions/mint") },
+    { title: "burn", description: "Burn a specific amount of a jewl token in exchange for SOL", value: async (): Promise<unknown> => import("./instructions/burn") },
+    { title: "deposit", description: "Deposit SOL into the jewl.app vault.", value: async (): Promise<unknown> => import("./instructions/deposit") },
+    { title: "withdraw", description: "Withdraw SOL from the jewl.app vault.", value: async (): Promise<unknown> => import("./instructions/withdraw") },
+    { title: "create", description: "Add a new jewl token to the jewl program", value: async (): Promise<unknown> => import("./instructions/create") },
+    { title: "destroy", description: "Destroy an existing jewl token and reclaim rent.", value: async (): Promise<unknown> => import("./instructions/destroy") },
+    { title: "supply", description: "Get the supply and health of the jewl.app program.", value: async (): Promise<unknown> => import("./instructions/supply") }
 ];
 
 const response = await prompt({
