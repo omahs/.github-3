@@ -24,18 +24,29 @@ This repository consists of the a couple of different components that can be run
 
 ### Solana Program
 
-This part of the repository contains the [Solana](https://solana.com) program for jewl.app. There are various accounts that play a part in jewl.app's program. The following is a list of the accounts and their purpose.
+This part of the repository contains the [Solana](https://solana.com) program for jewl.app. This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenzied securities and equities for SOL minus a small fee.
 
-This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenzied securities and equities for SOL minus a small fee.
+Since program accounts are stateless, they cannot hold any data. Fortunately, the jewl.app program does not need to hold any data, it only needs to know which different tokens can be issued by jewl.app. This is done by having a single state account owned by the jewl.app program that contains a list of allowed spl tokens.
 
-Since program accounts are stateless, they cannot hold any data. Fortunately, the jewl.app program does not need to hold any data, it only needs to know which different tokens can be issued by jewl.app. This is done by the existance of SPL token mint accounts of which the jewl program account is the Owner.
+#### Commands
 
-The jewl program account also needs to know which SPL token accounts hold the reserves of the tokens that can be exchanged for SOL. This is done by the existance of SPL token accounts of which the jewl program account is the Owner.
+* `npm run sol:build` - Build the jewl.app program.
+* `npm run sol:start` - Start the CLI utility for the jewl.app program.
+* `npm run sol:lint` - Lint the jewl.app program using [Clippy](https://github.com/rust-lang/rust-clippy).
+* `npm run sol:test` - Run the integration tests for the jewl.app program using [solana-test-validator](https://docs.solana.com/developing/test-validator).
+* `npm run sol:clean` - Clean up any built artifacts and caches.
 
-You can build the program using the `npm run sol:build` command. There is also a CLI to interract with the program. You can start the CLI using the `npm run sol:start` command. There is also a lint and test command available using `npm run sol:lint` and `npm run sol:test` respectively. The tests are run using [solana-test-validator](https://docs.solana.com/developing/test-validator). If you are having issues with the build you can run `npm run sol:clean` to cleanup any built artifacts and caches.
 
 ### Web App
 
-This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The web app can be started using the `npm run web:start` command. A production version can be built using the `npm run web:build` command. There is also a lint and snapshot test command available using `npm run web:lint` and `npm run web:test` respectively. The snapshot tests are run using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html). If you are having issues with the build you can run `npm run web:clean` to cleanup any built artifacts and caches.
+This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The code is bundled and opitmized using [Parcel](https://parceljs.org).
+
+#### Commands
+
+* `npm run web:start` - Start the web app with hot reload enabled.
+* `npm run web:build` - Build the web app in production mode or for deploying.
+* `npm run web:lint` - Lint the web app using [ESLint](https://eslint.org).
+* `npm run web:test` - Run the snapshot tests for the web app using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html).
+* `npm run web:clean` - Clean up any built artifacts and caches.
 
 *Copyright © 2023 jewl.app*
