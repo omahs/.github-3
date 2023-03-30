@@ -51,7 +51,7 @@ impl Pack for State {
         for i in 0..self.filter.len() {
             let index = i * 32 + 33;
             let pubkey = self.filter.iter().nth(i).unwrap();
-            dst[index..index + 32].copy_from_slice(&pubkey.as_ref());
+            dst[index..index + 32].copy_from_slice(&pubkey.to_bytes());
         }
     }
 }

@@ -7,7 +7,7 @@ import YAML from "yaml";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = dirname(currentFile);
-const programKeyPath = resolve(currentDir, "../dist/deploy/jewl-keypair.json");
+const programKeyPath = resolve(currentDir, "../target/deploy/jewl-keypair.json");
 const programKeyString = readFileSync(programKeyPath, { encoding: "utf8" });
 const programKeyJSON = JSON.parse(programKeyString) as Array<number>;
 const programKeyArr = Uint8Array.from(programKeyJSON);

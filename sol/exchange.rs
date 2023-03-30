@@ -1,8 +1,6 @@
 use solana_program::{
     entrypoint::ProgramResult,
     program_error::ProgramError,
-    rent::Rent,
-    sysvar::Sysvar,
     program_pack::Pack
 };
 
@@ -33,7 +31,7 @@ impl Exchange {
         let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::InvalidAccountData)?;
         let cost = price.checked_add(fee).ok_or(ProgramError::InvalidAccountData)?;
 
-        Vault::deposit(accounts, cost);
+        Vault::deposit(accounts, cost)?;
         Token::mint(accounts, amount)?;
 
         Ok(())
@@ -55,7 +53,7 @@ impl Exchange {
         let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::InvalidAccountData)?;
         let cost = price.checked_sub(fee).ok_or(ProgramError::InvalidAccountData)?;
 
-        Vault::withdraw(accounts, cost);
+        Vault::withdraw(accounts, cost)?;
         Token::burn(accounts, amount)?;
 
         Ok(())

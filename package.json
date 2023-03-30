@@ -6,11 +6,16 @@
     "scripts": {
         "web:build": "parcel build --no-cache --no-autoinstall",
         "web:start": "parcel serve --no-autoinstall",
-        "sol:build": "CARGO_TARGET_DIR=dist cargo build-sbf",
+        "web:lint": "eslint .",
+        "web:lint:fix": "eslint . --fix",
+        "web:test": "node --no-warnings --loader ./mock/loader.js snapshot/index.ts",
+        "web:clean": "shx rm -r .parcel-cache dist",
+        "sol:build": "cargo build-sbf",
         "sol:start": "node --no-warnings --loader ./mock/loader.js cli/index.ts",
-        "clean": "shx rm -r .parcel-cache dist",
-        "test": "node --no-warnings --loader ./mock/loader.js test/index.ts",
-        "lint": "eslint ."
+        "sol:lint": "cargo clippy -- -D clippy::all",
+        "sol:lint:fix": "cargo clippy --fix -- -D clippy::all",
+        "sol:test": "node --no-warnings --loader ./mock/loader.js integration/index.ts",
+        "sol:clean": "cargo clean"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.3.0",

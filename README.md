@@ -32,19 +32,10 @@ Since program accounts are stateless, they cannot hold any data. Fortunately, th
 
 The jewl program account also needs to know which SPL token accounts hold the reserves of the tokens that can be exchanged for SOL. This is done by the existance of SPL token accounts of which the jewl program account is the Owner.
 
-You can build the program using the `npm run sol:build` command. There is also a CLI to interract with the program. You can start the CLI using the `npm run sol:start` command.
+You can build the program using the `npm run sol:build` command. There is also a CLI to interract with the program. You can start the CLI using the `npm run sol:start` command. There is also a lint and test command available using `npm run sol:lint` and `npm run sol:test` respectively. The tests are run using [solana-test-validator](https://docs.solana.com/developing/test-validator). If you are having issues with the build you can run `npm run sol:clean` to cleanup any built artifacts and caches.
 
 ### Web App
 
-This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The web app can be started using the `npm run web:start` command. A production version can be built using the `npm run web:build` command.
-
-### Miscellaneous
-
-There are a couple other commands related to running checks and tests. The following is a list of the commands and their purpose.
-
-* `npm run test` - run the unit test suite which tests web using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html) and the Solana program using a [solana-test-validator](https://docs.solana.com/developing/test-validator).
-* `npm run lint` - run the [ESLint](https://eslint.org) linter and prettier. You can automatically fix any linting errors by appending `-- --fix` to the command.
-* `npm run clean` - cleanup any built artifacts and caches. This is useful if you are having issues with the build.
-
+This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The web app can be started using the `npm run web:start` command. A production version can be built using the `npm run web:build` command. There is also a lint and snapshot test command available using `npm run web:lint` and `npm run web:test` respectively. The snapshot tests are run using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html). If you are having issues with the build you can run `npm run web:clean` to cleanup any built artifacts and caches.
 
 *Copyright © 2023 jewl.app*

@@ -35,7 +35,7 @@ const waitForRPC = async (): Promise<void> => {
 const programId = (): string => {
     const currentFile = fileURLToPath(import.meta.url);
     const currentDir = dirname(currentFile);
-    const keyPath = resolve(currentDir, "../dist/deploy/jewl-keypair.json");
+    const keyPath = resolve(currentDir, "../target/deploy/jewl-keypair.json");
     const secretKeyString = readFileSync(keyPath, { encoding: "utf8" });
     const secertKeyJson = JSON.parse(secretKeyString) as Array<number>;
     const secretKey = Uint8Array.from(secertKeyJson);
@@ -43,13 +43,15 @@ const programId = (): string => {
 };
 
 export const spawnTestValidator = async (): Promise<void> => {
-    const args = ["--bpf-program", programId(), "dist/deploy/jewl.so", "--rpc-port", port, "--reset"];
+    const args = ["--bpf-program", programId(), "target/deploy/jewl.so", "--rpc-port", port, "--reset"];
     const validator = spawn("solana-test-validator", args);
     killTestValidator = validator.kill.bind(validator);
 
     await waitForRPC();
 
     // TODO: Fund accounts
+
+    // TODO: Create spl token mint
 };
 
 

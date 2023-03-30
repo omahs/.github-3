@@ -6,17 +6,26 @@ on:
 
 jobs:
 
-  lint:
+  eslint:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Run Lint
+    - name: Run ESLint
       run: |
         npm ci
-        npm run lint
+        npm run web:lint
 
-  analyze:
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run Clippy
+      run: |
+        npm run sol:lint
+
+  codeql:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -30,7 +39,17 @@ jobs:
     - name: Analyze CodeQL
       uses: github/codeql-action/analyze@v2
 
-  test:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run Snapshot Tests
+      run: |
+        npm ci
+        npm run web:test
+
+  integration:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -43,4 +62,4 @@ jobs:
       run: |
         npm ci
         npm run sol:build
-        npm run test
+        npm run sol:test

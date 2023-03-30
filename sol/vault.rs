@@ -17,7 +17,7 @@ impl Vault {
 
     pub fn deposit(accounts: &Accounts, amount: u64) -> ProgramResult {
         let user_data = accounts.user.try_borrow_data()?;
-        let rent = Rent::from_account_info(&accounts.user)?;
+        let rent = Rent::from_account_info(accounts.user)?;
         let rent_balance = rent.minimum_balance(user_data.len());
         let min_balance = amount.checked_add(rent_balance).ok_or(ProgramError::InvalidArgument)?;
 
@@ -38,7 +38,7 @@ impl Vault {
             return Err(ProgramError::InvalidAccountData);
         }
 
-        let rent = Rent::from_account_info(&accounts.vault)?;
+        let rent = Rent::from_account_info(accounts.vault)?;
         let rent_balance = rent.minimum_balance(state_data.len());
         let min_balance = amount.checked_add(rent_balance).ok_or(ProgramError::InvalidArgument)?;
 
