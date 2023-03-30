@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+
+  firebase:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'jewl.app' || '' }}
+      url: https://jewl.app/
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Build build
+        run: |
+          npm ci
+          npm run web:build
+      - name: Deploy to firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_DEPLOY_KEY }}'
+          channelId: ${{ github.ref == 'refs/heads/main' && 'live' || '' }}
+          projectId: jewl-app
