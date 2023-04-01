@@ -15,7 +15,7 @@
 * Create a new keypair  using `solana-keygen new`.
 * Check if you have a valid wallet address using `solana address`.
 * Set your local config to use the Solana devnet using `solana config set --url https://api.devnet.solana.com`.
-* Give yourself 1 SOL (for transaction fees) using `solana airdrop 1`.
+* Give yourself some SOL (for transaction fees) using `solana airdrop 1`.
 * Check if you have a positive balance using `solana balance`.
 
 ## Components
