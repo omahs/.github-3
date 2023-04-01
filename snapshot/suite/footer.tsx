@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import { check } from "../../core/test/check";
+import { check } from "../../core/check";
 import Footer from "../../web/components/footer";
 
 window.innerWidth = 1024;

@@ -1,69 +1,70 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
 
 use solana_program::{
     program_error::ProgramError,
     program_pack::{IsInitialized, Pack, Sealed},
-    pubkey::Pubkey,
-    entrypoint::ProgramResult,
+    pubkey::Pubkey
 };
 
-use crate::accounts::Accounts;
-
+#[derive(Default)]
 pub struct State {
-    pub is_initialized: bool,
     pub authority: Pubkey,
-    pub filter: HashSet<Pubkey>
+    pub oracle: Pubkey,
+    pub tokens: HashMap<Pubkey, Pubkey>
+}
+
+impl State {
+    pub const MAX_TOKENS: usize = 128;
 }
 
 impl Sealed for State { }
 
 impl IsInitialized for State {
     fn is_initialized(&self) -> bool {
-        self.is_initialized
+        self.authority != Pubkey::default()
     }
 }
 
 impl Pack for State {
-    const LEN: usize = 8225;
+    const LEN: usize = 8256;
 
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
         if src.len() != Self::LEN { return Err(ProgramError::InvalidAccountData); }
-        if src[0] == 0 { return Ok(Self { is_initialized: false, authority: Pubkey::default(), filter: HashSet::new() }); }
-        if src[0] != 1 { return Err(ProgramError::InvalidAccountData); }
-        let authority_bytes = <[u8; 32]>::try_from(&src[1..33])
+        let authority_bytes = <[u8; 32]>::try_from(&src[0..32])
             .map_err(|_| ProgramError::InvalidAccountData)?;
         let authority = Pubkey::new_from_array(authority_bytes);
-        let mut filter = HashSet::new();
-        for i in 0..256 {
-            let index = i * 32 + 33;
-            let pubkey_bytes = <[u8; 32]>::try_from(&src[index..index + 32])
+        let oracle_bytes = <[u8; 32]>::try_from(&src[32..64])
+            .map_err(|_| ProgramError::InvalidAccountData)?;
+        let oracle = Pubkey::new_from_array(oracle_bytes);
+        let mut tokens = HashMap::new();
+        for i in 0..Self::MAX_TOKENS {
+            let index = i * 64 + 64;
+            let key_bytes = <[u8; 32]>::try_from(&src[index..index + 32])
                 .map_err(|_| ProgramError::InvalidAccountData)?;
-            let pubkey = Pubkey::new_from_array(pubkey_bytes);
-            if pubkey == Pubkey::default() { break; }
-            filter.insert(pubkey);
+            let key = Pubkey::new_from_array(key_bytes);
+            let value_bytes = <[u8; 32]>::try_from(&src[index + 32..index + 64])
+                .map_err(|_| ProgramError::InvalidAccountData)?;
+            let value = Pubkey::new_from_array(value_bytes);
+            if key == Pubkey::default() { break; }
+            if value == Pubkey::default() { break; }
+            tokens.insert(key, value);
         }
-        Ok(Self { is_initialized: true, authority, filter })
+        Ok(Self { authority, oracle, tokens  })
     }
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        dst[0] = self.is_initialized as u8;
-        dst[1..33].copy_from_slice(self.authority.as_ref());
-        for i in 0..self.filter.len() {
-            let index = i * 32 + 33;
-            let pubkey = self.filter.iter().nth(i).unwrap();
-            dst[index..index + 32].copy_from_slice(&pubkey.to_bytes());
+        dst[0..32].copy_from_slice(self.authority.as_ref());
+        dst[32..64].copy_from_slice(self.oracle.as_ref());
+        for i in 0..self.tokens.len() {
+            let index = i * 64 + 64;
+            let (key, value) = self.tokens.iter().nth(i).unwrap();
+            dst[index..index + 32].copy_from_slice(&key.to_bytes());
+            dst[index + 32..index + 64].copy_from_slice(&value.to_bytes());
         }
-    }
-}
-
-impl State {
-    pub fn initialize(accounts: &Accounts) -> ProgramResult {
-        let mut state_data = accounts.vault.try_borrow_mut_data()?;
-        let mut state = Self::unpack_unchecked(*state_data)?;
-        state.authority = *accounts.user.key;
-        state.filter = HashSet::new();
-        state.is_initialized = true;
-        Self::pack(state, *state_data)?;
-        Ok(())
+        for i in self.tokens.len()..Self::MAX_TOKENS {
+            let index = i * 64 + 64;
+            dst[index..index + 32].copy_from_slice(&Pubkey::default().to_bytes());
+            dst[index + 32..index + 64].copy_from_slice(&Pubkey::default().to_bytes());
+        }
     }
 }

@@ -1,4 +1,4 @@
-import "css:../styles/footer.css";
+import "../../core/identity";
 import contact from "url:../../CONTACT.md";
 import terms from "url:../../TERMS.md";
 import privacy from "url:../../PRIVACY.md";

@@ -1,4 +1,4 @@
-import "css:../styles/header.css";
+import "../../core/identity";
 import icon from "url:../../public/icon-outline.svg";
 import type { ReactElement } from "react";
 import React, { useCallback, useMemo, useState, useEffect } from "react";

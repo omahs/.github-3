@@ -19,6 +19,11 @@ const config = YAML.parse(configYml) as { json_rpc_url: string, keypair_path: st
 
 const rpcURL = config.json_rpc_url;
 export const connection = new Connection(rpcURL);
+const genesisHash = await connection.getGenesisHash();
+const genesisMap = {
+    EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG: "devnet"
+} as Record<string, string>;
+export const cluster = genesisMap[genesisHash];
 
 const payerKeyString = readFileSync(config.keypair_path, { encoding: "utf8" });
 const payerKeyJSON = JSON.parse(payerKeyString) as Array<number>;

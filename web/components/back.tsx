@@ -1,4 +1,4 @@
-import "css:../styles/back.css";
+import "../../core/identity";
 import type { ReactElement } from "react";
 import React from "react";
 

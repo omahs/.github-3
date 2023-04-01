@@ -18,8 +18,8 @@
         "esModuleInterop": true,
         "allowJs": true,
         "paths": {
-            "*.md": ["./mock/identity.js"],
-            "*.css": ["./mock/identity.js"]
+            "*.md": ["./core/identity.js"],
+            "*.css": ["./core/identity.js"]
         }
     }
 }

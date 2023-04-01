@@ -1,5 +1,5 @@
-import { allChecksPassed } from "../core/test/check";
-import { startTestRunner } from "../core/test/runner";
+import { allChecksPassed } from "../core/check";
+import { startTestRunner } from "../core/runner";
 import { killTestValidator, spawnTestValidator } from "./validator";
 import { dirname } from "path";
 import { fileURLToPath } from "url";

@@ -5,11 +5,11 @@ use solana_program::{
     pubkey::Pubkey,
 };
 
-use crate::processor::Processor;
+use crate::instruction::Instruction;
 
 #[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
 
-fn process_instruction<'a>(program_id: &Pubkey, accounts: &'a [AccountInfo<'a>], instruction_data: &[u8]) -> ProgramResult {
-    Processor::process_instruction(program_id, accounts, instruction_data)
+fn process_instruction<'a>(program_id: &'a Pubkey, accounts: &'a [AccountInfo<'a>], instruction_data: &[u8]) -> ProgramResult {
+    Instruction::process(program_id, accounts, instruction_data)
 }

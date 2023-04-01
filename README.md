@@ -32,10 +32,10 @@ Since program accounts are stateless, they cannot hold any data. Fortunately, th
 
 * `npm run sol:build` - Build the jewl.app program.
 * `npm run sol:start` - Start the CLI utility for the jewl.app program.
+* `npm run sol:deploy` - Deploy the jewl.app program to a Solana cluster.
 * `npm run sol:lint` - Lint the jewl.app program using [Clippy](https://github.com/rust-lang/rust-clippy).
 * `npm run sol:test` - Run the integration tests for the jewl.app program using [solana-test-validator](https://docs.solana.com/developing/test-validator).
 * `npm run sol:clean` - Clean up any built artifacts and caches.
-
 
 ### Web App
 
@@ -45,6 +45,7 @@ This part of the repository contains the [React](https://reactjs.org) static sit
 
 * `npm run web:start` - Start the web app with hot reload enabled.
 * `npm run web:build` - Build the web app in production mode or for deploying.
+* `npm run web:deploy` - Deploy the web app to [Firebase](https://firebase.google.com).
 * `npm run web:lint` - Lint the web app using [ESLint](https://eslint.org).
 * `npm run web:test` - Run the snapshot tests for the web app using [react-test-renderer](https://legacy.reactjs.org/docs/test-renderer.html).
 * `npm run web:clean` - Clean up any built artifacts and caches.
