@@ -25,20 +25,6 @@ jobs:
       run: |
         npm run sol:lint
 
-  codeql:
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: javascript
-    - name: Analyze CodeQL
-      uses: github/codeql-action/analyze@v2
-
   snapshot:
     runs-on: ubuntu-latest
     steps:
