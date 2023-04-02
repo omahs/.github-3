@@ -8,19 +8,23 @@ use solana_program::{
     system_instruction::{transfer, create_account},
     rent::Rent,
     pubkey::Pubkey,
-    program_pack::Pack
+    program_pack::Pack,
+    native_token::LAMPORTS_PER_SOL
 };
 
-use spl_token::{
-    instruction::{ mint_to, burn }
-};
+use spl_associated_token_account::instruction::create_associated_token_account;
+
+use spl_token::instruction::{ mint_to, burn };
 
 use pyth_sdk_solana::{
     load_price_feed_from_account_info,
     Price
 };
 
-use crate::{error::RuntimeError, state::State};
+use crate::{
+    error::RuntimeError,
+    state::State
+};
 
 pub struct Pyth;
 
@@ -32,20 +36,22 @@ impl<'a> Pyth {
         let feed = Self::get_price_feed(sol_oracle, price_oracle)?;
         let base = <u64>::try_from(feed.price).map_err(|_| ProgramError::ArrithmicOverflow)?;
         let upper = base.checked_add(feed.conf).ok_or(ProgramError::ArrithmicOverflow)?;
-        let price = upper.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
-        let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
-        let cost = price.checked_add(fee).ok_or(ProgramError::ArrithmicOverflow)?;
-        Ok(cost)
+        let multiple = upper.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
+        let fee = multiple.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
+        let cost = multiple.checked_add(fee).ok_or(ProgramError::ArrithmicOverflow)?;
+        let result = cost.checked_div(LAMPORTS_PER_SOL).ok_or(ProgramError::ArrithmicOverflow)?;
+        Ok(result)
     }
 
     pub fn get_burn_cost(amount: u64, sol_oracle: &'a AccountInfo<'a>, price_oracle: &'a AccountInfo<'a>) -> Result<u64, ProgramError> {
         let feed = Self::get_price_feed(sol_oracle, price_oracle)?;
         let base = <u64>::try_from(feed.price).map_err(|_| ProgramError::ArrithmicOverflow)?;
         let lower = base.checked_sub(feed.conf).ok_or(ProgramError::ArrithmicOverflow)?;
-        let price = lower.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
-        let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
-        let cost = price.checked_sub(fee).ok_or(ProgramError::ArrithmicOverflow)?;
-        Ok(cost)
+        let multiple = lower.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
+        let fee = multiple.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
+        let cost = multiple.checked_sub(fee).ok_or(ProgramError::ArrithmicOverflow)?;
+        let result = cost.checked_div(LAMPORTS_PER_SOL).ok_or(ProgramError::ArrithmicOverflow)?;
+        Ok(result)
     }
 
     fn get_price_feed(sol_oracle: &'a AccountInfo<'a>, price_oracle: &'a AccountInfo<'a>) -> Result<Price, ProgramError> {
@@ -67,7 +73,31 @@ impl<'a> Pyth {
 
 pub struct Token;
 impl<'a> Token {
-    pub fn mint(mint: &'a AccountInfo<'a>, token: &'a AccountInfo<'a>, authority: &'a AccountInfo<'a>, amount: u64) -> ProgramResult {
+    pub fn create_account_if_needed(owner: &'a AccountInfo<'a>, mint: &'a AccountInfo<'a>, token: &'a AccountInfo<'a>) -> ProgramResult {
+        if token.owner == &spl_token::id() { return Ok(()); }
+        let expected_token = spl_associated_token_account::get_associated_token_address(owner.key, mint.key);
+        if token.key != &expected_token { return Err(ProgramError::UnexpectedAccount); }
+
+        let instruction = create_associated_token_account(
+            owner.key,
+            owner.key,
+            mint.key,
+            &spl_token::id()
+        );
+
+        let invoke_accounts = [
+            owner.clone(),
+            token.clone(),
+            mint.clone()
+        ];
+
+        invoke(&instruction, &invoke_accounts)
+    }
+
+    pub fn mint(program_id: &'a Pubkey, mint: &'a AccountInfo<'a>, token: &'a AccountInfo<'a>, authority: &'a AccountInfo<'a>, amount: u64) -> ProgramResult {
+        let seed: &[u8] = b"vault";
+        let (_expected_vault, bump_seed) = Pubkey::find_program_address(&[seed], program_id);
+
         let instruction = mint_to(
             &spl_token::id(),
             mint.key,
@@ -83,7 +113,11 @@ impl<'a> Token {
             authority.clone()
         ];
 
-        invoke_signed(&instruction,&invoke_accounts, &[]) //TODO: <- add seeds
+        let seeds: &[&[&[u8]]] = &[
+            &[seed, &[bump_seed]]
+        ];
+
+        invoke_signed(&instruction,&invoke_accounts, seeds)
     }
 
     pub fn burn(mint: &'a AccountInfo<'a>, token: &'a AccountInfo<'a>, authority: &'a AccountInfo<'a>, amount: u64) -> ProgramResult {
@@ -102,7 +136,7 @@ impl<'a> Token {
             authority.clone()
         ];
 
-        invoke_signed(&instruction, &invoke_accounts, &[]) //TODO: <- add seeds
+        invoke(&instruction, &invoke_accounts)
     }
 }
 

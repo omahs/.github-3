@@ -1,16 +1,22 @@
-import { Transaction, TransactionInstruction, sendAndConfirmTransaction } from "@solana/web3.js";
-import { connection, programId, payer } from "../validator";
+import { linkAddress, linkTransaction } from "../link";
+import { select } from "../token";
+import prompt from "prompts";
+import { Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
+import { mint } from "../../core/instruction";
+import { Vault } from "../../core/vault";
+import { programId, connection, payer } from "../validator";
 
-console.log("Mint");
+const vault = await Vault.load(programId, connection);
+const token = await select();
 
-const instruction = new TransactionInstruction({
-    keys: [{ pubkey: programId, isSigner: false, isWritable: true }],
-    programId,
-    data: Buffer.alloc(0) // All instructions are hellos
-});
+const response = await prompt({
+    type: "number",
+    name: "amount",
+    message: `Enter the amount of ${linkAddress(token.oracle)} to mint`,
+    initial: 1
+}) as { amount: number };
 
-await sendAndConfirmTransaction(
-    connection,
-    new Transaction().add(instruction),
-    [payer]
-);
+const transaction = new Transaction();
+transaction.add(mint(programId, payer.publicKey, token.mint, vault.oracle, token.oracle, response.amount));
+const hash = await sendAndConfirmTransaction(connection, transaction, [payer]);
+console.info("Minted", response.amount.toPrecision(3), linkAddress(token.oracle), "in transaction", linkTransaction(hash));

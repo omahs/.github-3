@@ -100,14 +100,16 @@ impl Processor {
 
         let state_data = vault.try_borrow_data()?;
         let state = State::unpack(*state_data)?;
+        drop(state_data);
 
         if sol_oracle.key != &state.oracle { return Err(ProgramError::UnexpectedAccount); }
         if state.tokens.get(price_oracle.key) != Some(token_mint.key) { return Err(ProgramError::UnexpectedAccount); }
 
         let cost = Pyth::get_mint_cost(amount, sol_oracle, price_oracle)?;
 
+        Token::create_account_if_needed(signer, token_mint, token_account)?;
         Lamports::deposit(signer, vault, cost)?;
-        Token::mint(token_mint, token_account, vault, amount)
+        Token::mint(program_id, token_mint, token_account, vault, amount)
     }
 
     pub fn burn<'a>(program_id: &'a Pubkey, accounts: &'a [AccountInfo<'a>], amount: u64) -> ProgramResult {
@@ -118,19 +120,19 @@ impl Processor {
         if vault.owner != program_id { return Err(ProgramError::IllegalOwner); }
         let token_mint = next_account_info(accounts_info)?;
         let token_account = next_account_info(accounts_info)?;
-        //TODO: < check if token_account belongs to signer
         let sol_oracle = next_account_info(accounts_info)?;
         let price_oracle = next_account_info(accounts_info)?;
 
         let state_data = vault.try_borrow_data()?;
         let state = State::unpack(*state_data)?;
+        drop(state_data);
 
         if sol_oracle.key != &state.oracle { return Err(ProgramError::UnexpectedAccount); }
         if state.tokens.get(price_oracle.key) != Some(token_mint.key) { return Err(ProgramError::UnexpectedAccount); }
 
         let cost = Pyth::get_burn_cost(amount, sol_oracle, price_oracle)?;
 
-        Token::burn(token_mint, token_account, vault, amount)?;
+        Token::burn(token_mint, token_account, signer, amount)?;
         Lamports::withdraw(signer, vault, cost)
     }
 

@@ -3,7 +3,8 @@ import { PublicKey } from "@solana/web3.js";
 import { createMint } from "@solana/spl-token";
 import { link } from "./link";
 import { cluster, connection, payer, programId } from "./validator";
-import { vaultAccount } from "../core/instruction";
+import { decimals, vaultAccount } from "../core/instruction";
+import { Vault } from "../core/vault";
 
 interface TokenPair {
     mint: PublicKey;
@@ -36,8 +37,28 @@ export const createNew = async (): Promise<TokenPair> => {
         payer,
         vaultAccount(programId),
         vaultAccount(programId),
-        9
+        decimals
     );
 
     return { mint, oracle };
+};
+
+
+export const select = async (): Promise<TokenPair> => {
+    const vaultData = await Vault.load(programId, connection);
+
+    if (vaultData.tokens.size === 0) { throw new Error("No tokens to select"); }
+
+    const choices = Array.from(vaultData.tokens).map(([oracle, mint]) => {
+        return { title: oracle.toBase58(), value: { oracle, mint } };
+    });
+
+    const response = await prompt({
+        type: "select",
+        name: "token",
+        message: "Select a token",
+        choices
+    }) as { token: TokenPair };
+
+    return response.token;
 };

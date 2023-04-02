@@ -35,6 +35,9 @@ pub enum Instruction {
     // 3. [writable] Token account.
     // 4. [] Sol price oracle.
     // 5. [] Token price oracle.
+    // 6. [] The system program.
+    // 7. [] The token program.
+    // 8. [] The associated token program.
     Mint { amount: u64 },
 
     // Burn a specific amount of a jewl.app token by taking lamports from the vault.
@@ -44,6 +47,9 @@ pub enum Instruction {
     // 3. [writable] Token account.
     // 4. [] Sol price oracle.
     // 5. [] Token price oracle.
+    // 6. [] The system program.
+    // 7. [] The token program.
+    // 8. [] The associated token program.
     Burn { amount: u64 },
 
     // Deposit a specific amount of lamports into the jewl.app vault.

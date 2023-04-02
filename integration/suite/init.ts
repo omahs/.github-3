@@ -7,3 +7,6 @@ check("Sample should be equal to sample", "sample".length === 6);
 // Check vault exists
 
 // Initialize again not allowed
+
+
+// Should not be possible if not signed
