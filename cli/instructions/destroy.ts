@@ -9,4 +9,5 @@ const token = await select();
 const transaction = new Transaction();
 transaction.add(destroy(programId, payer.publicKey, token.oracle));
 const hash = await sendAndConfirmTransaction(connection, transaction, [payer]);
+console.info();
 console.info("Removed", linkAddress(token.oracle), "in transaction", linkTransaction(hash));

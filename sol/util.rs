@@ -36,22 +36,20 @@ impl<'a> Pyth {
         let feed = Self::get_price_feed(sol_oracle, price_oracle)?;
         let base = <u64>::try_from(feed.price).map_err(|_| ProgramError::ArrithmicOverflow)?;
         let upper = base.checked_add(feed.conf).ok_or(ProgramError::ArrithmicOverflow)?;
-        let multiple = upper.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
-        let fee = multiple.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
-        let cost = multiple.checked_add(fee).ok_or(ProgramError::ArrithmicOverflow)?;
-        let result = cost.checked_div(LAMPORTS_PER_SOL).ok_or(ProgramError::ArrithmicOverflow)?;
-        Ok(result)
+        let price = upper.checked_mul_div(amount, LAMPORTS_PER_SOL)?;
+        let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
+        let cost = price.checked_add(fee).ok_or(ProgramError::ArrithmicOverflow)?;
+        Ok(cost)
     }
 
     pub fn get_burn_cost(amount: u64, sol_oracle: &'a AccountInfo<'a>, price_oracle: &'a AccountInfo<'a>) -> Result<u64, ProgramError> {
         let feed = Self::get_price_feed(sol_oracle, price_oracle)?;
         let base = <u64>::try_from(feed.price).map_err(|_| ProgramError::ArrithmicOverflow)?;
         let lower = base.checked_sub(feed.conf).ok_or(ProgramError::ArrithmicOverflow)?;
-        let multiple = lower.checked_mul(amount).ok_or(ProgramError::ArrithmicOverflow)?;
-        let fee = multiple.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
-        let cost = multiple.checked_sub(fee).ok_or(ProgramError::ArrithmicOverflow)?;
-        let result = cost.checked_div(LAMPORTS_PER_SOL).ok_or(ProgramError::ArrithmicOverflow)?;
-        Ok(result)
+        let price = lower.checked_mul_div(amount, LAMPORTS_PER_SOL)?;
+        let fee = price.checked_div(Self::FEE_DENOM).ok_or(ProgramError::ArrithmicOverflow)?;
+        let cost = price.checked_sub(fee).ok_or(ProgramError::ArrithmicOverflow)?;
+        Ok(cost)
     }
 
     fn get_price_feed(sol_oracle: &'a AccountInfo<'a>, price_oracle: &'a AccountInfo<'a>) -> Result<Price, ProgramError> {
@@ -192,5 +190,21 @@ impl<'a> Vault {
         ];
 
         invoke_signed(&instruction, &accounts, seeds)
+    }
+}
+
+trait MulDiv where Self: Sized {
+    fn checked_mul_div(self, mul: Self, div: Self) -> Result<Self, ProgramError>;
+}
+
+impl MulDiv for u64 {
+    fn checked_mul_div(self, mul: Self, div: Self) -> Result<Self, ProgramError> {
+        let mul = <u128>::try_from(mul).map_err(|_| ProgramError::ArrithmicOverflow)?;
+        let div = <u128>::try_from(div).map_err(|_| ProgramError::ArrithmicOverflow)?;
+        let base = <u128>::try_from(self).map_err(|_| ProgramError::ArrithmicOverflow)?;
+        let multiple = base.checked_mul(mul).ok_or(ProgramError::ArrithmicOverflow)?;
+        let result = multiple.checked_div(div).ok_or(ProgramError::ArrithmicOverflow)?;
+        let out = <u64>::try_from(result).map_err(|_| ProgramError::ArrithmicOverflow)?;
+        Ok(out)
     }
 }

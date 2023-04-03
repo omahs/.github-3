@@ -19,4 +19,5 @@ const response = await prompt({
 const transaction = new Transaction();
 transaction.add(burn(programId, payer.publicKey, token.mint, vault.oracle, token.oracle, response.amount));
 const hash = await sendAndConfirmTransaction(connection, transaction, [payer]);
+console.info();
 console.info("Burned", response.amount.toPrecision(3), linkAddress(token.oracle), "in transaction", linkTransaction(hash));

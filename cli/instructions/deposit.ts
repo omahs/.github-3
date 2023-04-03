@@ -14,4 +14,5 @@ const response = await prompt({
 const transaction = new Transaction();
 transaction.add(deposit(programId, payer.publicKey, response.amount));
 const hash = await sendAndConfirmTransaction(connection, transaction, [payer]);
+console.info();
 console.info("Deposited", response.amount.toPrecision(3), "SOL in transaction", linkTransaction(hash));

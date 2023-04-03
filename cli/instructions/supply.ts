@@ -1,20 +1,43 @@
+import type { PythCluster } from "@pythnetwork/client";
+import { PythHttpClient, getPythProgramKeyForCluster } from "@pythnetwork/client";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { vaultAccount } from "../../core/instruction";
 import { Vault } from "../../core/vault";
 import { linkAddress } from "../link";
-import { programId, connection } from "../validator";
+import { programId, connection, cluster } from "../validator";
 
+const pythProgram = getPythProgramKeyForCluster(cluster as PythCluster);
+const pyth = new PythHttpClient(connection, pythProgram);
+const pythData = await pyth.getData();
+const symbolMap = new Map(pythData.products.map(x => [x.price_account, x]));
+const solPrice = pythData.productPrice.get("Crypto.SOL/USD")?.price ?? 0;
 const vaultData = await Vault.load(programId, connection);
 let marketValue = 1e-9;
 
-console.info("vault", linkAddress(vaultAccount(programId)));
-console.info("---------------------------------------------------------------");
+console.info();
+console.info("Vault", linkAddress(vaultAccount(programId)));
+console.info();
+console.info("| Security         | Price            | Supply           | Value (SOL)      |");
+console.info("-----------------------------------------------------------------------------");
 for (const [oracle, mint] of vaultData.tokens.entries()) {
-    const supply = await connection.getTokenSupply(mint);
-    const amount = supply.value.uiAmount?.toPrecision(3).padStart(8, " ") ?? " unknown";
-    console.info("| ", linkAddress(oracle), " | ", amount, " |");
-    marketValue += 0; // TODO <- get from pyth
+    const mintInfo = await connection.getTokenSupply(mint);
+    const supply = mintInfo.value.uiAmount ?? 0;
+    const product = symbolMap.get(oracle.toBase58());
+    const symbol = product?.base ?? "unkown";
+    const pythInfo = pythData.productPrice.get(product?.symbol ?? "");
+    const price = pythInfo?.price ?? pythInfo?.previousPrice ?? 0;
+    const value = price * supply / solPrice;
+    const items = [
+        symbol.padEnd(16, " "),
+        price.toPrecision(8).padEnd(16, " "),
+        supply.toPrecision(8).padEnd(16, " "),
+        value.toPrecision(8).padEnd(16, " ")
+    ].join(" | ");
+    console.info("|", items, "|");
+    marketValue += value;
 }
-console.info("---------------------------------------------------------------");
+console.info("-----------------------------------------------------------------------------");
 
-const bookToMarket = vaultData.lamports / marketValue;
-console.info("book-to-market ratio", bookToMarket.toPrecision(3));
+const lamports = vaultData.lamports / LAMPORTS_PER_SOL;
+const bookToMarket = (lamports / marketValue).toPrecision(8).padEnd(52, " ");
+console.info("| book-to-market ratio", bookToMarket, "|");

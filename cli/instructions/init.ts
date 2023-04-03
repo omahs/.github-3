@@ -15,4 +15,5 @@ const solOracle = new PublicKey(solOracleString);
 const transaction = new Transaction();
 transaction.add(initialize(programId, payer.publicKey, solOracle));
 const hash = await sendAndConfirmTransaction(connection, transaction, [payer]);
+console.info();
 console.info("Initialized", linkAddress(vaultAccount(programId)), "in transaction", linkTransaction(hash));
