@@ -39,7 +39,7 @@
         "@solana/wallet-adapter-trust": "^0.1.12",
         "bn.js": "^5.2.1",
         "dompurify": "^3.0.1",
-        "firebase": "^9.19.0",
+        "firebase": "^9.19.1",
         "marked": "^4.3.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
