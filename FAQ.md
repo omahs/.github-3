@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-<details><summary>Why does jewl.app not have a white paper?</summary><p>jewl.app does not introduce anything technologically new or advanced. Therefore, we feel that writing a white paper neither has an added benefit for jewl.app protocol nor does it have any benefit for the scientific / development community.</p></details>
+<details><summary>Why does jewl.app not have a white paper?</summary><p>jewl.app does not introduce anything technologically new or advanced. Therefore, we feel that writing a white paper neither has an added benefit for the jewl.app protocol nor does it have any benefit for the scientific / development community.</p></details>
 
 <details><summary>What are the benefits of tokenizing securities and equities?<summary><p>Tokenizing securities and equities can bring several benefits, including increased liquidity, lower transaction costs, faster settlement times, fractional ownership, and greater access to a wider range of investors. It can also enhance transparency and reduce counterparty risk</p></details>
 
