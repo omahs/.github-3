@@ -24,6 +24,7 @@ jobs:
           npm ci
           npm run web:build
       - name: Deploy to firebase
+        if: ${{ !github.event.pull_request.head.repo.fork }}
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
