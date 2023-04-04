@@ -20,11 +20,11 @@
 
 ## Components
 
-This repository consists of the a couple of different components that can be run independently of each other. The following is a list of the components and their purpose.
+This repository consists of a couple of different components that can be run independently of each other. The following is a list of the components and their purpose.
 
 ### Solana Program
 
-This part of the repository contains the [Solana](https://solana.com) program for jewl.app. This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenzied securities and equities for SOL minus a small fee.
+This part of the repository contains the [Solana](https://solana.com) program for jewl.app. This is the program account that holds all the logic related to jewl.app. This account allows users of jewl.app to exchange tokenized securities and equities for SOL minus a small fee.
 
 Since program accounts are stateless, they cannot hold any data. Fortunately, the jewl.app program does not need to hold any data, it only needs to know which different tokens can be issued by jewl.app. This is done by having a single state account owned by the jewl.app program that contains a list of allowed spl tokens.
 
@@ -39,7 +39,7 @@ Since program accounts are stateless, they cannot hold any data. Fortunately, th
 
 ### Web App
 
-This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The code is bundled and opitmized using [Parcel](https://parceljs.org).
+This part of the repository contains the [React](https://reactjs.org) static site for jewl.app. The code is bundled and optimized using [Parcel](https://parceljs.org).
 
 #### Commands
 
